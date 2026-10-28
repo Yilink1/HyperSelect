@@ -4,6 +4,7 @@ import android.animation.Value Animator
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.Layout Inflater
@@ -551,5 +552,10 @@ class Intro Activity : App Compat Activity() {
         deep Seek.translation Z = 0f
         deep Seek.scale X = 1f
         deep Seek.scale Y = 1f
+    }
+}
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase))
     }
 }

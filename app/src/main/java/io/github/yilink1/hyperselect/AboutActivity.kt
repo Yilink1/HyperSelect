@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.Color Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.content.Context
 import android.view.Gravity
 import android.view.Menu Item
 import android.view.View
@@ -95,5 +96,10 @@ class About Activity : App Compat Activity() {
             lp.y = margin V
             window.attributes = lp
         }
+    }
+}
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase))
     }
 }

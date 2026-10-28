@@ -2,6 +2,7 @@ package io.github.yilink1.hyperselect
 
 import android.content.Intent
 import android.os.Bundle
+import android.content.Context
 import android.view.View
 import android.widget.Text View
 import androidx.appcompat.app.App Compat Activity
@@ -82,4 +83,9 @@ class Main Activity : App Compat Activity() {
     }
 
     private fun hidden Label(count: Int): String = if (count > 0) "Hidden $count" else "—"
+}
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.setLocale(newBase))
+    }
 }
