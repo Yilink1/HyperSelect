@@ -73,7 +73,7 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_intro_btn"
             android:elevation="0dp"
-            android:stateList Animator="@null"
+            android:stateListAnimator="@null"
             android:text="Continue"
             android:textColor="#FFFFFF"
             android:textSize="16sp"

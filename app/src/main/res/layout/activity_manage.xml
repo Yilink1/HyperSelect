@@ -170,7 +170,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipTo Padding="false"
-            android:overScroll Mode="never"
+            android:overScrollMode="never"
             android:paddingTop="2dp"
             android:paddingBottom="24dp" />
 
