@@ -1,6 +1,6 @@
 # HyperSelect
 
-适用于小米澎湃系统（Xiaomi HyperOS）的文本选择菜单、系统分享与打开方式定制模块。
+适用于小米澎湃系统（Xiaomi HyperOS）的文本选择菜单、系统分享与打开方式定制模块
 
 ---
 
