@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/hyper_text_primary"
-        android:text Size="20sp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -43,7 +43,7 @@
         android:gravity="center"
         android:text="Got it"
         android:textColor="#FFFFFF"
-        android:text Size="16sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
 </LinearLayout>

@@ -30,7 +30,7 @@
                 android:layout_weight="1"
                 android:text="HyperSelect"
                 android:textColor="@color/hyper_text_primary"
-                android:text Size="34sp"
+                android:textSize="34sp"
                 android:textStyle="bold" />
 
             <ImageView
@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/hyper_text_secondary"
-                android:text Size="13sp" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <!-- Three modules: one card panel with divider -->
@@ -114,7 +114,7 @@
                         android:layout_height="wrap_content"
                         android:text="TextSelection"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="17sp" />
+                        android:textSize="17sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -122,7 +122,7 @@
                         android:layout_marginTop="2dp"
                         android:text="Long press text menu"
                         android:textColor="@color/hyper_text_secondary"
-                        android:text Size="12sp" />
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <TextView
@@ -131,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
                     android:textColor="@color/hyper_text_secondary"
-                    android:text Size="13sp" />
+                    android:textSize="13sp" />
 
                 <ImageView
                     android:layout_width="20dp"
@@ -179,7 +179,7 @@
                         android:layout_height="wrap_content"
                         android:text="SystemShare"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="17sp" />
+                        android:textSize="17sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -187,7 +187,7 @@
                         android:layout_marginTop="2dp"
                         android:text="Share panel app list"
                         android:textColor="@color/hyper_text_secondary"
-                        android:text Size="12sp" />
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <TextView
@@ -196,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
                     android:textColor="@color/hyper_text_secondary"
-                    android:text Size="13sp" />
+                    android:textSize="13sp" />
 
                 <ImageView
                     android:layout_width="20dp"
@@ -244,7 +244,7 @@
                         android:layout_height="wrap_content"
                         android:text="OpenWith"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="17sp" />
+                        android:textSize="17sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -252,7 +252,7 @@
                         android:layout_marginTop="2dp"
                         android:text="File and link resolver dialog"
                         android:textColor="@color/hyper_text_secondary"
-                        android:text Size="12sp" />
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <TextView
@@ -261,7 +261,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
                     android:textColor="@color/hyper_text_secondary"
-                    android:text Size="13sp" />
+                    android:textSize="13sp" />
 
                 <ImageView
                     android:layout_width="20dp"

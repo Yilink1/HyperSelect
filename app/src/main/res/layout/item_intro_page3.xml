@@ -30,7 +30,7 @@
                 android:gravity="center"
                 android:text="…"
                 android:textColor="#FFFFFF"
-                android:text Size="32sp"
+                android:textSize="32sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </androidx.cardview.widget.Card View>
@@ -43,7 +43,7 @@
         android:layout_marginTop="32dp"
         android:text="In progressdetectModulestatus"
         android:textColor="@color/hyper_text_primary"
-        android:text Size="24sp"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <TextView
@@ -56,6 +56,6 @@
         android:paddingHorizontal="16dp"
         android:text="In progressandSystem Frameworkhandshake，please wait…"
         android:textColor="@color/hyper_desc_text"
-        android:text Size="14sp" />
+        android:textSize="14sp" />
 
 </LinearLayout>

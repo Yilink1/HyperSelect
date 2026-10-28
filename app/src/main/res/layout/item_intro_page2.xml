@@ -44,7 +44,7 @@
                         android:paddingHorizontal="14dp"
                         android:text="←"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="16sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <View
@@ -61,7 +61,7 @@
                         android:paddingHorizontal="14dp"
                         android:text="Paste"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="14sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tvPage2Share"
@@ -71,7 +71,7 @@
                         android:paddingHorizontal="14dp"
                         android:text="BaiduMaps"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="14sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tvPage2Translate"
@@ -81,7 +81,7 @@
                         android:paddingHorizontal="14dp"
                         android:text="Translate"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="14sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tvPage2Baidu"
@@ -91,7 +91,7 @@
                         android:paddingHorizontal="14dp"
                         android:text="BaiduTranslate"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="14sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tvPage2DeepSeek"
@@ -101,7 +101,7 @@
                         android:paddingHorizontal="14dp"
                         android:text="AskDeep Seek"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="14sp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
             </androidx.cardview.widget.Card View>
 
@@ -115,7 +115,7 @@
         android:layout_marginTop="32dp"
         android:text="Sortandhide"
         android:textColor="@color/hyper_text_primary"
-        android:text Size="24sp"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <TextView
@@ -127,6 +127,6 @@
         android:paddingHorizontal="16dp"
         android:text="frequentFeaturelong pressPin，rareOptionleft hide"
         android:textColor="@color/hyper_desc_text"
-        android:text Size="14sp" />
+        android:textSize="14sp" />
 
 </LinearLayout>

@@ -38,7 +38,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/hyper_text_primary"
-            android:text Size="15.5sp"
+            android:textSize="15.5sp"
             tools:text="BaiduTranslate" />
 
         <TextView
@@ -50,7 +50,7 @@
             android:fontFamily="monospace"
             android:singleLine="true"
             android:textColor="@color/hyper_text_secondary"
-            android:text Size="11sp"
+            android:textSize="11sp"
             tools:text="com.baidu.baidutranslate" />
     </LinearLayout>
 
@@ -65,7 +65,7 @@
         android:paddingHorizontal="9dp"
         android:text="Cancel"
         android:textColor="@color/hyper_pill_grey_text"
-        android:text Size="12sp"
+        android:textSize="12sp"
         android:textStyle="bold"
         android:visibility="gone"
         tools:visibility="visible" />
@@ -91,7 +91,7 @@
         android:paddingHorizontal="11dp"
         android:text="Pin"
         android:textColor="@color/hyper_pill_blue_text"
-        android:text Size="12sp"
+        android:textSize="12sp"
         android:textStyle="bold"
         android:visibility="gone"
         tools:visibility="visible" />
@@ -127,7 +127,7 @@
             android:paddingHorizontal="11dp"
             android:text="Pin"
             android:textColor="@color/hyper_pill_blue_text"
-            android:text Size="12sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
@@ -139,7 +139,7 @@
             android:paddingHorizontal="11dp"
             android:text="hide"
             android:textColor="@color/hyper_pill_grey_text"
-            android:text Size="12sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
@@ -151,7 +151,7 @@
             android:paddingHorizontal="11dp"
             android:text="Restore"
             android:textColor="@color/hyper_pill_blue_text"
-            android:text Size="12sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             android:visibility="gone" />
     </LinearLayout>

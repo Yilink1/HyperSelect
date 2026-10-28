@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:text="hyper"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="15sp" />
+                        android:textSize="15sp" />
 
                     <View
                         android:layout_width="8dp"
@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:text="Cancel"
                     android:textColor="@color/hyper_accent"
-                    android:text Size="13sp"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -115,7 +115,7 @@
                         android:paddingHorizontal="9dp"
                         android:text="Translate"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="14sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -123,7 +123,7 @@
                         android:paddingHorizontal="9dp"
                         android:text="Cut"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="14sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -131,7 +131,7 @@
                         android:paddingHorizontal="9dp"
                         android:text="Copy"
                         android:textColor="@color/hyper_text_primary"
-                        android:text Size="14sp" />
+                        android:textSize="14sp" />
 
                     <!-- Drawer container forPaste, clips text so it emerges smoothly from seam -->
                     <FrameLayout
@@ -148,7 +148,7 @@
                             android:singleLine="true"
                             android:text="Paste"
                             android:textColor="@color/hyper_text_primary"
-                            android:text Size="14sp" />
+                            android:textSize="14sp" />
                     </FrameLayout>
 
                     <ImageView
@@ -171,7 +171,7 @@
         android:layout_marginTop="32dp"
         android:text="BlockAI Writing"
         android:textColor="@color/hyper_text_primary"
-        android:text Size="24sp"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <TextView
@@ -183,6 +183,6 @@
         android:paddingHorizontal="16dp"
         android:text="Remove forcedof theAI Writing， of thePaste"
         android:textColor="@color/hyper_desc_text"
-        android:text Size="14sp" />
+        android:textSize="14sp" />
 
 </LinearLayout>

@@ -76,7 +76,7 @@
             android:stateList Animator="@null"
             android:text="Continue"
             android:textColor="#FFFFFF"
-            android:text Size="16sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
 

@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/hyper_text_primary"
-            android:text Size="13.5sp"
+            android:textSize="13.5sp"
             android:textStyle="bold"
             tools:text="Pinapp" />
 
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/hyper_text_secondary"
-            android:text Size="12sp"
+            android:textSize="12sp"
             tools:text="2" />
     </LinearLayout>
 
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:textColor="@color/hyper_text_secondary"
-        android:text Size="11.5sp"
+        android:textSize="11.5sp"
         android:visibility="gone"
         tools:text="Always pinned atmostbeforeorder，drag handlecan order"
         tools:visibility="visible" />

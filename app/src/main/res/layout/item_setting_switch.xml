@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="BlockAI writing bubble"
             android:textColor="@color/hyper_text_primary"
-            android:text Size="16sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,7 +31,7 @@
             android:layout_marginTop="2dp"
             android:text="long pressTextwhen No more sticky notesAI  "
             android:textColor="@color/hyper_text_secondary"
-            android:text Size="12sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <io.github.yilink1.hyperselect.HyperSwitch
