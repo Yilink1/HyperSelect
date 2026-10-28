@@ -10,8 +10,8 @@ android {
         applicationId = "io.github.yilink1.hyperselect"
         minSdk = 31
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 3
+        versionName = "1.0.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -45,12 +45,4 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation("androidx.test:runner:1.7.0")
-}
-
-// Ensure version is set correctly for release
-android {
-    defaultConfig {
-        versionCode = 2
-        versionName = "1.0.1"
-    }
 }
