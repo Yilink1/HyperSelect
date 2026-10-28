@@ -181,7 +181,7 @@
         android:gravity="center"
         android:lineSpacingExtra="4dp"
         android:paddingHorizontal="16dp"
-        android:text="Remove forcedof/the AI Writing，找回被挤走of/thePaste"
+        android:text="Remove forcedof/the AI Writing， of/thePaste"
         android:textColor="@color/hyper_desc_text"
         android:textSize="14sp" />
 

@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="long pressTextwhenNo more sticky notes AI 圆圈"
+            android:text="long pressTextwhenNo more sticky notes AI  "
             android:textColor="@color/hyper_text_secondary"
             android:textSize="12sp" />
     </LinearLayout>

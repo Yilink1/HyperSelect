@@ -165,7 +165,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="查看操作指南and手势Instructions"
+                    android:text=" and Instructions"
                     android:textColor="@color/hyper_text_primary"
                     android:textSize="15sp" />
 
@@ -184,7 +184,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="6dp"
-                android:text="Aboutand开源"
+                android:text="Aboutand "
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -211,7 +211,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="GitHub 仓库"
+                        android:text="GitHub  "
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
@@ -241,7 +241,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="开发者"
+                        android:text=" "
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
@@ -271,7 +271,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="开源License"
+                        android:text=" License"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 

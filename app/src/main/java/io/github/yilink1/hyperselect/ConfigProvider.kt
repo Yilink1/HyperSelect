@@ -47,7 +47,7 @@ class ConfigProvider : ContentProvider() {
         projection: Array<out String>?,
         selection: String?,
         selectionArgs: Array<out String>?,
-        sortOrder: String?
+        sortorder: String?
     ): Cursor? = null
 
     override fun getType(uri: Uri): String? = null

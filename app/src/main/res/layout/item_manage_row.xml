@@ -76,12 +76,12 @@
         android:layout_width="38dp"
         android:layout_height="38dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="拖动Sort"
+        android:contentDescription="DragSort"
         android:padding="8dp"
         android:src="@drawable/ic_drag_handle"
         app:tint="@color/hyper_text_secondary" />
 
-    <!-- Pincapsule按钮（常规Showlist） -->
+    <!-- Pincapsule （ Showlist） -->
     <TextView
         android:id="@+id/btnPin"
         android:layout_width="wrap_content"
@@ -96,7 +96,7 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <!-- Restore按钮（hideHide项目） -->
+    <!-- Restore （hideHide ） -->
     <ImageView
         android:id="@+id/btnRestore"
         android:layout_width="34dp"
@@ -108,7 +108,7 @@
         app:tint="@color/hyper_accent"
         android:visibility="gone" />
 
-    <!-- Search模式动作capsule：Pin / hide / Restore -->
+    <!-- Search Actioncapsule：Pin / hide / Restore -->
     <LinearLayout
         android:id="@+id/layoutSearchActions"
         android:layout_width="wrap_content"

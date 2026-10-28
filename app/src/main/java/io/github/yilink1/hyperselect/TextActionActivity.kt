@@ -11,7 +11,7 @@ class TextActionActivity : ManageListActivity() {
 
     override val screenTitle = "Text Selection"
     override val emptyText = "No apps support text actions"
-    override val sortByLabelWhenNoOrder = false
+    override val sortByLabelWhenNoorder = false
 
     private var switchBlockAiWriting: HyperSwitch? = null
     private var rowBlockAiWriting: View? = null
@@ -24,9 +24,9 @@ class TextActionActivity : ManageListActivity() {
     }
 
     override fun blacklistOf(config: RuleConfig): Set<String> = config.blacklist
-    override fun orderOf(config: RuleConfig): List<String> = config.customOrder
+    override fun orderOf(config: RuleConfig): List<String> = config.customorder
     override fun withRules(config: RuleConfig, blacklist: Set<String>, order: List<String>): RuleConfig =
-        config.copy(blacklist = blacklist, customOrder = order)
+        config.copy(blacklist = blacklist, customorder = order)
 
     override fun onCreateExtra(container: ViewGroup) {
         val row = layoutInflater.inflate(R.layout.item_setting_switch, container, false)

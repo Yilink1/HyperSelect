@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Three management pages（Text Selection / 系统Share / Open With）Sharedof/theUnified布局 -->
+<!-- Three management pages（Text Selection / SystemShare / Open With）Sharedof/theUnified  -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -7,7 +7,7 @@
     android:background="@color/hyper_bg"
     android:orientation="vertical">
 
-    <!-- 顶栏：Back / title / Search / More；Search展开whenby searchBox Override -->
+    <!--  ：Back / title / Search / More；Search whenby searchBox Override -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="56dp">
@@ -90,7 +90,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:background="@null"
-                android:hint="Searchapp名or包名"
+                android:hint="Searchapp or "
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLines="1"
@@ -111,7 +111,7 @@
         </LinearLayout>
     </FrameLayout>
 
-    <!-- page面专属of/the附加Settings（Text Selectionpage放「Block AI Writing」） -->
+    <!-- page of/the Settings（Text Selectionpage 「Block AI Writing」） -->
     <FrameLayout
         android:id="@+id/layoutExtra"
         android:layout_width="match_parent"
@@ -120,7 +120,7 @@
         android:layout_marginBottom="6dp"
         android:visibility="gone" />
 
-    <!-- Top dual-tab bar：Show / Hide（带计数） -->
+    <!-- Top dual-tab bar：Show / Hide（ ） -->
     <LinearLayout
         android:id="@+id/segment"
         android:layout_width="match_parent"
@@ -148,14 +148,14 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <!-- 操作Tip -->
+    <!--  Tip -->
     <TextView
         android:id="@+id/tvHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="6dp"
-        android:text="long pressordrag handle调整Sort，向left滑canhide"
+        android:text="long pressordrag handle Sort，Swipe leftto hide"
         android:textColor="@color/hyper_text_secondary"
         android:textSize="12sp"
         android:visibility="gone" />
@@ -191,7 +191,7 @@
             android:textSize="14sp"
             android:visibility="gone" />
 
-        <!-- Undo条：hide / Restore / 批量操作after短暂出现 -->
+        <!-- Undo ：hide / Restore /  after  -->
         <LinearLayout
             android:id="@+id/undoBar"
             android:layout_width="match_parent"

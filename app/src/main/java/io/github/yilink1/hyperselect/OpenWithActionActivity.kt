@@ -84,27 +84,27 @@ class OpenWithActionActivity : ManageListActivity() {
     }
 
     override fun blacklistOf(config: RuleConfig): Set<String> = config.openWithBlacklist
-    override fun orderOf(config: RuleConfig): List<String> = config.openWithCustomOrder
+    override fun orderOf(config: RuleConfig): List<String> = config.openWithCustomorder
     override fun withRules(config: RuleConfig, blacklist: Set<String>, order: List<String>): RuleConfig =
-        config.copy(openWithBlacklist = blacklist, openWithCustomOrder = order)
+        config.copy(openWithBlacklist = blacklist, openWithCustomorder = order)
 
     override fun testActions(): List<Pair<String, () -> Unit>> =
         listOf(Pair("Test", { showTestDialog() }))
 
     private fun showTestDialog() {
         val options = arrayOf(
-            "Testwebfile (HTML / support所有浏览器)",
-            "Test普通Textfile (text/plain)",
+            "Test web file (HTML / works with all browsers)",
+            "Test plain text file (text/plain)",
             "Testonlinelink (Http/Https)"
         )
         AlertDialog.Builder(this)
-            .setTitle("选择Open withTest类型")
+            .setTitle("SelectOpen withTestType")
             .setItems(options) { _, which ->
                 runCatching {
                     val testIntent = when (which) {
                         0 -> {
                             val testFile = File(cacheDir, "hyper_test.html").apply {
-                                writeText("<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>HyperSelect</title></head><body><h3>HyperSelect Open withTest</h3><p>用于验证浏览器Sortand appsHideEffect。</p></body></html>")
+                                writeText("<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>HyperSelect</title></head><body><h3>HyperSelect Open withTest</h3><p>ForVerify Sortand appsHideEffect。</p></body></html>")
                             }
                             val fileUri = FileProvider.getUriForFile(this, "${packageName}.fileprovider", testFile)
                             Intent(Intent.ACTION_VIEW).apply {
@@ -114,7 +114,7 @@ class OpenWithActionActivity : ManageListActivity() {
                         }
                         1 -> {
                             val testFile = File(cacheDir, "hyper_test.txt").apply {
-                                writeText("HyperSelect Open withTestTextcontent\n用于验证已Hide appsandSortRules。")
+                                writeText("HyperSelect Open withTestTextcontent\nForVerify Hide appsandSortRules。")
                             }
                             val fileUri = FileProvider.getUriForFile(this, "${packageName}.fileprovider", testFile)
                             Intent(Intent.ACTION_VIEW).apply {
@@ -127,14 +127,14 @@ class OpenWithActionActivity : ManageListActivity() {
                         }
                     }
                     val chooserTitle = when (which) {
-                        0 -> "Test打开webfile"
-                        1 -> "Test打开Textfile"
-                        else -> "Test打开onlinelink"
+                        0 -> "TestOpenwebfile"
+                        1 -> "TestOpenTextfile"
+                        else -> "TestOpenonlinelink"
                     }
                     val chooser = Intent.createChooser(testIntent, chooserTitle)
                     startActivity(chooser)
                 }.onFailure { e ->
-                    Toast.makeText(this, "调起Open with失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, " Open with : ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Cancel", null)

@@ -115,7 +115,7 @@ class ManageAdapter(
 
         val itemHolder = holder as? ItemViewHolder ?: return
 
-        // ResetAnimation offset、Scaleand层级，防止复用残留
+        // Reset animation offsets, scale and z-index to avoid reuse artifacts
         itemHolder.itemView.animate().cancel()
         itemHolder.itemView.translationX = 0f
         itemHolder.itemView.translationZ = 0f

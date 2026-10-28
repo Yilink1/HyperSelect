@@ -24,9 +24,9 @@ class ShareActionActivity : ManageListActivity() {
     }
 
     override fun blacklistOf(config: RuleConfig): Set<String> = config.shareBlacklist
-    override fun orderOf(config: RuleConfig): List<String> = config.shareCustomOrder
+    override fun orderOf(config: RuleConfig): List<String> = config.shareCustomorder
     override fun withRules(config: RuleConfig, blacklist: Set<String>, order: List<String>): RuleConfig =
-        config.copy(shareBlacklist = blacklist, shareCustomOrder = order)
+        config.copy(shareBlacklist = blacklist, shareCustomorder = order)
 
     override fun testActions(): List<Pair<String, () -> Unit>> =
         listOf(Pair("Test", { showTestDialog() }))
@@ -40,11 +40,11 @@ class ShareActionActivity : ManageListActivity() {
                     val sendIntent = if (which == 0) {
                         Intent(Intent.ACTION_SEND).apply {
                             type = "text/plain"
-                            putExtra(Intent.EXTRA_TEXT, "HyperSelect ShareTestText：ThisYes一条用于验证SharepanelHideandSortEffectof/theTestcontent。")
+                            putExtra(Intent.EXTRA_TEXT, "HyperSelect Share Test Text: This is test content to verify share panel hide and reorder effects.")
                         }
                     } else {
                         val testFile = File(cacheDir, "hyper_share_test.txt").apply {
-                            writeText("HyperSelect SharefileTest：用于验证file类Share目标 appsof/thehideandSort。")
+                            writeText("HyperSelect share file test for verifying file sharing  appsof/thehideandSort。")
                         }
                         val fileUri = FileProvider.getUriForFile(this, "${packageName}.fileprovider", testFile)
                         Intent(Intent.ACTION_SEND).apply {
@@ -55,7 +55,7 @@ class ShareActionActivity : ManageListActivity() {
                     }
                     startActivity(Intent.createChooser(sendIntent, "HyperSelect ShareEffectTest"))
                 }.onFailure { e ->
-                    Toast.makeText(this, "调起Share失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, " Share : ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
             .show()

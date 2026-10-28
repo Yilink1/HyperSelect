@@ -5,12 +5,12 @@ import org.json.JSONObject
 
 data class RuleConfig(
     val blacklist: Set<String> = emptySet(),
-    val customOrder: List<String> = emptyList(),
+    val customorder: List<String> = emptyList(),
     val blockAiWriting: Boolean = true,
     val shareBlacklist: Set<String> = emptySet(),
-    val shareCustomOrder: List<String> = emptyList(),
+    val shareCustomorder: List<String> = emptyList(),
     val openWithBlacklist: Set<String> = emptySet(),
-    val openWithCustomOrder: List<String> = emptyList()
+    val openWithCustomorder: List<String> = emptyList()
 ) {
     fun toJson(): String {
         val root = JSONObject()
@@ -21,7 +21,7 @@ data class RuleConfig(
         root.put("blacklist", blacklistArray)
 
         val orderArray = JSONArray()
-        customOrder.forEach { orderArray.put(it) }
+        customorder.forEach { orderArray.put(it) }
         root.put("order", orderArray)
 
         root.put("blockAiWriting", blockAiWriting)
@@ -31,18 +31,18 @@ data class RuleConfig(
         shareBlacklist.forEach { shareArray.put(it) }
         root.put("shareBlacklist", shareArray)
 
-        val shareOrderArray = JSONArray()
-        shareCustomOrder.forEach { shareOrderArray.put(it) }
-        root.put("shareOrder", shareOrderArray)
+        val shareorderArray = JSONArray()
+        shareCustomorder.forEach { shareorderArray.put(it) }
+        root.put("shareorder", shareorderArray)
 
         // 3. Open with
         val openWithArray = JSONArray()
         openWithBlacklist.forEach { openWithArray.put(it) }
         root.put("openWithBlacklist", openWithArray)
 
-        val openWithOrderArray = JSONArray()
-        openWithCustomOrder.forEach { openWithOrderArray.put(it) }
-        root.put("openWithOrder", openWithOrderArray)
+        val openWithorderArray = JSONArray()
+        openWithCustomorder.forEach { openWithorderArray.put(it) }
+        root.put("openWithorder", openWithorderArray)
 
         return root.toString()
     }
@@ -56,9 +56,9 @@ data class RuleConfig(
             val order = root.optJSONArray("order") ?: JSONArray()
             val blockAiWriting = root.optBoolean("blockAiWriting", true)
             val shareBlacklist = root.optJSONArray("shareBlacklist") ?: JSONArray()
-            val shareOrder = root.optJSONArray("shareOrder") ?: JSONArray()
+            val shareorder = root.optJSONArray("shareorder") ?: JSONArray()
             val openWithBlacklist = root.optJSONArray("openWithBlacklist") ?: JSONArray()
-            val openWithOrder = root.optJSONArray("openWithOrder") ?: JSONArray()
+            val openWithorder = root.optJSONArray("openWithorder") ?: JSONArray()
 
             fun strings(array: JSONArray): List<String> = (0 until array.length()).mapNotNull {
                 val value = array.opt(it)
@@ -67,12 +67,12 @@ data class RuleConfig(
 
             RuleConfig(
                 blacklist = strings(blacklist).toSet(),
-                customOrder = strings(order),
+                customorder = strings(order),
                 blockAiWriting = blockAiWriting,
                 shareBlacklist = strings(shareBlacklist).toSet(),
-                shareCustomOrder = strings(shareOrder),
+                shareCustomorder = strings(shareorder),
                 openWithBlacklist = strings(openWithBlacklist).toSet(),
-                openWithCustomOrder = strings(openWithOrder)
+                openWithCustomorder = strings(openWithorder)
             )
         }.getOrNull()
 
@@ -83,9 +83,9 @@ data class RuleConfig(
                 val blacklistSet = HashSet<String>()
                 val orderList = ArrayList<String>()
                 val shareBlacklistSet = HashSet<String>()
-                val shareOrderList = ArrayList<String>()
+                val shareorderList = ArrayList<String>()
                 val openWithBlacklistSet = HashSet<String>()
-                val openWithOrderList = ArrayList<String>()
+                val openWithorderList = ArrayList<String>()
 
                 root.optJSONArray("blacklist")?.let { arr ->
                     for (i in 0 until arr.length()) blacklistSet.add(arr.getString(i))
@@ -101,26 +101,26 @@ data class RuleConfig(
                     for (i in 0 until arr.length()) shareBlacklistSet.add(arr.getString(i))
                 }
 
-                root.optJSONArray("shareOrder")?.let { arr ->
-                    for (i in 0 until arr.length()) shareOrderList.add(arr.getString(i))
+                root.optJSONArray("shareorder")?.let { arr ->
+                    for (i in 0 until arr.length()) shareorderList.add(arr.getString(i))
                 }
 
                 root.optJSONArray("openWithBlacklist")?.let { arr ->
                     for (i in 0 until arr.length()) openWithBlacklistSet.add(arr.getString(i))
                 }
 
-                root.optJSONArray("openWithOrder")?.let { arr ->
-                    for (i in 0 until arr.length()) openWithOrderList.add(arr.getString(i))
+                root.optJSONArray("openWithorder")?.let { arr ->
+                    for (i in 0 until arr.length()) openWithorderList.add(arr.getString(i))
                 }
 
                 RuleConfig(
                     blacklist = blacklistSet,
-                    customOrder = orderList,
+                    customorder = orderList,
                     blockAiWriting = blockAiWriting,
                     shareBlacklist = shareBlacklistSet,
-                    shareCustomOrder = shareOrderList,
+                    shareCustomorder = shareorderList,
                     openWithBlacklist = openWithBlacklistSet,
-                    openWithCustomOrder = openWithOrderList
+                    openWithCustomorder = openWithorderList
                 )
             }.getOrDefault(RuleConfig())
         }

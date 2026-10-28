@@ -21,8 +21,8 @@ internal fun Context.dp(value: Int): Int = (value * resources.displayMetrics.den
 internal fun View.dp(value: Int): Int = context.dp(value)
 
 /**
- * Unifiedof/thebottomPullMenu：圆角panel + 若干text项，right对齐锚点。
- * firstpageandThree管理pageShared，避免每page面各维护一份 XML。
+ * Unifiedof/thebottomPullMenu： panel +  text ，right 。
+ * firstpageandThree pageShared， page  XML。
  */
 internal fun Activity.showPopupMenu(anchor: View, items: List<Pair<String, () -> Unit>>) {
     val content = LinearLayout(this).apply {
@@ -64,7 +64,7 @@ internal data class HelpFeatureItem(
     val subtitle: String
 )
 
-/** 底部圆角Instructionspanel（图文card式）。 */
+/**  Instructionspanel（ card ）。 */
 internal fun Activity.showFeatureHelpSheet(title: String, items: List<HelpFeatureItem>) {
     val dialogView = layoutInflater.inflate(R.layout.dialog_feature_help, null)
     val dialog = AlertDialog.Builder(this).setView(dialogView).create()

@@ -379,7 +379,7 @@ class IntroActivity : AppCompatActivity() {
                             drawer.layoutParams = lpDrawer
                             drawer.clipBounds = null
                         }
-                        // 5. SmoothReset抽屉闭合，准备bottom一轮循环 (82% - 100%)
+                        // 5. Smooth reset: close drawer, prepare for next cycle (82% - 100%)
                         else -> {
                             val p = (f - 0.82f) / 0.18f
                             val currentWidth = (fullPasteWidth * (1f - p)).toInt()
@@ -404,7 +404,7 @@ class IntroActivity : AppCompatActivity() {
         }
     }
 
-    // STEP 2: DeepSeek 高亮top浮Pin -> 其余row同步bottom沉补位（无任何text重叠） -> Shareleft滑Hide（循环 3.8s）
+    // STEP 2: Highlight pinned items at top, others shift down (no text overlap) -> Shareleft Hide（Cycle 3.8s）
     private fun setupPage2Animation(view: View) {
         val card = view.findViewById<View>(R.id.cardPage2Menu)
         val paste = view.findViewById<TextView>(R.id.tvPage2Paste)
@@ -427,7 +427,7 @@ class IntroActivity : AppCompatActivity() {
                 addUpdateListener { anim ->
                     val f = anim.animatedFraction
                     when {
-                        // 1. Menu弹性浮现 (0-8%)
+                        // 1. Menu  (0-8%)
                         f <= 0.08f -> {
                             val p = easeOut(f / 0.08f)
                             card.alpha = p
@@ -439,14 +439,14 @@ class IntroActivity : AppCompatActivity() {
                                 highlighted = false
                             }
                         }
-                        // 2. 初始order停留 (8-26%)
+                        // 2.  orderStay (8-26%)
                         f <= 0.26f -> {
                             card.alpha = 1f
                             card.scaleX = 1f
                             card.scaleY = 1f
                             resetPage2Rows(paste, share, translate, baidu, deepSeek)
                         }
-                        // 3. DeepSeek 高亮top浮至顶部，同when其余 4 row同步bottom沉 1 格腾出空位，绝无text重叠！(26-48%)
+                        // 3. DeepSeek  top Top， when  4 row bottom  1  ， nonetext ！(26-48%)
                         f <= 0.48f -> {
                             if (!highlighted) {
                                 deepSeek.setBackgroundResource(R.drawable.bg_menu_item_highlight)
@@ -464,7 +464,7 @@ class IntroActivity : AppCompatActivity() {
                             translate.translationY = rowH * p
                             baidu.translationY = rowH * p
                         }
-                        // 4. 落定：DeepSeek 归位，高亮渐变褪去 (48-56%)
+                        // 4.  ：DeepSeek  ，  (48-56%)
                         f <= 0.56f -> {
                             val p = easeOut((f - 0.48f) / 0.08f)
                             deepSeek.translationY = -4f * rowH
@@ -479,7 +479,7 @@ class IntroActivity : AppCompatActivity() {
                             translate.translationY = rowH.toFloat()
                             baidu.translationY = rowH.toFloat()
                         }
-                        // 5. Shareleft滑Hide，bottom方rowtop移填补空位 (56-72%)
+                        // 5. Shareleft Hide，bottom rowtop  (56-72%)
                         f <= 0.72f -> {
                             if (highlighted) {
                                 deepSeek.background = null
@@ -495,7 +495,7 @@ class IntroActivity : AppCompatActivity() {
                             translate.translationY = rowH * (1f - p)
                             baidu.translationY = rowH * (1f - p)
                         }
-                        // 6. most终形态停留 (72-90%)
+                        // 6. most Stay (72-90%)
                         f <= 0.90f -> {
                             if (highlighted) {
                                 deepSeek.background = null
@@ -510,7 +510,7 @@ class IntroActivity : AppCompatActivity() {
                             translate.translationY = 0f
                             baidu.translationY = 0f
                         }
-                        // 7. 整体淡出 (90-97%)
+                        // 7.   (90-97%)
                         f <= 0.97f -> {
                             if (highlighted) {
                                 deepSeek.background = null
@@ -518,7 +518,7 @@ class IntroActivity : AppCompatActivity() {
                             }
                             card.alpha = 1f - (f - 0.90f) / 0.07f
                         }
-                        // 8. 不can见复位 (97-100%)
+                        // 8.  can  (97-100%)
                         else -> {
                             card.alpha = 0f
                             resetPage2Rows(paste, share, translate, baidu, deepSeek)

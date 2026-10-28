@@ -125,7 +125,7 @@
         android:gravity="center"
         android:lineSpacingExtra="4dp"
         android:paddingHorizontal="16dp"
-        android:text="frequentFeaturelong pressPin，rareOptionleft滑hide"
+        android:text="frequentFeaturelong pressPin，rareOptionleft hide"
         android:textColor="@color/hyper_desc_text"
         android:textSize="14sp" />
 

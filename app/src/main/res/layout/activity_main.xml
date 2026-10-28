@@ -73,7 +73,7 @@
                 android:textSize="13sp" />
         </LinearLayout>
 
-        <!-- ThreeModule：One cardpanel，发丝线分隔 -->
+        <!-- Three modules: one card panel with divider -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="系统Share"
+                        android:text="SystemShare"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="17sp" />
 
@@ -250,7 +250,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="fileandlinkof/theresolve弹窗"
+                        android:text="fileandlinkof/theresolveDialog"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>

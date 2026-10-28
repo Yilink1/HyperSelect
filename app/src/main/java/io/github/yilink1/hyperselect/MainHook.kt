@@ -181,7 +181,7 @@ class MainHook : XposedModule() {
                 val ai = context.packageManager.getApplicationInfo("com.android.intentresolver", 0)
                 resolverAppId = ai.uid % 100000
             }
-            if (DEBUG) log(Log.INFO, TAG, "Rules updated async: blacklist=${config.blacklist.size}, order=${config.customOrder.size}, share=${config.shareBlacklist.size}, openWith=${config.openWithBlacklist.size}")
+            if (DEBUG) log(Log.INFO, TAG, "Rules updated async: blacklist=${config.blacklist.size}, order=${config.customorder.size}, share=${config.shareBlacklist.size}, openWith=${config.openWithBlacklist.size}")
             true
         } catch (t: Throwable) {
             if (DEBUG) log(Log.WARN, TAG, "Failed to refresh rules async: ${t.message}")
@@ -347,7 +347,7 @@ class MainHook : XposedModule() {
 
             val rules = cachedRules ?: RuleConfig()
             val blacklist = rules.blacklist
-            val customOrder = rules.customOrder
+            val customorder = rules.customorder
 
             // Filter out items in blacklist
             val filtered = originalList.filterNot { resolveInfo ->
@@ -358,14 +358,14 @@ class MainHook : XposedModule() {
             }
 
             // Reorder remaining items if custom order is defined
-            val resultList = if (customOrder.isNotEmpty()) {
+            val resultList = if (customorder.isNotEmpty()) {
                 filtered.sortedWith(compareBy { resolveInfo ->
                     val activityInfo = resolveInfo.activityInfo
                     val pkg = activityInfo?.packageName ?: ""
                     val component = if (activityInfo != null) ComponentName(pkg, activityInfo.name).flattenToShortString() else ""
 
-                    val orderIndex = customOrder.indexOf(component).takeIf { it >= 0 }
-                        ?: customOrder.indexOf(pkg).takeIf { it >= 0 }
+                    val orderIndex = customorder.indexOf(component).takeIf { it >= 0 }
+                        ?: customorder.indexOf(pkg).takeIf { it >= 0 }
                         ?: Int.MAX_VALUE
                     orderIndex
                 })
@@ -398,17 +398,17 @@ class MainHook : XposedModule() {
                 else -> emptySet()
             }
 
-            val customOrder = when {
-                action == Intent.ACTION_SEND || action == Intent.ACTION_SEND_MULTIPLE -> rules.shareCustomOrder
-                action == Intent.ACTION_VIEW -> rules.openWithCustomOrder
+            val customorder = when {
+                action == Intent.ACTION_SEND || action == Intent.ACTION_SEND_MULTIPLE -> rules.shareCustomorder
+                action == Intent.ACTION_VIEW -> rules.openWithCustomorder
                 else -> emptyList()
             }
 
-            val queryMsg = "Resolver query: action=$action, items=${originalList.size}, blacklist=${blacklist.size}, order=${customOrder.size}"
+            val queryMsg = "Resolver query: action=$action, items=${originalList.size}, blacklist=${blacklist.size}, order=${customorder.size}"
             Log.i(TAG, queryMsg)
             if (DEBUG) log(Log.INFO, TAG, queryMsg)
 
-            if (blacklist.isEmpty() && customOrder.isEmpty()) return rawSlice
+            if (blacklist.isEmpty() && customorder.isEmpty()) return rawSlice
 
             val filtered = if (blacklist.isNotEmpty()) {
                 originalList.filterNot { resolveInfo ->
@@ -427,14 +427,14 @@ class MainHook : XposedModule() {
                 if (DEBUG) log(Log.INFO, TAG, filteredMsg)
             }
 
-            val resultList = if (customOrder.isNotEmpty()) {
+            val resultList = if (customorder.isNotEmpty()) {
                 filtered.sortedWith(compareBy { resolveInfo ->
                     val activityInfo = resolveInfo.activityInfo
                     val pkg = activityInfo?.packageName ?: ""
                     val component = if (activityInfo != null) ComponentName(pkg, activityInfo.name).flattenToShortString() else ""
 
-                    val orderIndex = customOrder.indexOf(component).takeIf { it >= 0 }
-                        ?: customOrder.indexOf(pkg).takeIf { it >= 0 }
+                    val orderIndex = customorder.indexOf(component).takeIf { it >= 0 }
+                        ?: customorder.indexOf(pkg).takeIf { it >= 0 }
                         ?: Int.MAX_VALUE
                     orderIndex
                 })
@@ -674,15 +674,15 @@ class MainHook : XposedModule() {
             }
         }
 
-        val customOrder = when {
-            actionHint == Intent.ACTION_VIEW -> config.openWithCustomOrder
-            else -> config.shareCustomOrder
+        val customorder = when {
+            actionHint == Intent.ACTION_VIEW -> config.openWithCustomorder
+            else -> config.shareCustomorder
         }
 
-        if (customOrder.isNotEmpty()) {
-            val orderMap = HashMap<String, Int>(customOrder.size)
-            for (i in customOrder.indices) {
-                orderMap[customOrder[i]] = i
+        if (customorder.isNotEmpty()) {
+            val orderMap = HashMap<String, Int>(customorder.size)
+            for (i in customorder.indices) {
+                orderMap[customorder[i]] = i
             }
 
             val rankMap = java.util.IdentityHashMap<Any, Int>(targets.size)
@@ -696,7 +696,7 @@ class MainHook : XposedModule() {
 
             targets.sortWith(compareBy { rankMap[it] ?: Int.MAX_VALUE })
             val top3 = targets.take(3).mapNotNull { extractTargetInfo(it)?.first }
-            Log.i(TAG, "IntentResolver sort applied [$sourceTag]: action=$actionHint, customOrderSize=${customOrder.size}, targetsCount=${targets.size}, top3=$top3")
+            Log.i(TAG, "IntentResolver sort applied [$sourceTag]: action=$actionHint, customorderSize=${customorder.size}, targetsCount=${targets.size}, top3=$top3")
             if (DEBUG) log(Log.INFO, TAG, "IntentResolver sort applied [$sourceTag]: action=$actionHint, targetsCount=${targets.size}")
         }
     }
