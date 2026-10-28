@@ -46,3 +46,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation("androidx.test:runner:1.7.0")
 }
+
+// Ensure version is set correctly for release
+android {
+    defaultConfig {
+        versionCode = 2
+        versionName = "1.0.1"
+    }
+}
