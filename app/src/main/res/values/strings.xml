@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">HyperSelect</string>
-    <string name="xposed_description">去除澎湃 AI 写作气泡，自由管理与净化文本选择、分享及打开方式</string>
+    <string name="xposed_description">Remove HyperOS AI Writing bubble and freely manage/purify text selection, share, and Open with menus</string>
 </resources>

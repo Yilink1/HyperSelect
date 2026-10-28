@@ -16,14 +16,14 @@
     <color name="hyper_warning">#FF9500</color>
     <color name="hyper_intro_btn_bg">#3482FF</color>
 
-    <!-- 管理页专用中性色 -->
+    <!-- Neutral colors for management page -->
     <color name="hyper_segment_track">#E9EBEF</color>
     <color name="hyper_segment_thumb">#FFFFFF</color>
     <color name="hyper_switch_off">#D5D8DE</color>
     <color name="hyper_press">#0A000000</color>
     <color name="hyper_undo_action">#8DB8FF</color>
 
-    <!-- 胶囊动作按键 -->
+    <!-- Capsule action button -->
     <color name="hyper_pill_blue_bg">#EBF2FF</color>
     <color name="hyper_pill_blue_text">#246BE5</color>
     <color name="hyper_pill_grey_bg">#EEF0F4</color>

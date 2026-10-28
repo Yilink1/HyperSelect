@@ -23,7 +23,7 @@
             android:textColor="@color/hyper_text_primary"
             android:textSize="13.5sp"
             android:textStyle="bold"
-            tools:text="置顶应用" />
+            tools:text="Pinapp" />
 
         <TextView
             android:id="@+id/tvHeaderCount"
@@ -42,6 +42,6 @@
         android:textColor="@color/hyper_text_secondary"
         android:textSize="11.5sp"
         android:visibility="gone"
-        tools:text="始终固定在最前排，拖动手柄可调整顺序"
+        tools:text="Always pinned atmostbeforeOrder，drag handlecan调整Order"
         tools:visibility="visible" />
 </LinearLayout>

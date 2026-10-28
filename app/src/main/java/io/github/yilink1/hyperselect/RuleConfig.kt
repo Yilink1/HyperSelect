@@ -15,7 +15,7 @@ data class RuleConfig(
     fun toJson(): String {
         val root = JSONObject()
 
-        // 1. 文本选择
+        // 1. Text Selection
         val blacklistArray = JSONArray()
         blacklist.forEach { blacklistArray.put(it) }
         root.put("blacklist", blacklistArray)
@@ -26,7 +26,7 @@ data class RuleConfig(
 
         root.put("blockAiWriting", blockAiWriting)
 
-        // 2. 系统分享
+        // 2. System Share
         val shareArray = JSONArray()
         shareBlacklist.forEach { shareArray.put(it) }
         root.put("shareBlacklist", shareArray)
@@ -35,7 +35,7 @@ data class RuleConfig(
         shareCustomOrder.forEach { shareOrderArray.put(it) }
         root.put("shareOrder", shareOrderArray)
 
-        // 3. 打开方式
+        // 3. Open with
         val openWithArray = JSONArray()
         openWithBlacklist.forEach { openWithArray.put(it) }
         root.put("openWithBlacklist", openWithArray)

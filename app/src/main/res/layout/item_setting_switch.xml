@@ -21,7 +21,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="屏蔽 AI 写作气泡"
+            android:text="Block AI writing bubble"
             android:textColor="@color/hyper_text_primary"
             android:textSize="16sp" />
 
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="长按文本时不再弹出便签 AI 圆圈"
+            android:text="long pressTextwhenNo more sticky notes AI 圆圈"
             android:textColor="@color/hyper_text_secondary"
             android:textSize="12sp" />
     </LinearLayout>

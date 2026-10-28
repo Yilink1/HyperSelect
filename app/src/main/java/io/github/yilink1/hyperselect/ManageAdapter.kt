@@ -28,8 +28,8 @@ sealed class ManageRow {
 }
 
 /**
- * 物理触感卡片 + 智能搜索交互列表适配器。
- * 配合顶部双导航分栏，清晰承载「置顶固定」、「常规流动」与「收纳隐藏」列表。
+ * Physically tactile card + Smart search interaction list adapter。
+ * With top dual-nav tabs, clearly shows 'Pinned', 'Flowing', and 'Hidden' lists.
  */
 class ManageAdapter(
     private val onRestore: (item: TextActionItem) -> Unit,
@@ -115,7 +115,7 @@ class ManageAdapter(
 
         val itemHolder = holder as? ItemViewHolder ?: return
 
-        // 重置动画位移、缩放及层级，防止复用残留
+        // ResetAnimation offset、Scaleand层级，防止复用残留
         itemHolder.itemView.animate().cancel()
         itemHolder.itemView.translationX = 0f
         itemHolder.itemView.translationZ = 0f
@@ -224,10 +224,10 @@ class ManageAdapter(
                     itemHolder.btnSearchRestore.visibility = View.GONE
 
                     if (row.isPinned) {
-                        itemHolder.btnSearchPin.text = "取消置顶"
+                        itemHolder.btnSearchPin.text = "CancelPin"
                         itemHolder.btnSearchPin.setOnClickListener { onUnpin(item) }
                     } else {
-                        itemHolder.btnSearchPin.text = "置顶"
+                        itemHolder.btnSearchPin.text = "Pin"
                         itemHolder.btnSearchPin.setOnClickListener { onPin(item) }
                     }
 

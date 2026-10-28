@@ -22,7 +22,7 @@
     <color name="hyper_press">#14FFFFFF</color>
     <color name="hyper_undo_action">#3482FF</color>
 
-    <!-- 胶囊动作按键 -->
+    <!-- Capsule action button -->
     <color name="hyper_pill_blue_bg">#182B48</color>
     <color name="hyper_pill_blue_text">#6EA4FE</color>
     <color name="hyper_pill_grey_bg">#2C2C2E</color>

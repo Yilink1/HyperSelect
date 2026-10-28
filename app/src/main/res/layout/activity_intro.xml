@@ -74,7 +74,7 @@
             android:background="@drawable/bg_intro_btn"
             android:elevation="0dp"
             android:stateListAnimator="@null"
-            android:text="继续"
+            android:text="Continue"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold" />

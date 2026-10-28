@@ -59,7 +59,7 @@
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="14dp"
-                        android:text="粘贴"
+                        android:text="Paste"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -69,7 +69,7 @@
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="14dp"
-                        android:text="百度地图"
+                        android:text="Baidu Maps"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -79,7 +79,7 @@
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="14dp"
-                        android:text="翻译"
+                        android:text="Translate"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -89,7 +89,7 @@
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="14dp"
-                        android:text="百度翻译"
+                        android:text="Baidu Translate"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -99,7 +99,7 @@
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="14dp"
-                        android:text="问问 DeepSeek"
+                        android:text="Ask DeepSeek"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -113,7 +113,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="排序与收纳"
+        android:text="Sortandhide"
         android:textColor="@color/hyper_text_primary"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -125,7 +125,7 @@
         android:gravity="center"
         android:lineSpacingExtra="4dp"
         android:paddingHorizontal="16dp"
-        android:text="常用功能长按置顶，冷门选项左滑收纳"
+        android:text="frequentFeaturelong pressPin，rareOptionleft滑hide"
         android:textColor="@color/hyper_desc_text"
         android:textSize="14sp" />
 

@@ -48,13 +48,13 @@ class MainActivity : AppCompatActivity() {
             showPopupMenu(
                 anchor,
                 listOf(
-                    Pair("功能演示", { startActivity(Intent(this, IntroActivity::class.java)) }),
-                    Pair("关于 HyperSelect", { startActivity(Intent(this, AboutActivity::class.java)) })
+                    Pair("Feature Demo", { startActivity(Intent(this, IntroActivity::class.java)) }),
+                    Pair("About HyperSelect", { startActivity(Intent(this, AboutActivity::class.java)) })
                 )
             )
         }
 
-        // 首次安装显示教学引导页
+        // Show tutorial on first install
         val sp = getSharedPreferences("hyper_select_prefs", MODE_PRIVATE)
         if (!sp.getBoolean("intro_shown", false)) {
             startActivity(Intent(this, IntroActivity::class.java))
@@ -69,10 +69,10 @@ class MainActivity : AppCompatActivity() {
     private fun updateStatusAndCounts() {
         if (RuleStore.isModuleActiveSinceBoot(this)) {
             dotStatus.setBackgroundResource(R.drawable.bg_status_circle_ok)
-            tvStatusTitle.text = "模块已生效"
+            tvStatusTitle.text = "Module is active"
         } else {
             dotStatus.setBackgroundResource(R.drawable.bg_status_circle_fail)
-            tvStatusTitle.text = "模块未生效 · 请在 LSPosed 中勾选并重启"
+            tvStatusTitle.text = "Module not active · Enable in LSPosed and reboot"
         }
 
         val config = RuleStore.load(this)
@@ -81,5 +81,5 @@ class MainActivity : AppCompatActivity() {
         tvOpenWithActionBadge.text = hiddenLabel(config.openWithBlacklist.size)
     }
 
-    private fun hiddenLabel(count: Int): String = if (count > 0) "隐藏 $count" else "—"
+    private fun hiddenLabel(count: Int): String = if (count > 0) "Hidden $count" else "—"
 }

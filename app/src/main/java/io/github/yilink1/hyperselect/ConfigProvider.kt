@@ -25,7 +25,7 @@ class ConfigProvider : ContentProvider() {
         val ctx = context ?: return null
         return when (method) {
             METHOD_GET_RULES -> {
-                // 仅记录来自 system_server 的读取，作为“模块本次开机已生效”的签收凭证
+                // Only log reads from system_server as proof the module is active this boot
                 if (Binder.getCallingUid() == Process.SYSTEM_UID) {
                     RuleStore.saveSystemReadReceipt(ctx)
                 }

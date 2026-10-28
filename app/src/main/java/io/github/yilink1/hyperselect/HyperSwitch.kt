@@ -14,15 +14,15 @@ import android.view.animation.DecelerateInterpolator
 import androidx.core.content.ContextCompat
 
 /**
- * 自绘开关：实心蓝轨道 + 白色滑块，切换带 200ms 平滑动效，关闭态为中性灰轨道。
- * 不依赖系统各版本 ROM 碎片化的 SwitchCompat XML 机制，各版本 HyperOS 表现坚如磐石。
+ * Custom switch：Solid blue track + white slider，toggle with 200ms smooth swipe effect，closed state uses inactive gray track。
+ * Does not rely on fragmented SwitchCompat XML across ROM versions，works consistently across HyperOS versions。
  */
 class HyperSwitch @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : View(context, attrs) {
 
-    /** 用户点按切换后回调（代码里调用 setChecked 不会触发）。 */
+    /** Callback after user tap toggle（Calling setChecked in code does not trigger）。 */
     var onToggled: ((Boolean) -> Unit)? = null
 
     var checked: Boolean = false

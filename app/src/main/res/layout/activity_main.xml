@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:paddingBottom="32dp">
 
-        <!-- 标题行 -->
+        <!-- Title row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,13 +38,13 @@
                 android:layout_width="44dp"
                 android:layout_height="44dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="更多"
+                android:contentDescription="More"
                 android:padding="10dp"
                 android:src="@drawable/ic_more_vert"
                 app:tint="@color/hyper_text_primary" />
         </LinearLayout>
 
-        <!-- 状态：一行，点按查看演示 -->
+        <!-- status: one row, tap to view demo -->
         <LinearLayout
             android:id="@+id/cardModuleStatus"
             android:layout_width="wrap_content"
@@ -73,7 +73,7 @@
                 android:textSize="13sp" />
         </LinearLayout>
 
-        <!-- 三个模块：一张面板，发丝线分隔 -->
+        <!-- ThreeModule：One cardpanel，发丝线分隔 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="文本选择"
+                        android:text="Text Selection"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="17sp" />
 
@@ -120,7 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="长按文字的菜单"
+                        android:text="long presstextof/theMenu"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -177,7 +177,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="系统分享"
+                        android:text="系统Share"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="17sp" />
 
@@ -185,7 +185,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="分享面板的应用列表"
+                        android:text="Sharepanelof/theapplist"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -242,7 +242,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="打开方式"
+                        android:text="Open With"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="17sp" />
 
@@ -250,7 +250,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="文件与链接的解析弹窗"
+                        android:text="fileandlinkof/theresolve弹窗"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>

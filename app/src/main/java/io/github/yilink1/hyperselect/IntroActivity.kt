@@ -39,8 +39,8 @@ class IntroActivity : AppCompatActivity() {
     private var pollAttempts = 0
     private val statusHandler = Handler(Looper.getMainLooper())
 
-    // 轮询：notifyChange 唤醒 system_server 里的 ContentObserver 重读规则，
-    // 只要 Hook 活着就会刷新签收凭证；模块未激活/未重启则永远读不到。
+    // Polling: notifyChange wakes ContentObserver in system_server to reread rules, 
+    // as long as hook is alive it refreshes receipt; if Module not active/rebooted it never reads.
     private val pollRunnable = object : Runnable {
         override fun run() {
             if (moduleStatus == ModuleStatus.ACTIVE) return
@@ -64,7 +64,7 @@ class IntroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
 
-        // 初始直接判断开机后模块是否生效，生效则 0ms 呈现对勾，无需假装检测
+        // Directly check if Module is active on boot; if yes show checkmark immediately without fake detection
         if (RuleStore.isModuleActiveSinceBoot(this)) {
             moduleStatus = ModuleStatus.ACTIVE
         }
@@ -101,7 +101,7 @@ class IntroActivity : AppCompatActivity() {
                     if (moduleStatus == ModuleStatus.ACTIVE) {
                         finishIntro()
                     } else {
-                        // 手动重新检测
+                        // Manual re-detect
                         pollAttempts = 0
                         setModuleStatus(ModuleStatus.CHECKING)
                         startPolling()
@@ -114,7 +114,7 @@ class IntroActivity : AppCompatActivity() {
         updateActionBtnText(0)
     }
 
-    // 动态弹性指示器：静止时为精致 6.5dp 圆点，滑动时拉伸为纯平平直面条，杜绝 scaleX 导致的中间鼓包变椭圆
+    // Dynamic elastic indicator: stationary 6.5dp dot, stretched to flat bar on swipe, avoids scaleX causing bulging/ellipse
     private fun updateIndicatorScroll(position: Int, positionOffset: Float) {
         val density = resources.displayMetrics.density
         val baseSize = (6.5f * density).toInt()
@@ -138,13 +138,13 @@ class IntroActivity : AppCompatActivity() {
 
     private fun updateActionBtnText(position: Int) {
         btnAction.text = when {
-            position < 2 -> "继续"
-            moduleStatus == ModuleStatus.ACTIVE -> "开启纯净体验"
-            else -> "重新检测"
+            position < 2 -> "Continue"
+            moduleStatus == ModuleStatus.ACTIVE -> "Start clean experience"
+            else -> "Re-detect"
         }
     }
 
-    // ---------- 模块自检 ----------
+    // ---------- Module self-check ----------
 
     private fun startPolling() {
         stopPolling()
@@ -191,8 +191,8 @@ class IntroActivity : AppCompatActivity() {
             ModuleStatus.CHECKING -> {
                 icon.text = "…"
                 icon.setBackgroundResource(R.drawable.bg_status_circle_checking)
-                title.text = "正在检测模块状态"
-                desc.text = "正在与系统框架握手，请稍候…"
+                title.text = "Checking module status"
+                desc.text = "Handshaking with system framework, please wait..."
                 startPulse(icon)
             }
             ModuleStatus.INACTIVE -> {
@@ -200,16 +200,16 @@ class IntroActivity : AppCompatActivity() {
                 icon.alpha = 1f
                 icon.text = "!"
                 icon.setBackgroundResource(R.drawable.bg_status_circle_fail)
-                title.text = "模块未生效"
-                desc.text = "请按以下步骤操作：\n\n1. 打开 LSPosed 管理器 → 模块 → 启用 HyperSelect\n2. 重启手机（模块挂载于系统框架，必须重启才会生效）\n3. 重启后回到本页，将自动完成检测"
+                title.text = "Module not active"
+                desc.text = "Follow these steps:\n\n1. Open LSPosed Manager → Modules → Enable HyperSelect\n2. Reboot your phone (the module hooks the system framework, so a reboot is required)\n3. After rebooting, return to this page to auto-detect"
             }
             ModuleStatus.ACTIVE -> {
                 stopPulse()
                 icon.alpha = 1f
                 icon.text = "✓"
                 icon.setBackgroundResource(R.drawable.bg_status_circle_ok)
-                title.text = "模块已生效"
-                desc.text = "已准备就绪，所有设置即时生效"
+                title.text = "Module is active"
+                desc.text = "Ready, all Settings take effect immediately"
             }
         }
     }
@@ -272,14 +272,14 @@ class IntroActivity : AppCompatActivity() {
         }
     }
 
-    // ---------- 动画工具 ----------
+    // ---------- Animation utils ----------
 
     private fun easeOut(p: Float): Float {
         val q = 1f - p
         return 1f - q * q * q
     }
 
-    // STEP 1: AI 写作图标收起 -> 【粘贴】如抽屉般顺滑拉出（循环 2.8s 敏捷节奏）
+    // STEP 1: AI Writing icon collapse -> Paste slides out like drawer (2.8s loop)
     private fun setupPage1Animation(view: View) {
         val ivAiIcon = view.findViewById<ImageView>(R.id.ivPage1AiIcon) ?: return
         val drawer = view.findViewById<FrameLayout>(R.id.drawerPage1Paste) ?: return
@@ -305,7 +305,7 @@ class IntroActivity : AppCompatActivity() {
             val fullPasteWidth = tvPaste.measuredWidth
             val clipH = (48f * density).toInt()
 
-            // 锁定 tvPaste 为完整物理宽度，彻底防止 Android 文本引擎因宽度不足丢弃字符产生空白！
+            // Lock tvPaste to full physical width to prevent Android text engine from dropping chars
             tvPaste.layoutParams = FrameLayout.LayoutParams(fullPasteWidth, ViewGroup.LayoutParams.MATCH_PARENT)
             tvPaste.translationX = 0f
 
@@ -316,7 +316,7 @@ class IntroActivity : AppCompatActivity() {
                 addUpdateListener { anim ->
                     val f = anim.animatedFraction
                     when {
-                        // 1. 初始状态：AI 图标常驻，抽屉完全闭合 (0% - 20%)
+                        // 1. Initial state: AI icon shown, drawer fully closed (0% - 20%)
                         f <= 0.20f -> {
                             ivAiIcon.scaleX = 1f
                             ivAiIcon.scaleY = 1f
@@ -332,7 +332,7 @@ class IntroActivity : AppCompatActivity() {
                             drawer.layoutParams = lpDrawer
                             drawer.clipBounds = Rect(0, 0, 0, clipH)
                         }
-                        // 2. AI 图标微弹旋转 (20% - 30%)
+                        // 2. AI icon subtle bounce/rotate (20% - 30%)
                         f <= 0.30f -> {
                             val p = (f - 0.20f) / 0.10f
                             ivAiIcon.scaleX = 1f + 0.18f * p
@@ -345,7 +345,7 @@ class IntroActivity : AppCompatActivity() {
                             drawer.layoutParams = lpDrawer
                             drawer.clipBounds = Rect(0, 0, 0, clipH)
                         }
-                        // 3. AI 图标缩小消退，抽屉平滑拉开露出文字（物理笔画从缝隙顺滑现身，绝无空白过渡）(30% - 50%)
+                        // 3. AI icon shrinks/fades, drawer opens to reveal text (smooth stroke animation)(30% - 50%)
                         f <= 0.50f -> {
                             val p = (f - 0.30f) / 0.20f
                             val smoothP = 1f - (1f - p) * (1f - p) * (1f - p)
@@ -366,7 +366,7 @@ class IntroActivity : AppCompatActivity() {
                             drawer.layoutParams = lpDrawer
                             drawer.clipBounds = Rect(0, 0, currentWidth, clipH)
                         }
-                        // 4. 纯净状态保持停留 (50% - 82%)
+                        // 4. CleanStatusKeep visible (50% - 82%)
                         f <= 0.82f -> {
                             val lpIcon = ivAiIcon.layoutParams as LinearLayout.LayoutParams
                             lpIcon.width = 0
@@ -379,7 +379,7 @@ class IntroActivity : AppCompatActivity() {
                             drawer.layoutParams = lpDrawer
                             drawer.clipBounds = null
                         }
-                        // 5. 平滑重置抽屉闭合，准备下一轮循环 (82% - 100%)
+                        // 5. SmoothReset抽屉闭合，准备bottom一轮循环 (82% - 100%)
                         else -> {
                             val p = (f - 0.82f) / 0.18f
                             val currentWidth = (fullPasteWidth * (1f - p)).toInt()
@@ -404,7 +404,7 @@ class IntroActivity : AppCompatActivity() {
         }
     }
 
-    // STEP 2: DeepSeek 高亮上浮置顶 -> 其余行同步下沉补位（无任何文字重叠） -> 分享左滑隐藏（循环 3.8s）
+    // STEP 2: DeepSeek 高亮top浮Pin -> 其余row同步bottom沉补位（无任何text重叠） -> Shareleft滑Hide（循环 3.8s）
     private fun setupPage2Animation(view: View) {
         val card = view.findViewById<View>(R.id.cardPage2Menu)
         val paste = view.findViewById<TextView>(R.id.tvPage2Paste)
@@ -427,7 +427,7 @@ class IntroActivity : AppCompatActivity() {
                 addUpdateListener { anim ->
                     val f = anim.animatedFraction
                     when {
-                        // 1. 菜单弹性浮现 (0-8%)
+                        // 1. Menu弹性浮现 (0-8%)
                         f <= 0.08f -> {
                             val p = easeOut(f / 0.08f)
                             card.alpha = p
@@ -439,14 +439,14 @@ class IntroActivity : AppCompatActivity() {
                                 highlighted = false
                             }
                         }
-                        // 2. 初始顺序停留 (8-26%)
+                        // 2. 初始order停留 (8-26%)
                         f <= 0.26f -> {
                             card.alpha = 1f
                             card.scaleX = 1f
                             card.scaleY = 1f
                             resetPage2Rows(paste, share, translate, baidu, deepSeek)
                         }
-                        // 3. DeepSeek 高亮上浮至顶部，同时其余 4 行同步下沉 1 格腾出空位，绝无文字重叠！(26-48%)
+                        // 3. DeepSeek 高亮top浮至顶部，同when其余 4 row同步bottom沉 1 格腾出空位，绝无text重叠！(26-48%)
                         f <= 0.48f -> {
                             if (!highlighted) {
                                 deepSeek.setBackgroundResource(R.drawable.bg_menu_item_highlight)
@@ -479,7 +479,7 @@ class IntroActivity : AppCompatActivity() {
                             translate.translationY = rowH.toFloat()
                             baidu.translationY = rowH.toFloat()
                         }
-                        // 5. 分享左滑隐藏，下方行上移填补空位 (56-72%)
+                        // 5. Shareleft滑Hide，bottom方rowtop移填补空位 (56-72%)
                         f <= 0.72f -> {
                             if (highlighted) {
                                 deepSeek.background = null
@@ -495,7 +495,7 @@ class IntroActivity : AppCompatActivity() {
                             translate.translationY = rowH * (1f - p)
                             baidu.translationY = rowH * (1f - p)
                         }
-                        // 6. 最终形态停留 (72-90%)
+                        // 6. most终形态停留 (72-90%)
                         f <= 0.90f -> {
                             if (highlighted) {
                                 deepSeek.background = null
@@ -518,7 +518,7 @@ class IntroActivity : AppCompatActivity() {
                             }
                             card.alpha = 1f - (f - 0.90f) / 0.07f
                         }
-                        // 8. 不可见复位 (97-100%)
+                        // 8. 不can见复位 (97-100%)
                         else -> {
                             card.alpha = 0f
                             resetPage2Rows(paste, share, translate, baidu, deepSeek)

@@ -42,14 +42,14 @@ import java.util.Locale
 import java.util.concurrent.Executors
 
 /**
- * 文本选择 / 系统分享 / 打开方式 三个管理页共用的界面与交互。
+ * Text Selection / System Share / Open with Shared UI and interactions for the three management pages。
  *
- * 交互模型（顶部双导航分栏 + 触感物理卡片 + 智能搜索动作）：
- *  - 顶部双导航分栏（「显示 N」/「隐藏 N」）：清晰呈现全局状态，一键即时切表，拒绝迷航；
- *  - 独立物理圆角卡片：显示页支持手柄拖动或长按卡片上下排序，向左滑可收纳；
- *  - 隐藏页：卡片右侧提供轻量级「+」恢复按键，点击一键恢复到显示列表；
- *  - 顶部搜索即搜即改：搜索模式下直接提供「置顶」、「收纳」或「恢复」动作胶囊；
- *  - 所有修改即时生效，所有操作均支持底部撤销。
+ * Interaction model (top dual-nav tabs + tactile cards + smart search):
+ *  - Top dual-tab bar（「Show N」/「Hide N」）：Clearly show overallStatus，一键即when切表，拒绝迷航；
+ *  - 独立物理圆角card：Showpage支持手柄拖动orlong presscardtopbottomSort，向left滑canhide；
+ *  - Hidepage：cardright侧提供轻量级「+」Restorebutton，点击一键Restore到Showlist；
+ *  - 顶部Search即搜即改：Search模式bottom直接提供「Pin」、「hide」or「Restore」动作capsule；
+ *  - 所有修改即when生效，所有操作均支持底部Undo。
  */
 abstract class ManageListActivity : AppCompatActivity() {
 
@@ -57,10 +57,10 @@ abstract class ManageListActivity : AppCompatActivity() {
     protected abstract val screenTitle: String
     protected abstract val emptyText: String
 
-    /** 没有保存过自定义顺序时，是否按名称排序（文本选择沿用系统返回顺序）。 */
+    /** 没有保存过Customorderwhen，是否按名称Sort（Text Selection沿用系统Backorder）。 */
     protected open val sortByLabelWhenNoOrder: Boolean = true
 
-    /** 在后台线程调用。 */
+    /** 在after台线程调用。 */
     protected abstract fun queryTargets(pm: PackageManager): List<ResolveInfo>
     protected abstract fun blacklistOf(config: RuleConfig): Set<String>
     protected abstract fun orderOf(config: RuleConfig): List<String>
@@ -71,7 +71,7 @@ abstract class ManageListActivity : AppCompatActivity() {
     protected open fun onConfigLoaded(config: RuleConfig) {}
     protected open fun applyExtra(config: RuleConfig): RuleConfig = config
 
-    // ───────── 状态 ─────────
+    // ───────── Status ─────────
     private companion object {
         const val PREFS = "hyper_select_prefs"
         const val KEY_DRAG_HINT_DONE = "drag_hint_done"
@@ -80,7 +80,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         const val TAB_HIDDEN = 1
     }
 
-    /** 是否启用置顶固定区 + 随系统流动区分栏（系统分享与打开方式默认开启）。 */
+    /** YesNoEnablePin固定区 + By system流动区分栏（System ShareandOpen with默认Enable）。 */
     protected open val enablePinnedSection: Boolean = false
 
     private val visible = ArrayList<TextActionItem>()
@@ -127,7 +127,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         }
     }
 
-    // 左滑手势背景与提示动画绘制
+    // Swipe gesture background and hint animation drawing
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { textAlign = Paint.Align.CENTER }
     private val pillRect = RectF()
@@ -136,7 +136,7 @@ abstract class ManageListActivity : AppCompatActivity() {
     private var swipeHintAnimator: ValueAnimator? = null
     private var isHintScheduled = false
 
-    // ───────── 生命周期 ─────────
+    // ───────── Lifecycle ─────────
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage)
@@ -206,7 +206,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         executor.shutdown()
     }
 
-    // ───────── 数据加载 / 保存 ─────────
+    // ───────── Data loading / saving ─────────
     private fun load() {
         progressBar.visibility = View.VISIBLE
         tvEmpty.visibility = View.GONE
@@ -240,8 +240,8 @@ abstract class ManageListActivity : AppCompatActivity() {
             val hiddenList = ArrayList<TextActionItem>()
             for (item in all) if (item.isEnabled) shown.add(item) else hiddenList.add(item)
 
-            // 旧版迁移容错：旧版本曾将所有扫描到的应用全量写入 order。
-            // 用户置顶通常只有几个，若 order 数量异常庞大（超过 10 个且占大部分），视为旧版全量 dump，重置为 0 置顶，恢复全员随系统流动。
+            // Legacy migration fallback: older versions wrote all scanned apps to order.
+            // 用户Pin通常只有几，若 order 数量异常庞大（超过 10 且占大部分），视为old版全量 dump，Reset为 0 Pin，Restore全员By system流动。
             val isLegacyFullDump = enablePinnedSection && order.size > 10 && order.size >= (shown.size * 0.5)
             val effectiveOrder = if (isLegacyFullDump) emptyList() else order
 
@@ -293,7 +293,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         }
     }
 
-    /** 保存当前「显示 / 隐藏 / 顺序」，并通知系统服务侧立即生效。 */
+    /** 保存当before「Show / Hide / order」，并通知系统服务侧立即生效。 */
     protected fun saveRules() {
         if (!loaded) return
         val newBlacklist = HashSet<String>()
@@ -316,7 +316,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
     }
 
-    // ───────── 列表构建与刷新 ─────────
+    // ───────── List building & refresh ─────────
     private fun matches(item: TextActionItem): Boolean {
         if (query.isEmpty()) return true
         return item.label.lowercase(Locale.getDefault()).contains(query) ||
@@ -341,15 +341,15 @@ abstract class ManageListActivity : AppCompatActivity() {
             val flowingCount = visible.size - actualPinned
 
             if (actualPinned > 0) {
-                rows.add(ManageRow.Header("置顶应用", actualPinned, "始终固定在面板最前面，长按手柄可调整顺序"))
+                rows.add(ManageRow.Header("PinApp", actualPinned, "Always pinned at top, long press handle to reorder"))
                 for (i in 0 until actualPinned) {
                     rows.add(ManageRow.Pinned(visible[i]))
                 }
             }
 
             if (flowingCount > 0) {
-                val flowingHint = if (actualPinned > 0) "随系统使用习惯动态排序" else "随系统使用习惯动态排序，点击「置顶」可固定排在最前面"
-                rows.add(ManageRow.Header("常规应用", flowingCount, flowingHint))
+                val flowingHint = if (actualPinned > 0) "Sorted by system usage habits" else "Sorted by system usage habits，Tap「Pin」canpin totop"
+                rows.add(ManageRow.Header("常规 apps", flowingCount, flowingHint))
                 for (i in actualPinned until visible.size) {
                     rows.add(ManageRow.Flowing(visible[i]))
                 }
@@ -367,8 +367,8 @@ abstract class ManageListActivity : AppCompatActivity() {
     }
 
     private fun updateChrome(rows: List<ManageRow>) {
-        tvTabVisible.text = "显示 ${visible.size}"
-        tvTabHidden.text = "隐藏 ${hidden.size}"
+        tvTabVisible.text = "Show ${visible.size}"
+        tvTabHidden.text = "Hide ${hidden.size}"
         styleTab(tvTabVisible, tab == TAB_VISIBLE)
         styleTab(tvTabHidden, tab == TAB_HIDDEN)
         segment.visibility = if (searchOpen) View.GONE else View.VISIBLE
@@ -381,9 +381,9 @@ abstract class ManageListActivity : AppCompatActivity() {
         if (loaded && rows.isEmpty()) {
             tvEmpty.text = when {
                 visible.isEmpty() && hidden.isEmpty() -> emptyText
-                searchOpen -> "没有匹配的应用"
-                tab == TAB_VISIBLE -> "全部已收纳隐藏"
-                else -> "没有已收纳的应用"
+                searchOpen -> "没有匹配of/the apps"
+                tab == TAB_VISIBLE -> "全部已hideHide"
+                else -> "没有已hideof/the apps"
             }
             tvEmpty.visibility = View.VISIBLE
         } else {
@@ -406,7 +406,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         recyclerView.scrollToPosition(0)
     }
 
-    // ───────── 搜索 ─────────
+    // ───────── Search ─────────
     private fun openSearch() {
         if (searchOpen) return
         searchOpen = true
@@ -434,7 +434,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         refreshRows()
     }
 
-    // ───────── 卡片动作（置顶 / 收纳 / 恢复） ─────────
+    // ───────── card动作（Pin / hide / Restore） ─────────
     private fun snapshot(): Triple<List<TextActionItem>, List<TextActionItem>, Int> =
         Triple(visible.map { it.copy() }, hidden.map { it.copy() }, pinnedCount)
 
@@ -462,7 +462,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         }
         saveRules()
         refreshRows()
-        showUndo("已置顶「${item.label}」", before)
+        showUndo("已Pin「${item.label}」", before)
         if (!searchOpen && tab == TAB_VISIBLE) {
             recyclerView.scrollToPosition(0)
         }
@@ -478,7 +478,7 @@ abstract class ManageListActivity : AppCompatActivity() {
                 visible.add(pinnedCount, moved)
                 saveRules()
                 refreshRows()
-                showUndo("已取消置顶「${item.label}」", before)
+                showUndo("已CancelPin「${item.label}」", before)
             }
         }
     }
@@ -497,7 +497,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         hidden.add(0, item)
         saveRules()
         refreshRows()
-        showUndo("已收纳「${item.label}」", before)
+        showUndo("已hide「${item.label}」", before)
     }
 
     private fun restoreItem(item: TextActionItem) {
@@ -512,7 +512,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         }
         saveRules()
         refreshRows()
-        showUndo("已恢复「${item.label}」", before)
+        showUndo("已Restore「${item.label}」", before)
     }
 
     private fun bulk(enable: Boolean) {
@@ -522,7 +522,7 @@ abstract class ManageListActivity : AppCompatActivity() {
             else -> ArrayList(visible)
         }
         if (targets.isEmpty()) {
-            Toast.makeText(this, if (enable) "没有需要恢复的应用" else "没有需要收纳的应用", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, if (enable) "没有需要Restoreof/the apps" else "没有需要hideof/the apps", Toast.LENGTH_SHORT).show()
             return
         }
         val before = snapshot()
@@ -552,7 +552,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         }
         saveRules()
         refreshRows()
-        showUndo(if (enable) "已恢复 ${targets.size} 项" else "已收纳 ${targets.size} 项", before)
+        showUndo(if (enable) "已Restore ${targets.size} 项" else "已hide ${targets.size} 项", before)
     }
 
     private fun restore(snapshot: Triple<List<TextActionItem>, List<TextActionItem>, Int>) {
@@ -563,7 +563,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         pinnedCount = snapshot.third
         saveRules()
         refreshRows()
-        Toast.makeText(this, "已撤销操作", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "已Undo操作", Toast.LENGTH_SHORT).show()
     }
 
     private fun resetPinnedOrder() {
@@ -576,7 +576,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         }
         saveRules()
         refreshRows()
-        showUndo("已重置置顶排序", before)
+        showUndo("已ResetPinSort", before)
     }
 
     private fun clearAllPins() {
@@ -585,7 +585,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         pinnedCount = 0
         saveRules()
         refreshRows()
-        showUndo("已清空所有置顶", before)
+        showUndo("已清空所有Pin", before)
     }
 
     private fun resetOrder() {
@@ -593,10 +593,10 @@ abstract class ManageListActivity : AppCompatActivity() {
         RuleStore.save(this, withRules(config, blacklistOf(config), emptyList()))
         contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
         load()
-        Toast.makeText(this, "已恢复默认排序", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "已Restore默认Sort", Toast.LENGTH_SHORT).show()
     }
 
-    // ───────── 撤销条 ─────────
+    // ───────── Undo条 ─────────
     private fun showUndo(message: String, before: Triple<List<TextActionItem>, List<TextActionItem>, Int>) {
         undoSnapshot = before
         tvUndoMsg.text = message
@@ -621,31 +621,31 @@ abstract class ManageListActivity : AppCompatActivity() {
             .start()
     }
 
-    // ───────── 菜单 / 说明 ─────────
+    // ───────── Menu / Instructions ─────────
     private fun showMenu(anchor: View) {
         val items = ArrayList<Pair<String, () -> Unit>>()
         if (searchOpen) {
-            items.add(Pair("恢复全部搜索结果", { bulk(true) }))
-            items.add(Pair("收纳全部搜索结果", { bulk(false) }))
+            items.add(Pair("Restore全部Search结果", { bulk(true) }))
+            items.add(Pair("hide全部Search结果", { bulk(false) }))
         } else if (tab == TAB_VISIBLE) {
             if (enablePinnedSection) {
                 if (pinnedCount > 1) {
-                    items.add(Pair("重置置顶排序", { resetPinnedOrder() }))
+                    items.add(Pair("ResetPinSort", { resetPinnedOrder() }))
                 }
                 if (pinnedCount > 0) {
-                    items.add(Pair("清空所有置顶", { clearAllPins() }))
+                    items.add(Pair("清空所有Pin", { clearAllPins() }))
                 }
             } else {
-                items.add(Pair("恢复默认排序", { resetOrder() }))
+                items.add(Pair("Restore默认Sort", { resetOrder() }))
             }
-            items.add(Pair("全部收纳", { bulk(false) }))
-            items.add(Pair("全部恢复", { bulk(true) }))
+            items.add(Pair("全部hide", { bulk(false) }))
+            items.add(Pair("全部Restore", { bulk(true) }))
         } else {
-            items.add(Pair("全部恢复", { bulk(true) }))
-            items.add(Pair("全部收纳", { bulk(false) }))
+            items.add(Pair("全部Restore", { bulk(true) }))
+            items.add(Pair("全部hide", { bulk(false) }))
         }
         items.addAll(testActions())
-        items.add(Pair("使用说明", { showHelp() }))
+        items.add(Pair("Usage Instructions", { showHelp() }))
         showPopupMenu(anchor, items)
     }
 
@@ -654,48 +654,48 @@ abstract class ManageListActivity : AppCompatActivity() {
             listOf(
                 HelpFeatureItem(
                     R.drawable.ic_help_gesture,
-                    "向左滑动收纳",
-                    "加入隐藏名单，不再在系统面板中显示"
+                    "向Swipe left动hide",
+                    "加入Hide名单，不再在系统panelinShow"
                 ),
                 HelpFeatureItem(
                     R.drawable.ic_help_pin,
-                    "点击「置顶」固定",
-                    "固定于前列；未置顶应用继续随系统习惯排序"
+                    "Tap「Pin」固定",
+                    "固定于before列；未Pin appsContinueBy system习惯Sort"
                 ),
                 HelpFeatureItem(
                     R.drawable.ic_help_drag,
-                    "拖动手柄调序",
-                    "长按右侧手柄，调整已置顶应用的排列顺序"
+                    "拖动handle调序",
+                    "Long pressright侧handle，adjust已Pin appsof/theOrder列order"
                 ),
                 HelpFeatureItem(
                     R.drawable.ic_add,
-                    "恢复显示",
-                    "切换至「隐藏」分栏，点击加号即可恢复"
+                    "Restore",
+                    "切换至「Hide」分栏，Tap加号即canRestore"
                 )
             )
         } else {
             listOf(
                 HelpFeatureItem(
                     R.drawable.ic_help_gesture,
-                    "向左滑动收纳",
-                    "隐藏不需要的功能项，精简长按菜单"
+                    "向Swipe left动hide",
+                    "Hide不需要of/theFeature项，精简Long pressMenu"
                 ),
                 HelpFeatureItem(
                     R.drawable.ic_help_drag,
-                    "拖动手柄排序",
-                    "长按右侧手柄，调整菜单项的排列顺序"
+                    "拖动handleSort",
+                    "Long pressright侧handle，adjustMenu项of/theOrder列order"
                 ),
                 HelpFeatureItem(
                     R.drawable.ic_help_sync,
-                    "即时生效",
-                    "修改实时同步至系统，支持底部操作撤销"
+                    "即when生效",
+                    "修改实when同步至系统，support底部操作Undo"
                 )
             )
         }
-        showFeatureHelpSheet("$screenTitle · 操作说明", items)
+        showFeatureHelpSheet("$screenTitle · 操作Instructions", items)
     }
 
-    // ───────── 列表手势（拖拽排序 + 左滑收纳） ─────────
+    // ───────── list手势（DragSort + left滑hide） ─────────
     private fun setupList() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ManageListActivity)
@@ -708,7 +708,7 @@ abstract class ManageListActivity : AppCompatActivity() {
             }
         }
 
-        // 首次进入的左滑演示底色层
+        // first次进入of/theleft滑Demo底色层
         recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
                 val target = hintTargetView
@@ -736,7 +736,7 @@ abstract class ManageListActivity : AppCompatActivity() {
                     if (SystemClock.uptimeMillis() - swipeStartTime > 260L) isSwipingOut = false
                     else return makeMovementFlags(0, 0)
                 }
-                // 仅在非搜索模式且在「显示」分栏时，才允许拖动排序与左滑收纳
+                // 仅在非Search模式且在「Show」分栏when，才允许拖动Sortandleft滑hide
                 if (searchOpen || tab != TAB_VISIBLE) return makeMovementFlags(0, 0)
 
                 val pos = viewHolder.bindingAdapterPosition
@@ -881,7 +881,7 @@ abstract class ManageListActivity : AppCompatActivity() {
 
             override fun clearView(rv: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(rv, viewHolder)
-                // 放下：平滑回弹到原大小，阴影收回
+                // 放bottom：Smooth回弹到原大小，阴影收回
                 viewHolder.itemView.animate()
                     .scaleX(1f)
                     .scaleY(1f)
@@ -937,11 +937,11 @@ abstract class ManageListActivity : AppCompatActivity() {
         c.scale(scale, scale, centerX, centerY)
         c.drawRoundRect(pillRect, radius, radius, bgPaint)
         val fm = textPaint.fontMetrics
-        c.drawText("收纳", centerX, centerY - (fm.ascent + fm.descent) / 2f, textPaint)
+        c.drawText("hide", centerX, centerY - (fm.ascent + fm.descent) / 2f, textPaint)
         c.restoreToCount(saveCount)
     }
 
-    // ───────── 首次进入的左滑演示 ─────────
+    // ───────── first次进入of/theleft滑Demo ─────────
     private fun maybePlaySwipeHint() {
         if (!loaded) return
         val sp = getSharedPreferences(PREFS, MODE_PRIVATE)

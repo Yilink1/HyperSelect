@@ -41,7 +41,7 @@
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"
-        android:text="我知道了"
+        android:text="Got it"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold" />

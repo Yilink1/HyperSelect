@@ -21,7 +21,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="使用说明"
+        android:text="Usage Instructions"
         android:textColor="@color/hyper_text_primary"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:text="向左滑动卡片收纳"
+            android:text="Swipe left to hide card"
             android:textColor="@color/hyper_text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:text="按住右侧手柄拖动排序"
+            android:text="Press and holdrightdrag side handleSort"
             android:textColor="@color/hyper_text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -113,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:text="所有调整即时生效"
+            android:text="所有调整即when生效"
             android:textColor="@color/hyper_text_primary"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -130,7 +130,7 @@
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"
-        android:text="我知道了"
+        android:text="Got it"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold" />

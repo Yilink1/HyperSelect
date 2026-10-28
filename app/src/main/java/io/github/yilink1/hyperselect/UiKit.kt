@@ -14,15 +14,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 
-/** dp -> px（取整）。 */
+/** dp -> px（Round）。 */
 internal fun Context.dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 
-/** 自定义 View 里直接用 dp()。 */
+/** Use dp() directly in custom Views. */
 internal fun View.dp(value: Int): Int = context.dp(value)
 
 /**
- * 统一的下拉菜单：圆角面板 + 若干文字项，右对齐锚点。
- * 首页与三个管理页共用，避免每个页面各维护一份 XML。
+ * Unifiedof/thebottomPullMenu：圆角panel + 若干text项，right对齐锚点。
+ * firstpageandThree管理pageShared，避免每page面各维护一份 XML。
  */
 internal fun Activity.showPopupMenu(anchor: View, items: List<Pair<String, () -> Unit>>) {
     val content = LinearLayout(this).apply {
@@ -64,7 +64,7 @@ internal data class HelpFeatureItem(
     val subtitle: String
 )
 
-/** 底部圆角说明面板（图文卡片式）。 */
+/** 底部圆角Instructionspanel（图文card式）。 */
 internal fun Activity.showFeatureHelpSheet(title: String, items: List<HelpFeatureItem>) {
     val dialogView = layoutInflater.inflate(R.layout.dialog_feature_help, null)
     val dialog = AlertDialog.Builder(this).setView(dialogView).create()

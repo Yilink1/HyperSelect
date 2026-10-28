@@ -52,27 +52,27 @@
         <activity
             android:name=".TextActionActivity"
             android:exported="false"
-            android:label="文本选择" />
+            android:label="Text Selection" />
 
         <activity
             android:name=".ShareActionActivity"
             android:exported="false"
-            android:label="系统分享" />
+            android:label="System Share" />
 
         <activity
             android:name=".OpenWithActionActivity"
             android:exported="false"
-            android:label="打开方式" />
+            android:label="Open With" />
 
         <activity
             android:name=".AboutActivity"
             android:exported="false"
-            android:label="关于" />
+            android:label="About" />
 
         <activity
             android:name=".IntroActivity"
             android:exported="false"
-            android:label="欢迎使用" />
+            android:label="Welcome" />
 
         <provider
             android:name=".ConfigProvider"

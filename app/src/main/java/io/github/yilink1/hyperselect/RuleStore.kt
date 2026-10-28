@@ -10,7 +10,7 @@ object RuleStore {
     private const val KEY_CONFIG = "rule_config_json"
     private const val KEY_LAST_SYSTEM_READ_BOOT = "last_system_read_boot"
 
-    // 开机时间估算的容忍误差（覆盖 NTP 校时漂移；跨重启必然超过该值）
+    // Tolerance for boot time estimation (override NTP drift; acrossRebootMust exceed this value）
     private const val BOOT_TIME_TOLERANCE_MS = 10_000L
 
     fun getPrefs(context: Context): SharedPreferences {
@@ -32,7 +32,7 @@ object RuleStore {
             .apply()
     }
 
-    /** 由 ConfigProvider 在被 system_server 读取规则时调用，记录生效凭证。 */
+    /** by ConfigProvider 在被 system_server 读取ruleswhen调用，记录生效凭证。 */
     fun saveSystemReadReceipt(context: Context) {
         val bootTime = System.currentTimeMillis() - SystemClock.elapsedRealtime()
         getPrefs(context).edit()
@@ -41,8 +41,8 @@ object RuleStore {
     }
 
     /**
-     * 模块自检：system_server 是否在【本次开机】后来读取过规则。
-     * 是 ⟺ Hook 已加载并正在工作；否则说明模块未激活或激活后未重启。
+     * Module self-check：system_server 是否在【本次开机】after来读取过rules。
+     * 是 ⟺ Hook 已加载并In progress工作；否则InstructionsModule未激活or激活after未Reboot。
      */
     fun isModuleActiveSinceBoot(context: Context): Boolean {
         val storedBoot = getPrefs(context).getLong(KEY_LAST_SYSTEM_READ_BOOT, -1L)

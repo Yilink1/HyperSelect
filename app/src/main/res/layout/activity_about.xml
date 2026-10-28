@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="6dp"
-                android:text="模块信息"
+                android:text="Module Info"
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -93,14 +93,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="作用域"
+                        android:text="Scope"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="系统框架与选择器"
+                        android:text="System Framework & Resolver"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -123,7 +123,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="适配环境"
+                        android:text="Environment"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
@@ -144,7 +144,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="6dp"
-                android:text="使用指南"
+                android:text="Usage Guide"
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -165,7 +165,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="查看操作指南与手势说明"
+                    android:text="查看操作指南and手势Instructions"
                     android:textColor="@color/hyper_text_primary"
                     android:textSize="15sp" />
 
@@ -184,7 +184,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="6dp"
-                android:text="关于与开源"
+                android:text="Aboutand开源"
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -271,7 +271,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="开源协议"
+                        android:text="开源License"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 

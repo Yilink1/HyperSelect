@@ -9,21 +9,21 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import java.io.File
 
-/** 打开方式：打开文件 / 链接时弹出的应用解析列表。 */
+/** Open with：Open file / App resolver list shown when opening links。 */
 class OpenWithActionActivity : ManageListActivity() {
 
-    override val screenTitle = "打开方式"
-    override val emptyText = "暂无可用的打开方式应用"
+    override val screenTitle = "Open with"
+    override val emptyText = "NoneAvailableof/theOpen with apps"
     override val enablePinnedSection = true
 
     @Suppress("DEPRECATION")
     override fun queryTargets(pm: PackageManager): List<ResolveInfo> {
         val probes = listOf(
-            // 网页与在线链接
+            // Web & online links
             Intent(Intent.ACTION_VIEW, Uri.parse("https://example.com")),
             Intent(Intent.ACTION_VIEW, Uri.parse("http://example.com")),
 
-            // content:// 方案探针（注意：必须使用 setDataAndType，不能调用 setType，否则会清除 Uri scheme）
+            // content:// probe (note: must use setDataAndType, not setType to avoid clearing Uri scheme)
             Intent(Intent.ACTION_VIEW).apply { setDataAndType(Uri.parse("content://dummy/file.html"), "text/html") },
             Intent(Intent.ACTION_VIEW).apply { setDataAndType(Uri.parse("content://dummy/file.htm"), "text/html") },
             Intent(Intent.ACTION_VIEW).apply { setDataAndType(Uri.parse("content://dummy/file.txt"), "text/plain") },
@@ -54,7 +54,7 @@ class OpenWithActionActivity : ManageListActivity() {
             Intent(Intent.ACTION_VIEW).apply { setDataAndType(Uri.parse("content://dummy/file.mp3"), "audio/*") },
             Intent(Intent.ACTION_VIEW).apply { setDataAndType(Uri.parse("content://dummy/file"), "*/*") },
 
-            // file:// 方案探针
+            // file:// probe
             Intent(Intent.ACTION_VIEW).apply { setDataAndType(Uri.parse("file:///dummy/file.html"), "text/html") },
             Intent(Intent.ACTION_VIEW).apply { setDataAndType(Uri.parse("file:///dummy/file.txt"), "text/plain") },
             Intent(Intent.ACTION_VIEW).apply { setDataAndType(Uri.parse("file:///dummy/file.pdf"), "application/pdf") },
@@ -66,13 +66,13 @@ class OpenWithActionActivity : ManageListActivity() {
             Intent(Intent.ACTION_VIEW).apply { setDataAndType(Uri.parse("file:///dummy/file.mp3"), "audio/*") },
             Intent(Intent.ACTION_VIEW).apply { setDataAndType(Uri.parse("file:///dummy/file"), "*/*") },
 
-            // 纯 scheme 探针
+            // Pure scheme probe
             Intent(Intent.ACTION_VIEW, Uri.parse("content://dummy/file.apk")),
             Intent(Intent.ACTION_VIEW, Uri.parse("content://dummy/file.pdf")),
             Intent(Intent.ACTION_VIEW, Uri.parse("content://dummy/file")),
             Intent(Intent.ACTION_VIEW, Uri.parse("file:///dummy/file")),
 
-            // 纯 MIME / 通配探针
+            // Pure MIME / Wildcard probe
             Intent(Intent.ACTION_VIEW).setType("*/*"),
             Intent(Intent.ACTION_VIEW).setType("text/*"),
             Intent(Intent.ACTION_VIEW).setType("application/*"),
@@ -89,22 +89,22 @@ class OpenWithActionActivity : ManageListActivity() {
         config.copy(openWithBlacklist = blacklist, openWithCustomOrder = order)
 
     override fun testActions(): List<Pair<String, () -> Unit>> =
-        listOf(Pair("测试效果", { showTestDialog() }))
+        listOf(Pair("Test", { showTestDialog() }))
 
     private fun showTestDialog() {
         val options = arrayOf(
-            "测试网页文件 (HTML / 支持所有浏览器)",
-            "测试普通文本文件 (text/plain)",
-            "测试在线链接 (Http/Https)"
+            "Testwebfile (HTML / support所有浏览器)",
+            "Test普通Textfile (text/plain)",
+            "Testonlinelink (Http/Https)"
         )
         AlertDialog.Builder(this)
-            .setTitle("选择打开方式测试类型")
+            .setTitle("选择Open withTest类型")
             .setItems(options) { _, which ->
                 runCatching {
                     val testIntent = when (which) {
                         0 -> {
                             val testFile = File(cacheDir, "hyper_test.html").apply {
-                                writeText("<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>HyperSelect</title></head><body><h3>HyperSelect 打开方式测试</h3><p>用于验证浏览器排序与应用隐藏效果。</p></body></html>")
+                                writeText("<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>HyperSelect</title></head><body><h3>HyperSelect Open withTest</h3><p>用于验证浏览器Sortand appsHideEffect。</p></body></html>")
                             }
                             val fileUri = FileProvider.getUriForFile(this, "${packageName}.fileprovider", testFile)
                             Intent(Intent.ACTION_VIEW).apply {
@@ -114,7 +114,7 @@ class OpenWithActionActivity : ManageListActivity() {
                         }
                         1 -> {
                             val testFile = File(cacheDir, "hyper_test.txt").apply {
-                                writeText("HyperSelect 打开方式测试文本内容\n用于验证已隐藏应用与排序规则。")
+                                writeText("HyperSelect Open withTestTextcontent\n用于验证已Hide appsandSortRules。")
                             }
                             val fileUri = FileProvider.getUriForFile(this, "${packageName}.fileprovider", testFile)
                             Intent(Intent.ACTION_VIEW).apply {
@@ -127,17 +127,17 @@ class OpenWithActionActivity : ManageListActivity() {
                         }
                     }
                     val chooserTitle = when (which) {
-                        0 -> "测试打开网页文件"
-                        1 -> "测试打开文本文件"
-                        else -> "测试打开在线链接"
+                        0 -> "Test打开webfile"
+                        1 -> "Test打开Textfile"
+                        else -> "Test打开onlinelink"
                     }
                     val chooser = Intent.createChooser(testIntent, chooserTitle)
                     startActivity(chooser)
                 }.onFailure { e ->
-                    Toast.makeText(this, "调起打开方式失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "调起Open with失败: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
-            .setNegativeButton("取消", null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
 }

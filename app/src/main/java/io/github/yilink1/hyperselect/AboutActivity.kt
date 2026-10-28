@@ -32,7 +32,7 @@ class AboutActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = "关于"
+            title = "About"
         }
 
         val tvVersion: TextView = findViewById(R.id.tvAboutVersion)

@@ -78,7 +78,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="取消"
+                    android:text="Cancel"
                     android:textColor="@color/hyper_accent"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -113,7 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="9dp"
-                        android:text="翻译"
+                        android:text="Translate"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -121,7 +121,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="9dp"
-                        android:text="剪切"
+                        android:text="Cut"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -129,11 +129,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="9dp"
-                        android:text="复制"
+                        android:text="Copy"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
-                    <!-- Drawer container for 粘贴, clips text so it emerges smoothly from seam -->
+                    <!-- Drawer container for Paste, clips text so it emerges smoothly from seam -->
                     <FrameLayout
                         android:id="@+id/drawerPage1Paste"
                         android:layout_width="0dp"
@@ -146,7 +146,7 @@
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="9dp"
                             android:singleLine="true"
-                            android:text="粘贴"
+                            android:text="Paste"
                             android:textColor="@color/hyper_text_primary"
                             android:textSize="14sp" />
                     </FrameLayout>
@@ -169,7 +169,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="屏蔽 AI 写作"
+        android:text="Block AI Writing"
         android:textColor="@color/hyper_text_primary"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -181,7 +181,7 @@
         android:gravity="center"
         android:lineSpacingExtra="4dp"
         android:paddingHorizontal="16dp"
-        android:text="干掉强插的 AI 写作，找回被挤走的粘贴"
+        android:text="Remove forcedof/the AI Writing，找回被挤走of/thePaste"
         android:textColor="@color/hyper_desc_text"
         android:textSize="14sp" />
 

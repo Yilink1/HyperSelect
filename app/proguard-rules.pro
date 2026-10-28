@@ -1,15 +1,15 @@
-# LibXposed 102 R8 / ProGuard 混淆保留规则
+# LibXposed 102 R8 / ProGuard keep rules
 -dontwarn io.github.libxposed.annotation.**
 -adaptresourcefilecontents META-INF/xposed/java_init.list
 
-# 保留 Xposed 模块入口类及全部成员，禁止混淆名称以防反射加载失败
+# Keep Xposed Module entry classes and all members, do not obfuscate to prevent reflection loading failures
 -keep class io.github.yilink1.hyperselect.MainHook {
     *;
 }
 
-# 保留配置与组件类
+# Keep config and component classes
 -keep class io.github.yilink1.hyperselect.ConfigProvider { *; }
 -keep class io.github.yilink1.hyperselect.RuleConfig { *; }
 
-# 保留异常堆栈行号和源文件名，方便排查崩溃
+# Keep exception stack trace line numbers and source file names for debugging crashes
 -keepattributes SourceFile,LineNumberTable

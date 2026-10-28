@@ -1,41 +1,41 @@
 # HyperSelect
 
-适用于小米澎湃系统（Xiaomi HyperOS）的文本选择菜单、系统分享与打开方式定制模块
+A module for Xiaomi HyperOS that customizes the text selection menu, system share sheet, and "Open with" dialog.
 
 ---
 
-## 特性
+## Features
 
-- **移除 AI 写作**：彻底去掉选中文本时首位的 AI 写作小圆圈
-- **文本选择菜单**：在模块面板中自由拖拽排序、滑动隐藏选项
-- **分享与打开方式**：常用应用置顶，隐藏冷门选项
-- **即时生效**：无需重启手机，配置即改即用
+- **Remove AI Writing**: Completely remove the AI Writing bubble that appears first when selecting text
+- **Text Selection Menu**: Freely drag to reorder and swipe to hide options in the module panel
+- **Share & Open With**: Pin frequently used apps to the top and hide rarely used ones
+- **Instant Effect**: No phone reboot required, changes take effect immediately
 
 ---
 
-## 效果预览
+## Preview
 
 <p align="center">
-  <img src="docs/preview_text_select.png" width="480" alt="文本选择对比" />
+  <img src="docs/preview_text_select.png" width="480" alt="Text selection comparison" />
 </p>
 
 <p align="center">
-  <img src="docs/preview_menu_sort.png" width="560" alt="菜单排序" />
+  <img src="docs/preview_menu_sort.png" width="560" alt="Menu sorting" />
 </p>
 
 <p align="center">
-  <img src="docs/preview_share.png" width="380" alt="分享置顶" />
+  <img src="docs/preview_share.png" width="380" alt="Share pinning" />
 </p>
 
 ---
 
-## 运行环境
+## Requirements
 
-- **系统**：Xiaomi HyperOS 2.0 / OS 3（理论兼容 1.0+）
-- **框架**：LSPosed（基于 LibXposed API 102）
-- **作用域**：系统框架、IntentResolver
+- **System**: Xiaomi HyperOS 2.0 / OS 3 (theoretically compatible with 1.0+)
+- **Framework**: LSPosed (based on LibXposed API 102)
+- **Scope**: System Framework, IntentResolver
 ---
 
-## 开源协议
+## License
 
 [GNU General Public License v3.0](LICENSE)

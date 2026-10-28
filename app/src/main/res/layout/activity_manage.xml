@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 三个管理页（文本选择 / 系统分享 / 打开方式）共用的统一布局 -->
+<!-- Three management pages（Text Selection / 系统Share / Open With）Sharedof/theUnified布局 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -7,7 +7,7 @@
     android:background="@color/hyper_bg"
     android:orientation="vertical">
 
-    <!-- 顶栏：返回 / 标题 / 搜索 / 更多；搜索展开时由 searchBox 覆盖 -->
+    <!-- 顶栏：Back / title / Search / More；Search展开whenby searchBox Override -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="56dp">
@@ -26,7 +26,7 @@
                 android:layout_width="44dp"
                 android:layout_height="44dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="返回"
+                android:contentDescription="Back"
                 android:padding="10dp"
                 android:src="@drawable/ic_arrow_back"
                 app:tint="@color/hyper_text_primary" />
@@ -47,7 +47,7 @@
                 android:layout_width="44dp"
                 android:layout_height="44dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="搜索"
+                android:contentDescription="Search"
                 android:padding="11dp"
                 android:src="@drawable/ic_search"
                 app:tint="@color/hyper_text_primary" />
@@ -57,7 +57,7 @@
                 android:layout_width="44dp"
                 android:layout_height="44dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="更多"
+                android:contentDescription="More"
                 android:padding="10dp"
                 android:src="@drawable/ic_more_vert"
                 app:tint="@color/hyper_text_primary" />
@@ -90,7 +90,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:background="@null"
-                android:hint="搜索应用名或包名"
+                android:hint="Searchapp名or包名"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLines="1"
@@ -104,14 +104,14 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="关闭搜索"
+                android:contentDescription="DisableSearch"
                 android:padding="9dp"
                 android:src="@drawable/ic_close"
                 app:tint="@color/hyper_text_secondary" />
         </LinearLayout>
     </FrameLayout>
 
-    <!-- 页面专属的附加设置（文本选择页放「屏蔽 AI 写作」） -->
+    <!-- page面专属of/the附加Settings（Text Selectionpage放「Block AI Writing」） -->
     <FrameLayout
         android:id="@+id/layoutExtra"
         android:layout_width="match_parent"
@@ -120,7 +120,7 @@
         android:layout_marginBottom="6dp"
         android:visibility="gone" />
 
-    <!-- 顶部双导航分栏：显示 / 隐藏（带计数） -->
+    <!-- Top dual-tab bar：Show / Hide（带计数） -->
     <LinearLayout
         android:id="@+id/segment"
         android:layout_width="match_parent"
@@ -148,14 +148,14 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <!-- 操作提示 -->
+    <!-- 操作Tip -->
     <TextView
         android:id="@+id/tvHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="6dp"
-        android:text="长按或拖动手柄调整排序，向左滑可收纳"
+        android:text="long pressordrag handle调整Sort，向left滑canhide"
         android:textColor="@color/hyper_text_secondary"
         android:textSize="12sp"
         android:visibility="gone" />
@@ -191,7 +191,7 @@
             android:textSize="14sp"
             android:visibility="gone" />
 
-        <!-- 撤销条：收纳 / 恢复 / 批量操作后短暂出现 -->
+        <!-- Undo条：hide / Restore / 批量操作after短暂出现 -->
         <LinearLayout
             android:id="@+id/undoBar"
             android:layout_width="match_parent"
@@ -223,7 +223,7 @@
                 android:background="?attr/selectableItemBackground"
                 android:gravity="center"
                 android:paddingHorizontal="20dp"
-                android:text="撤销"
+                android:text="Undo"
                 android:textColor="@color/hyper_undo_action"
                 android:textSize="14sp"
                 android:textStyle="bold" />

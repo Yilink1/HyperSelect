@@ -6,11 +6,11 @@ import android.content.pm.ResolveInfo
 import android.view.View
 import android.view.ViewGroup
 
-/** 文本选择：长按文字时弹出的操作项。 */
+/** Text Selection：Action items shown when long-pressing text。 */
 class TextActionActivity : ManageListActivity() {
 
-    override val screenTitle = "文本选择"
-    override val emptyText = "暂无支持文本操作的应用"
+    override val screenTitle = "Text Selection"
+    override val emptyText = "No apps support text actions"
     override val sortByLabelWhenNoOrder = false
 
     private var switchBlockAiWriting: HyperSwitch? = null
@@ -37,7 +37,7 @@ class TextActionActivity : ManageListActivity() {
         switchBlockAiWriting = switchView
         rowBlockAiWriting = row
 
-        // 配置读取完成前不可操作，避免把默认值写回
+        // Cannot operate until config is loaded to avoid overwriting with defaults
         row.isEnabled = false
         switchView.isEnabled = false
 

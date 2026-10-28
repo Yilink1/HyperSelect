@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="正在检测模块状态"
+        android:text="In progressdetectModulestatus"
         android:textColor="@color/hyper_text_primary"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -54,7 +54,7 @@
         android:gravity="center"
         android:lineSpacingExtra="4dp"
         android:paddingHorizontal="16dp"
-        android:text="正在与系统框架握手，请稍候…"
+        android:text="In progressandSystem Frameworkhandshake，please wait…"
         android:textColor="@color/hyper_desc_text"
         android:textSize="14sp" />
 
