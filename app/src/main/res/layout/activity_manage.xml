@@ -1,233 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Three management pages（Text Selection / SystemShare / Open With）Sharedof/theUnified  -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Three management pages（Text Selection / System Share / Open With）Sharedof the Unified  -->
+<Linear Layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/hyper_bg"
     android:orientation="vertical">
 
-    <!--  ：Back / title / Search / More；Search whenby searchBox Override -->
-    <FrameLayout
+    <!--  ：Back / title / Search / More；Search whenby search Box Override -->
+    <Frame Layout
         android:layout_width="match_parent"
         android:layout_height="56dp">
 
-        <LinearLayout
-            android:id="@+id/headerBar"
+        <Linear Layout
+            android:id="@+id/header Bar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="6dp"
-            android:paddingEnd="8dp">
+            android:padding Start="6dp"
+            android:padding End="8dp">
 
-            <ImageView
-                android:id="@+id/btnBack"
+            <Image View
+                android:id="@+id/btn Back"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:background="?attr/selectable Item Background Borderless"
+                android:content Description="Back"
                 android:padding="10dp"
                 android:src="@drawable/ic_arrow_back"
                 app:tint="@color/hyper_text_primary" />
 
-            <TextView
-                android:id="@+id/tvTitle"
+            <Text View
+                android:id="@+id/tv Title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
+                android:layout_margin Start="4dp"
                 android:layout_weight="1"
-                android:singleLine="true"
-                android:textColor="@color/hyper_text_primary"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:single Line="true"
+                android:text Color="@color/hyper_text_primary"
+                android:text Size="20sp"
+                android:text Style="bold" />
 
-            <ImageView
-                android:id="@+id/btnSearch"
+            <Image View
+                android:id="@+id/btn Search"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Search"
+                android:background="?attr/selectable Item Background Borderless"
+                android:content Description="Search"
                 android:padding="11dp"
                 android:src="@drawable/ic_search"
                 app:tint="@color/hyper_text_primary" />
 
-            <ImageView
-                android:id="@+id/btnMore"
+            <Image View
+                android:id="@+id/btn More"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="More"
+                android:background="?attr/selectable Item Background Borderless"
+                android:content Description="More"
                 android:padding="10dp"
                 android:src="@drawable/ic_more_vert"
                 app:tint="@color/hyper_text_primary" />
-        </LinearLayout>
+        </Linear Layout>
 
-        <LinearLayout
-            android:id="@+id/searchBox"
+        <Linear Layout
+            android:id="@+id/search Box"
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginHorizontal="12dp"
+            android:layout_margin Horizontal="12dp"
             android:background="@drawable/bg_search_bar"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="4dp"
+            android:padding Start="16dp"
+            android:padding End="4dp"
             android:visibility="gone">
 
-            <ImageView
+            <Image View
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:importantForAccessibility="no"
+                android:important For Accessibility="no"
                 android:src="@drawable/ic_search"
                 app:tint="@color/hyper_text_secondary" />
 
-            <EditText
-                android:id="@+id/etSearch"
+            <Edit Text
+                android:id="@+id/et Search"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
+                android:layout_margin Start="10dp"
                 android:layout_weight="1"
                 android:background="@null"
                 android:hint="Searchapp or "
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:maxLines="1"
-                android:textColor="@color/hyper_text_primary"
-                android:textColorHint="@color/hyper_text_secondary"
-                android:textCursorDrawable="@null"
-                android:textSize="15sp" />
+                android:ime Options="action Search"
+                android:input Type="text"
+                android:max Lines="1"
+                android:text Color="@color/hyper_text_primary"
+                android:text Color Hint="@color/hyper_text_secondary"
+                android:text Cursor Drawable="@null"
+                android:text Size="15sp" />
 
-            <ImageView
-                android:id="@+id/btnCloseSearch"
+            <Image View
+                android:id="@+id/btn Close Search"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="DisableSearch"
+                android:background="?attr/selectable Item Background Borderless"
+                android:content Description="Disable Search"
                 android:padding="9dp"
                 android:src="@drawable/ic_close"
                 app:tint="@color/hyper_text_secondary" />
-        </LinearLayout>
-    </FrameLayout>
+        </Linear Layout>
+    </Frame Layout>
 
-    <!-- page of/the Settings（Text Selectionpage 「Block AI Writing」） -->
-    <FrameLayout
-        android:id="@+id/layoutExtra"
+    <!-- page of the Settings（Text Selectionpage 「Block AI Writing」） -->
+    <Frame Layout
+        android:id="@+id/layout Extra"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        android:layout_marginBottom="6dp"
+        android:layout_margin Horizontal="12dp"
+        android:layout_margin Bottom="6dp"
         android:visibility="gone" />
 
     <!-- Top dual-tab bar：Show / Hide（ ） -->
-    <LinearLayout
+    <Linear Layout
         android:id="@+id/segment"
         android:layout_width="match_parent"
         android:layout_height="38dp"
-        android:layout_marginHorizontal="12dp"
-        android:layout_marginBottom="6dp"
+        android:layout_margin Horizontal="12dp"
+        android:layout_margin Bottom="6dp"
         android:background="@drawable/bg_segment_track"
         android:orientation="horizontal"
         android:padding="3dp">
 
-        <TextView
-            android:id="@+id/tvTabVisible"
+        <Text View
+            android:id="@+id/tv Tab Visible"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="14sp" />
+            android:text Size="14sp" />
 
-        <TextView
-            android:id="@+id/tvTabHidden"
+        <Text View
+            android:id="@+id/tv Tab Hidden"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="14sp" />
-    </LinearLayout>
+            android:text Size="14sp" />
+    </Linear Layout>
 
     <!--  Tip -->
-    <TextView
-        android:id="@+id/tvHint"
+    <Text View
+        android:id="@+id/tv Hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="6dp"
+        android:layout_margin Horizontal="20dp"
+        android:layout_margin Bottom="6dp"
         android:text="long pressordrag handle Sort，Swipe leftto hide"
-        android:textColor="@color/hyper_text_secondary"
-        android:textSize="12sp"
+        android:text Color="@color/hyper_text_secondary"
+        android:text Size="12sp"
         android:visibility="gone" />
 
-    <FrameLayout
+    <Frame Layout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <androidx.recyclerview.widget.Recycler View
+            android:id="@+id/recycler View"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:paddingTop="2dp"
-            android:paddingBottom="24dp" />
+            android:clip To Padding="false"
+            android:over Scroll Mode="never"
+            android:padding Top="2dp"
+            android:padding Bottom="24dp" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
+        <Progress Bar
+            android:id="@+id/progress Bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:indeterminateTint="@color/hyper_accent"
+            android:indeterminate Tint="@color/hyper_accent"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tvEmpty"
+        <Text View
+            android:id="@+id/tv Empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="@color/hyper_text_secondary"
-            android:textSize="14sp"
+            android:text Color="@color/hyper_text_secondary"
+            android:text Size="14sp"
             android:visibility="gone" />
 
         <!-- Undo ：hide / Restore /  after  -->
-        <LinearLayout
-            android:id="@+id/undoBar"
+        <Linear Layout
+            android:id="@+id/undo Bar"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_gravity="bottom"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginBottom="28dp"
+            android:layout_margin Horizontal="24dp"
+            android:layout_margin Bottom="28dp"
             android:background="@drawable/bg_undo_bar"
             android:elevation="6dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="20dp"
+            android:padding Start="20dp"
             android:visibility="gone">
 
-            <TextView
-                android:id="@+id/tvUndoMsg"
+            <Text View
+                android:id="@+id/tv Undo Msg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:singleLine="true"
-                android:textColor="@color/hyper_btn_primary_text"
-                android:textSize="14sp" />
+                android:single Line="true"
+                android:text Color="@color/hyper_btn_primary_text"
+                android:text Size="14sp" />
 
-            <TextView
-                android:id="@+id/btnUndo"
+            <Text View
+                android:id="@+id/btn Undo"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="?attr/selectableItemBackground"
+                android:background="?attr/selectable Item Background"
                 android:gravity="center"
-                android:paddingHorizontal="20dp"
+                android:padding Horizontal="20dp"
                 android:text="Undo"
-                android:textColor="@color/hyper_undo_action"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </FrameLayout>
+                android:text Color="@color/hyper_undo_action"
+                android:text Size="14sp"
+                android:text Style="bold" />
+        </Linear Layout>
+    </Frame Layout>
 
-</LinearLayout>
+</Linear Layout>

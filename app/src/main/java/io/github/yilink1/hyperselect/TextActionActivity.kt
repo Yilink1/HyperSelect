@@ -1,57 +1,57 @@
 package io.github.yilink1.hyperselect
 
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
+import android.content.pm.Package Manager
+import android.content.pm.Resolve Info
 import android.view.View
-import android.view.ViewGroup
+import android.view.View Group
 
 /** Text Selection：Action items shown when long-pressing text。 */
-class TextActionActivity : ManageListActivity() {
+class Text Action Activity : Manage List Activity() {
 
-    override val screenTitle = "Text Selection"
-    override val emptyText = "No apps support text actions"
-    override val sortByLabelWhenNoorder = false
+    override val screen Title = "Text Selection"
+    override val empty Text = "No apps support text actions"
+    override val sort By Label When Noorder = false
 
-    private var switchBlockAiWriting: HyperSwitch? = null
-    private var rowBlockAiWriting: View? = null
+    private var switch Block Ai Writing: Hyper Switch? = null
+    private var row Block Ai Writing: View? = null
 
     @Suppress("DEPRECATION")
-    override fun queryTargets(pm: PackageManager): List<ResolveInfo> {
-        val intent = Intent(Intent.ACTION_PROCESS_TEXT).setType("text/plain")
-        intent.putExtra("io.github.yilink1.hyperselect.EXTRA_RAW_QUERY", true)
-        return pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+    override fun query Targets(pm: Package Manager): List<Resolve Info> {
+        val intent = Intent(Intent.ACTION_PROCESS_TEXT).set Type("text/plain")
+        intent.put Extra("io.github.yilink1.hyperselect.EXTRA_RAW_QUERY", true)
+        return pm.query Intent Activities(intent, Package Manager.MATCH_DEFAULT_ONLY)
     }
 
-    override fun blacklistOf(config: RuleConfig): Set<String> = config.blacklist
-    override fun orderOf(config: RuleConfig): List<String> = config.customorder
-    override fun withRules(config: RuleConfig, blacklist: Set<String>, order: List<String>): RuleConfig =
+    override fun blacklist Of(config: Rule Config): Set<String> = config.blacklist
+    override fun order Of(config: Rule Config): List<String> = config.customorder
+    override fun with Rules(config: Rule Config, blacklist: Set<String>, order: List<String>): Rule Config =
         config.copy(blacklist = blacklist, customorder = order)
 
-    override fun onCreateExtra(container: ViewGroup) {
-        val row = layoutInflater.inflate(R.layout.item_setting_switch, container, false)
-        container.addView(row)
+    override fun on Create Extra(container: View Group) {
+        val row = layout Inflater.inflate(R.layout.item_setting_switch, container, false)
+        container.add View(row)
         container.visibility = View.VISIBLE
 
-        val switchView = row.findViewById<HyperSwitch>(R.id.switchBlockAiWriting)
-        switchBlockAiWriting = switchView
-        rowBlockAiWriting = row
+        val switch View = row.find View By Id<Hyper Switch>(R.id.switch Block Ai Writing)
+        switch Block Ai Writing = switch View
+        row Block Ai Writing = row
 
         // Cannot operate until config is loaded to avoid overwriting with defaults
-        row.isEnabled = false
-        switchView.isEnabled = false
+        row.is Enabled = false
+        switch View.is Enabled = false
 
-        row.setOnClickListener { switchView.toggle() }
-        switchView.onToggled = { saveRules() }
+        row.set On Click Listener { switch View.toggle() }
+        switch View.on Toggled = { save Rules() }
     }
 
-    override fun onConfigLoaded(config: RuleConfig) {
-        val switchView = switchBlockAiWriting ?: return
-        switchView.setChecked(config.blockAiWriting, animate = false)
-        switchView.isEnabled = true
-        rowBlockAiWriting?.isEnabled = true
+    override fun on Config Loaded(config: Rule Config) {
+        val switch View = switch Block Ai Writing ?: return
+        switch View.set Checked(config.block Ai Writing, animate = false)
+        switch View.is Enabled = true
+        row Block Ai Writing?.is Enabled = true
     }
 
-    override fun applyExtra(config: RuleConfig): RuleConfig =
-        config.copy(blockAiWriting = switchBlockAiWriting?.checked ?: config.blockAiWriting)
+    override fun apply Extra(config: Rule Config): Rule Config =
+        config.copy(block Ai Writing = switch Block Ai Writing?.checked ?: config.block Ai Writing)
 }

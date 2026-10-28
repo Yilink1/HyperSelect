@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:insetBottom="3dp"
-    android:insetLeft="3dp"
-    android:insetRight="3dp"
-    android:insetTop="3dp">
+    android:inset Bottom="3dp"
+    android:inset Left="3dp"
+    android:inset Right="3dp"
+    android:inset Top="3dp">
     <shape android:shape="oval">
         <solid android:color="#FFFFFF" />
         <size android:width="22dp" android:height="22dp" />

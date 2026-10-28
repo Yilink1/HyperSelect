@@ -2,97 +2,97 @@ package io.github.yilink1.hyperselect
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Color Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
-import android.view.MenuItem
+import android.view.Menu Item
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
+import android.view.View Group
+import android.widget.Text View
+import androidx.appcompat.app.Alert Dialog
+import androidx.appcompat.app.App Compat Activity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.View Compat
+import androidx.core.view.Window Insets Compat
 
-class AboutActivity : AppCompatActivity() {
+class About Activity : App Compat Activity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
+    override fun on Create(saved Instance State: Bundle?) {
+        super.on Create(saved Instance State)
+        set Content View(R.layout.activity_about)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(0, systemBars.top, 0, systemBars.bottom)
+        View Compat.set On Apply Window Insets Listener(find View By Id(android.R.id.content)) { view, insets ->
+            val system Bars = insets.get Insets(Window Insets Compat.Type.system Bars())
+            view.set Padding(0, system Bars.top, 0, system Bars.bottom)
             insets
         }
 
-        val toolbar: Toolbar = findViewById(R.id.toolbarAbout)
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
+        val toolbar: Toolbar = find View By Id(R.id.toolbar About)
+        set Support Action Bar(toolbar)
+        support Action Bar?.apply {
+            set Display Home As Up Enabled(true)
             title = "About"
         }
 
-        val tvVersion: TextView = findViewById(R.id.tvAboutVersion)
+        val tv Version: Text View = find View By Id(R.id.tv About Version)
         try {
-            val pInfo = packageManager.getPackageInfo(packageName, 0)
+            val p Info = package Manager.get Package Info(package Name, 0)
             @Suppress("DEPRECATION")
             val code = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                pInfo.longVersionCode
+                p Info.long Version Code
             } else {
-                pInfo.versionCode.toLong()
+                p Info.version Code.to Long()
             }
-            tvVersion.text = "v${pInfo.versionName} ($code)"
+            tv Version.text = "v${p Info.version Name} ($code)"
         } catch (_: Exception) {
-            tvVersion.text = "v1.0.0"
+            tv Version.text = "v1.0.0"
         }
 
-        findViewById<View>(R.id.btnAboutHelp).setOnClickListener {
-            showHelpDialog()
+        find View By Id<View>(R.id.btn About Help).set On Click Listener {
+            show Help Dialog()
         }
 
-        findViewById<View>(R.id.btnAboutGithub).setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/yilink1/HyperSelect"))
+        find View By Id<View>(R.id.btn About Github).set On Click Listener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/yilink1/Hyper Select"))
             try {
-                startActivity(intent)
+                start Activity(intent)
             } catch (_: Exception) {
             }
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
+    override fun on Options Item Selected(item: Menu Item): Boolean {
+        if (item.item Id == android.R.id.home) {
             finish()
             return true
         }
-        return super.onOptionsItemSelected(item)
+        return super.on Options Item Selected(item)
     }
 
-    private fun showHelpDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_help, null)
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
+    private fun show Help Dialog() {
+        val dialog View = layout Inflater.inflate(R.layout.dialog_help, null)
+        val dialog = Alert Dialog.Builder(this)
+            .set View(dialog View)
             .create()
 
-        dialogView.findViewById<View>(R.id.btnHelpConfirm).setOnClickListener {
+        dialog View.find View By Id<View>(R.id.btn Help Confirm).set On Click Listener {
             dialog.dismiss()
         }
 
         dialog.show()
 
         dialog.window?.let { window ->
-            window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            window.setDimAmount(0.45f)
-            window.setGravity(Gravity.BOTTOM)
-            window.setWindowAnimations(android.R.style.Animation_InputMethod)
-            val marginH = (16f * resources.displayMetrics.density).toInt()
-            val marginV = (16f * resources.displayMetrics.density).toInt()
-            val displayWidth = resources.displayMetrics.widthPixels
-            window.setLayout(displayWidth - marginH * 2, ViewGroup.LayoutParams.WRAP_CONTENT)
+            window.set Background Drawable(Color Drawable(Color.TRANSPARENT))
+            window.set Dim Amount(0.45f)
+            window.set Gravity(Gravity.BOTTOM)
+            window.set Window Animations(android.R.style.Animation_Input Method)
+            val margin H = (16f * resources.display Metrics.density).to Int()
+            val margin V = (16f * resources.display Metrics.density).to Int()
+            val display Width = resources.display Metrics.width Pixels
+            window.set Layout(display Width - margin H * 2, View Group.Layout Params.WRAP_CONTENT)
             val lp = window.attributes
-            lp.y = marginV
+            lp.y = margin V
             window.attributes = lp
         }
     }

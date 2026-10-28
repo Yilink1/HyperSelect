@@ -1,43 +1,43 @@
 package io.github.yilink1.hyperselect
 
-import android.annotation.SuppressLint
+import android.annotation.Suppress Lint
 import android.graphics.drawable.Drawable
-import android.view.LayoutInflater
-import android.view.MotionEvent
+import android.view.Layout Inflater
+import android.view.Motion Event
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
+import android.view.View Group
+import android.widget.Image View
+import android.widget.Text View
+import androidx.recyclerview.widget.Recycler View
 
-data class TextActionItem(
+data class Text Action Item(
     val label: String,
-    val packageName: String,
-    val componentName: String,
+    val package Name: String,
+    val component Name: String,
     val icon: Drawable,
-    var isEnabled: Boolean
+    var is Enabled: Boolean
 )
 
-sealed class ManageRow {
-    data class Header(val title: String, val count: Int, val hint: String? = null) : ManageRow()
-    data class Pinned(val item: TextActionItem) : ManageRow()
-    data class Flowing(val item: TextActionItem) : ManageRow()
-    data class Showing(val item: TextActionItem) : ManageRow()
-    data class Hidden(val item: TextActionItem) : ManageRow()
-    data class Search(val item: TextActionItem, val isPinned: Boolean) : ManageRow()
+sealed class Manage Row {
+    data class Header(val title: String, val count: Int, val hint: String? = null) : Manage Row()
+    data class Pinned(val item: Text Action Item) : Manage Row()
+    data class Flowing(val item: Text Action Item) : Manage Row()
+    data class Showing(val item: Text Action Item) : Manage Row()
+    data class Hidden(val item: Text Action Item) : Manage Row()
+    data class Search(val item: Text Action Item, val is Pinned: Boolean) : Manage Row()
 }
 
 /**
  * Physically tactile card + Smart search interaction list adapter。
  * With top dual-nav tabs, clearly shows 'Pinned', 'Flowing', and 'Hidden' lists.
  */
-class ManageAdapter(
-    private val onRestore: (item: TextActionItem) -> Unit,
-    private val onPin: (item: TextActionItem) -> Unit,
-    private val onUnpin: (item: TextActionItem) -> Unit,
-    private val onStash: (item: TextActionItem) -> Unit,
-    private val onStartDrag: (holder: RecyclerView.ViewHolder) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class Manage Adapter(
+    private val on Restore: (item: Text Action Item) -> Unit,
+    private val on Pin: (item: Text Action Item) -> Unit,
+    private val on Unpin: (item: Text Action Item) -> Unit,
+    private val on Stash: (item: Text Action Item) -> Unit,
+    private val on Start Drag: (holder: Recycler View.View Holder) -> Unit
+) : Recycler View.Adapter<Recycler View.View Holder>() {
 
     companion object {
         const val TYPE_HEADER = 0
@@ -48,200 +48,200 @@ class ManageAdapter(
         const val TYPE_SEARCH = 5
     }
 
-    private var rows: List<ManageRow> = emptyList()
+    private var rows: List<Manage Row> = empty List()
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun submit(newRows: List<ManageRow>) {
-        rows = newRows
-        notifyDataSetChanged()
+    @Suppress Lint("Notify Data Set Changed")
+    fun submit(new Rows: List<Manage Row>) {
+        rows = new Rows
+        notify Data Set Changed()
     }
 
-    fun getItem(position: Int): ManageRow? = rows.getOrNull(position)
+    fun get Item(position: Int): Manage Row? = rows.get Or Null(position)
 
-    override fun getItemCount(): Int = rows.size
+    override fun get Item Count(): Int = rows.size
 
-    override fun getItemViewType(position: Int): Int = when (rows[position]) {
-        is ManageRow.Header -> TYPE_HEADER
-        is ManageRow.Pinned -> TYPE_PINNED
-        is ManageRow.Flowing -> TYPE_FLOWING
-        is ManageRow.Showing -> TYPE_SHOWING
-        is ManageRow.Hidden -> TYPE_HIDDEN
-        is ManageRow.Search -> TYPE_SEARCH
+    override fun get Item View Type(position: Int): Int = when (rows[position]) {
+        is Manage Row.Header -> TYPE_HEADER
+        is Manage Row.Pinned -> TYPE_PINNED
+        is Manage Row.Flowing -> TYPE_FLOWING
+        is Manage Row.Showing -> TYPE_SHOWING
+        is Manage Row.Hidden -> TYPE_HIDDEN
+        is Manage Row.Search -> TYPE_SEARCH
     }
 
-    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvHeaderTitle: TextView = view.findViewById(R.id.tvHeaderTitle)
-        val tvHeaderCount: TextView = view.findViewById(R.id.tvHeaderCount)
-        val tvHeaderHint: TextView = view.findViewById(R.id.tvHeaderHint)
+    class Header View Holder(view: View) : Recycler View.View Holder(view) {
+        val tv Header Title: Text View = view.find View By Id(R.id.tv Header Title)
+        val tv Header Count: Text View = view.find View By Id(R.id.tv Header Count)
+        val tv Header Hint: Text View = view.find View By Id(R.id.tv Header Hint)
     }
 
-    class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val ivAppIcon: ImageView = view.findViewById(R.id.ivAppIcon)
-        val tvAppLabel: TextView = view.findViewById(R.id.tvAppLabel)
-        val tvPackageName: TextView = view.findViewById(R.id.tvPackageName)
-        val ivDragHandle: ImageView = view.findViewById(R.id.ivDragHandle)
-        val btnUnpin: TextView = view.findViewById(R.id.btnUnpin)
-        val btnPin: TextView = view.findViewById(R.id.btnPin)
-        val btnRestore: ImageView = view.findViewById(R.id.btnRestore)
-        val layoutSearchActions: View = view.findViewById(R.id.layoutSearchActions)
-        val btnSearchPin: TextView = view.findViewById(R.id.btnSearchPin)
-        val btnSearchHide: TextView = view.findViewById(R.id.btnSearchHide)
-        val btnSearchRestore: TextView = view.findViewById(R.id.btnSearchRestore)
+    class Item View Holder(view: View) : Recycler View.View Holder(view) {
+        val iv App Icon: Image View = view.find View By Id(R.id.iv App Icon)
+        val tv App Label: Text View = view.find View By Id(R.id.tv App Label)
+        val tv Package Name: Text View = view.find View By Id(R.id.tv Package Name)
+        val iv Drag Handle: Image View = view.find View By Id(R.id.iv Drag Handle)
+        val btn Unpin: Text View = view.find View By Id(R.id.btn Unpin)
+        val btn Pin: Text View = view.find View By Id(R.id.btn Pin)
+        val btn Restore: Image View = view.find View By Id(R.id.btn Restore)
+        val layout Search Actions: View = view.find View By Id(R.id.layout Search Actions)
+        val btn Search Pin: Text View = view.find View By Id(R.id.btn Search Pin)
+        val btn Search Hide: Text View = view.find View By Id(R.id.btn Search Hide)
+        val btn Search Restore: Text View = view.find View By Id(R.id.btn Search Restore)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        return if (viewType == TYPE_HEADER) {
-            HeaderViewHolder(inflater.inflate(R.layout.item_manage_header, parent, false))
+    override fun on Create View Holder(parent: View Group, view Type: Int): Recycler View.View Holder {
+        val inflater = Layout Inflater.from(parent.context)
+        return if (view Type == TYPE_HEADER) {
+            Header View Holder(inflater.inflate(R.layout.item_manage_header, parent, false))
         } else {
-            ItemViewHolder(inflater.inflate(R.layout.item_manage_row, parent, false))
+            Item View Holder(inflater.inflate(R.layout.item_manage_row, parent, false))
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is HeaderViewHolder) {
-            val header = rows[position] as? ManageRow.Header ?: return
-            holder.tvHeaderTitle.text = header.title
-            holder.tvHeaderCount.text = "${header.count}"
-            if (!header.hint.isNullOrBlank()) {
-                holder.tvHeaderHint.text = header.hint
-                holder.tvHeaderHint.visibility = View.VISIBLE
+    @Suppress Lint("Clickable View Accessibility")
+    override fun on Bind View Holder(holder: Recycler View.View Holder, position: Int) {
+        if (holder is Header View Holder) {
+            val header = rows[position] as? Manage Row.Header ?: return
+            holder.tv Header Title.text = header.title
+            holder.tv Header Count.text = "${header.count}"
+            if (!header.hint.is Null Or Blank()) {
+                holder.tv Header Hint.text = header.hint
+                holder.tv Header Hint.visibility = View.VISIBLE
             } else {
-                holder.tvHeaderHint.visibility = View.GONE
+                holder.tv Header Hint.visibility = View.GONE
             }
             return
         }
 
-        val itemHolder = holder as? ItemViewHolder ?: return
+        val item Holder = holder as? Item View Holder ?: return
 
         // Reset animation offsets, scale and z-index to avoid reuse artifacts
-        itemHolder.itemView.animate().cancel()
-        itemHolder.itemView.translationX = 0f
-        itemHolder.itemView.translationZ = 0f
-        itemHolder.itemView.scaleX = 1f
-        itemHolder.itemView.scaleY = 1f
+        item Holder.item View.animate().cancel()
+        item Holder.item View.translation X = 0f
+        item Holder.item View.translation Z = 0f
+        item Holder.item View.scale X = 1f
+        item Holder.item View.scale Y = 1f
 
         when (val row = rows[position]) {
-            is ManageRow.Header -> {}
+            is Manage Row.Header -> {}
 
-            is ManageRow.Pinned -> {
+            is Manage Row.Pinned -> {
                 val item = row.item
-                itemHolder.itemView.alpha = 1.0f
-                itemHolder.ivAppIcon.setImageDrawable(item.icon)
-                itemHolder.tvAppLabel.text = item.label
-                itemHolder.tvPackageName.text = item.packageName
+                item Holder.item View.alpha = 1.0f
+                item Holder.iv App Icon.set Image Drawable(item.icon)
+                item Holder.tv App Label.text = item.label
+                item Holder.tv Package Name.text = item.package Name
 
-                itemHolder.ivDragHandle.visibility = View.VISIBLE
-                itemHolder.btnUnpin.visibility = View.VISIBLE
-                itemHolder.btnPin.visibility = View.GONE
-                itemHolder.btnRestore.visibility = View.GONE
-                itemHolder.layoutSearchActions.visibility = View.GONE
+                item Holder.iv Drag Handle.visibility = View.VISIBLE
+                item Holder.btn Unpin.visibility = View.VISIBLE
+                item Holder.btn Pin.visibility = View.GONE
+                item Holder.btn Restore.visibility = View.GONE
+                item Holder.layout Search Actions.visibility = View.GONE
 
-                itemHolder.btnUnpin.setOnClickListener { onUnpin(item) }
-                itemHolder.ivDragHandle.setOnTouchListener { _, event ->
-                    if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                        onStartDrag(itemHolder)
+                item Holder.btn Unpin.set On Click Listener { on Unpin(item) }
+                item Holder.iv Drag Handle.set On Touch Listener { _, event ->
+                    if (event.action Masked == Motion Event.ACTION_DOWN) {
+                        on Start Drag(item Holder)
                     }
                     false
                 }
-                itemHolder.itemView.setOnClickListener(null)
+                item Holder.item View.set On Click Listener(null)
             }
 
-            is ManageRow.Flowing -> {
+            is Manage Row.Flowing -> {
                 val item = row.item
-                itemHolder.itemView.alpha = 1.0f
-                itemHolder.ivAppIcon.setImageDrawable(item.icon)
-                itemHolder.tvAppLabel.text = item.label
-                itemHolder.tvPackageName.text = item.packageName
+                item Holder.item View.alpha = 1.0f
+                item Holder.iv App Icon.set Image Drawable(item.icon)
+                item Holder.tv App Label.text = item.label
+                item Holder.tv Package Name.text = item.package Name
 
-                itemHolder.ivDragHandle.visibility = View.GONE
-                itemHolder.btnUnpin.visibility = View.GONE
-                itemHolder.btnPin.visibility = View.VISIBLE
-                itemHolder.btnRestore.visibility = View.GONE
-                itemHolder.layoutSearchActions.visibility = View.GONE
+                item Holder.iv Drag Handle.visibility = View.GONE
+                item Holder.btn Unpin.visibility = View.GONE
+                item Holder.btn Pin.visibility = View.VISIBLE
+                item Holder.btn Restore.visibility = View.GONE
+                item Holder.layout Search Actions.visibility = View.GONE
 
-                itemHolder.btnPin.setOnClickListener { onPin(item) }
-                itemHolder.itemView.setOnClickListener(null)
+                item Holder.btn Pin.set On Click Listener { on Pin(item) }
+                item Holder.item View.set On Click Listener(null)
             }
 
-            is ManageRow.Showing -> {
+            is Manage Row.Showing -> {
                 val item = row.item
-                itemHolder.itemView.alpha = 1.0f
-                itemHolder.ivAppIcon.setImageDrawable(item.icon)
-                itemHolder.tvAppLabel.text = item.label
-                itemHolder.tvPackageName.text = item.packageName
+                item Holder.item View.alpha = 1.0f
+                item Holder.iv App Icon.set Image Drawable(item.icon)
+                item Holder.tv App Label.text = item.label
+                item Holder.tv Package Name.text = item.package Name
 
-                itemHolder.ivDragHandle.visibility = View.VISIBLE
-                itemHolder.btnUnpin.visibility = View.GONE
-                itemHolder.btnPin.visibility = View.GONE
-                itemHolder.btnRestore.visibility = View.GONE
-                itemHolder.layoutSearchActions.visibility = View.GONE
+                item Holder.iv Drag Handle.visibility = View.VISIBLE
+                item Holder.btn Unpin.visibility = View.GONE
+                item Holder.btn Pin.visibility = View.GONE
+                item Holder.btn Restore.visibility = View.GONE
+                item Holder.layout Search Actions.visibility = View.GONE
 
-                itemHolder.ivDragHandle.setOnTouchListener { _, event ->
-                    if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                        onStartDrag(itemHolder)
+                item Holder.iv Drag Handle.set On Touch Listener { _, event ->
+                    if (event.action Masked == Motion Event.ACTION_DOWN) {
+                        on Start Drag(item Holder)
                     }
                     false
                 }
-                itemHolder.itemView.setOnClickListener(null)
+                item Holder.item View.set On Click Listener(null)
             }
 
-            is ManageRow.Hidden -> {
+            is Manage Row.Hidden -> {
                 val item = row.item
-                itemHolder.itemView.alpha = 0.75f
-                itemHolder.ivAppIcon.setImageDrawable(item.icon)
-                itemHolder.tvAppLabel.text = item.label
-                itemHolder.tvPackageName.text = item.packageName
+                item Holder.item View.alpha = 0.75f
+                item Holder.iv App Icon.set Image Drawable(item.icon)
+                item Holder.tv App Label.text = item.label
+                item Holder.tv Package Name.text = item.package Name
 
-                itemHolder.ivDragHandle.visibility = View.GONE
-                itemHolder.btnUnpin.visibility = View.GONE
-                itemHolder.btnPin.visibility = View.GONE
-                itemHolder.btnRestore.visibility = View.VISIBLE
-                itemHolder.layoutSearchActions.visibility = View.GONE
+                item Holder.iv Drag Handle.visibility = View.GONE
+                item Holder.btn Unpin.visibility = View.GONE
+                item Holder.btn Pin.visibility = View.GONE
+                item Holder.btn Restore.visibility = View.VISIBLE
+                item Holder.layout Search Actions.visibility = View.GONE
 
-                val restoreAction = View.OnClickListener { onRestore(item) }
-                itemHolder.btnRestore.setOnClickListener(restoreAction)
-                itemHolder.itemView.setOnClickListener(restoreAction)
+                val restore Action = View.On Click Listener { on Restore(item) }
+                item Holder.btn Restore.set On Click Listener(restore Action)
+                item Holder.item View.set On Click Listener(restore Action)
             }
 
-            is ManageRow.Search -> {
+            is Manage Row.Search -> {
                 val item = row.item
-                itemHolder.ivAppIcon.setImageDrawable(item.icon)
-                itemHolder.tvAppLabel.text = item.label
-                itemHolder.tvPackageName.text = item.packageName
+                item Holder.iv App Icon.set Image Drawable(item.icon)
+                item Holder.tv App Label.text = item.label
+                item Holder.tv Package Name.text = item.package Name
 
-                itemHolder.ivDragHandle.visibility = View.GONE
-                itemHolder.btnUnpin.visibility = View.GONE
-                itemHolder.btnPin.visibility = View.GONE
-                itemHolder.btnRestore.visibility = View.GONE
-                itemHolder.layoutSearchActions.visibility = View.VISIBLE
+                item Holder.iv Drag Handle.visibility = View.GONE
+                item Holder.btn Unpin.visibility = View.GONE
+                item Holder.btn Pin.visibility = View.GONE
+                item Holder.btn Restore.visibility = View.GONE
+                item Holder.layout Search Actions.visibility = View.VISIBLE
 
-                if (item.isEnabled) {
-                    itemHolder.itemView.alpha = 1.0f
-                    itemHolder.btnSearchPin.visibility = View.VISIBLE
-                    itemHolder.btnSearchHide.visibility = View.VISIBLE
-                    itemHolder.btnSearchRestore.visibility = View.GONE
+                if (item.is Enabled) {
+                    item Holder.item View.alpha = 1.0f
+                    item Holder.btn Search Pin.visibility = View.VISIBLE
+                    item Holder.btn Search Hide.visibility = View.VISIBLE
+                    item Holder.btn Search Restore.visibility = View.GONE
 
-                    if (row.isPinned) {
-                        itemHolder.btnSearchPin.text = "CancelPin"
-                        itemHolder.btnSearchPin.setOnClickListener { onUnpin(item) }
+                    if (row.is Pinned) {
+                        item Holder.btn Search Pin.text = "Cancel Pin"
+                        item Holder.btn Search Pin.set On Click Listener { on Unpin(item) }
                     } else {
-                        itemHolder.btnSearchPin.text = "Pin"
-                        itemHolder.btnSearchPin.setOnClickListener { onPin(item) }
+                        item Holder.btn Search Pin.text = "Pin"
+                        item Holder.btn Search Pin.set On Click Listener { on Pin(item) }
                     }
 
-                    itemHolder.btnSearchHide.setOnClickListener { onStash(item) }
-                    itemHolder.itemView.setOnClickListener(null)
+                    item Holder.btn Search Hide.set On Click Listener { on Stash(item) }
+                    item Holder.item View.set On Click Listener(null)
                 } else {
-                    itemHolder.itemView.alpha = 0.75f
-                    itemHolder.btnSearchPin.visibility = View.GONE
-                    itemHolder.btnSearchHide.visibility = View.GONE
-                    itemHolder.btnSearchRestore.visibility = View.VISIBLE
+                    item Holder.item View.alpha = 0.75f
+                    item Holder.btn Search Pin.visibility = View.GONE
+                    item Holder.btn Search Hide.visibility = View.GONE
+                    item Holder.btn Search Restore.visibility = View.VISIBLE
 
-                    val restoreAction = View.OnClickListener { onRestore(item) }
-                    itemHolder.btnSearchRestore.setOnClickListener(restoreAction)
-                    itemHolder.itemView.setOnClickListener(restoreAction)
+                    val restore Action = View.On Click Listener { on Restore(item) }
+                    item Holder.btn Search Restore.set On Click Listener(restore Action)
+                    item Holder.item View.set On Click Listener(restore Action)
                 }
             }
         }

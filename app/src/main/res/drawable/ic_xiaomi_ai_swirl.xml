@@ -2,20 +2,20 @@
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="100"
-    android:viewportHeight="100">
+    android:viewport Width="100"
+    android:viewport Height="100">
 
     <!-- 1. Outer Top-Left Orange Arc -->
     <path
-        android:pathData="M 33 67 A 34 34 0 0 1 67 33"
-        android:strokeWidth="12"
-        android:strokeLineCap="round">
-        <aapt:attr name="android:strokeColor">
+        android:path Data="M 33 67 A 34 34 0 0 1 67 33"
+        android:stroke Width="12"
+        android:stroke Line Cap="round">
+        <aapt:attr name="android:stroke Color">
             <gradient
-                android:startX="0"
-                android:startY="0"
-                android:endX="100"
-                android:endY="80"
+                android:start X="0"
+                android:start Y="0"
+                android:end X="100"
+                android:end Y="80"
                 android:type="linear">
                 <item android:offset="0.0" android:color="#FF5E3A" />
                 <item android:offset="0.5" android:color="#FF8A48" />
@@ -26,15 +26,15 @@
 
     <!-- 2. Inner Top-Right Lavender Arc -->
     <path
-        android:pathData="M 45 44 A 20 20 0 0 1 71 52"
-        android:strokeWidth="10"
-        android:strokeLineCap="round">
-        <aapt:attr name="android:strokeColor">
+        android:path Data="M 45 44 A 20 20 0 0 1 71 52"
+        android:stroke Width="10"
+        android:stroke Line Cap="round">
+        <aapt:attr name="android:stroke Color">
             <gradient
-                android:startX="0"
-                android:startY="0"
-                android:endX="100"
-                android:endY="100"
+                android:start X="0"
+                android:start Y="0"
+                android:end X="100"
+                android:end Y="100"
                 android:type="linear">
                 <item android:offset="0.0" android:color="#E8A7D5" />
                 <item android:offset="0.5" android:color="#C58CE8" />
@@ -45,15 +45,15 @@
 
     <!-- 3. Outer Bottom-Right Blue Arc -->
     <path
-        android:pathData="M 67 33 A 34 34 0 0 1 33 67"
-        android:strokeWidth="12"
-        android:strokeLineCap="round">
-        <aapt:attr name="android:strokeColor">
+        android:path Data="M 67 33 A 34 34 0 0 1 33 67"
+        android:stroke Width="12"
+        android:stroke Line Cap="round">
+        <aapt:attr name="android:stroke Color">
             <gradient
-                android:startX="0"
-                android:startY="0"
-                android:endX="100"
-                android:endY="100"
+                android:start X="0"
+                android:start Y="0"
+                android:end X="100"
+                android:end Y="100"
                 android:type="linear">
                 <item android:offset="0.0" android:color="#2D72F6" />
                 <item android:offset="0.6" android:color="#3B8EF8" />
@@ -64,15 +64,15 @@
 
     <!-- 4. Inner Bottom-Left Cyan Arc -->
     <path
-        android:pathData="M 55 56 A 20 20 0 0 1 29 48"
-        android:strokeWidth="10"
-        android:strokeLineCap="round">
-        <aapt:attr name="android:strokeColor">
+        android:path Data="M 55 56 A 20 20 0 0 1 29 48"
+        android:stroke Width="10"
+        android:stroke Line Cap="round">
+        <aapt:attr name="android:stroke Color">
             <gradient
-                android:startX="0"
-                android:startY="0"
-                android:endX="100"
-                android:endY="100"
+                android:start X="0"
+                android:start Y="0"
+                android:end X="100"
+                android:end Y="100"
                 android:type="linear">
                 <item android:offset="0.0" android:color="#38BDF8" />
                 <item android:offset="0.6" android:color="#7DD3FC" />

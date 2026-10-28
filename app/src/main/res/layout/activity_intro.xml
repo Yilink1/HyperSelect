@@ -1,83 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<Linear Layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/introRoot"
+    android:id="@+id/intro Root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/hyper_bg"
     android:orientation="vertical">
 
-    <!-- Center ViewPager2 -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPagerIntro"
+    <!-- Center View Pager2 -->
+    <androidx.viewpager2.widget.View Pager2
+        android:id="@+id/view Pager Intro"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
     <!-- Bottom Indicator & Action Area -->
-    <LinearLayout
+    <Linear Layout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="42dp"
-        android:paddingBottom="36dp">
+        android:padding Horizontal="42dp"
+        android:padding Bottom="36dp">
 
         <!-- Dot Indicators (Fluid sliding track) -->
-        <FrameLayout
-            android:id="@+id/layoutDots"
+        <Frame Layout
+            android:id="@+id/layout Dots"
             android:layout_width="wrap_content"
             android:layout_height="6.5dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp">
+            android:layout_margin Bottom="24dp">
 
             <!-- Background inactive dots (3 static circles) -->
-            <LinearLayout
+            <Linear Layout
                 android:layout_width="wrap_content"
                 android:layout_height="6.5dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <View
-                    android:id="@+id/dotIntro1"
+                    android:id="@+id/dot Intro1"
                     android:layout_width="6.5dp"
                     android:layout_height="6.5dp"
                     android:background="@drawable/bg_intro_dot_inactive" />
 
                 <View
-                    android:id="@+id/dotIntro2"
+                    android:id="@+id/dot Intro2"
                     android:layout_width="6.5dp"
                     android:layout_height="6.5dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_margin Start="8dp"
                     android:background="@drawable/bg_intro_dot_inactive" />
 
                 <View
-                    android:id="@+id/dotIntro3"
+                    android:id="@+id/dot Intro3"
                     android:layout_width="6.5dp"
                     android:layout_height="6.5dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_margin Start="8dp"
                     android:background="@drawable/bg_intro_dot_inactive" />
-            </LinearLayout>
+            </Linear Layout>
 
             <!-- Foreground active fluid sliding noodle -->
             <View
-                android:id="@+id/dotActivePill"
+                android:id="@+id/dot Active Pill"
                 android:layout_width="6.5dp"
                 android:layout_height="6.5dp"
                 android:background="@drawable/bg_intro_dot_active" />
-        </FrameLayout>
+        </Frame Layout>
 
         <!-- Main Action Pill Button -->
         <Button
-            android:id="@+id/btnIntroAction"
+            android:id="@+id/btn Intro Action"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/bg_intro_btn"
             android:elevation="0dp"
-            android:stateListAnimator="@null"
+            android:state List Animator="@null"
             android:text="Continue"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:text Color="#FFFFFF"
+            android:text Size="16sp"
+            android:text Style="bold" />
+    </Linear Layout>
 
-</LinearLayout>
+</Linear Layout>

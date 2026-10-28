@@ -1,6 +1,6 @@
-# HyperSelect
+# Hyper Select
 
-A module for Xiaomi HyperOS that customizes the text selection menu, system share sheet, and "Open with" dialog.
+A module for Xiaomi Hyper OS that customizes the text selection menu, system share sheet, and "Open with" dialog.
 
 ---
 
@@ -31,9 +31,9 @@ A module for Xiaomi HyperOS that customizes the text selection menu, system shar
 
 ## Requirements
 
-- **System**: Xiaomi HyperOS 2.0 / OS 3 (theoretically compatible with 1.0+)
-- **Framework**: LSPosed (based on LibXposed API 102)
-- **Scope**: System Framework, IntentResolver
+- **System**: Xiaomi Hyper OS 2.0 / OS 3 (theoretically compatible with 1.0+)
+- **Framework**: LSPosed (based on Lib Xposed API 102)
+- **Scope**: System Framework, Intent Resolver
 ---
 
 ## License

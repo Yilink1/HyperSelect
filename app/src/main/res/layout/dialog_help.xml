@@ -1,138 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<Linear Layout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/bg_dialog_modern"
-    android:paddingStart="28dp"
-    android:paddingEnd="28dp"
-    android:paddingTop="16dp"
-    android:paddingBottom="24dp">
+    android:padding Start="28dp"
+    android:padding End="28dp"
+    android:padding Top="16dp"
+    android:padding Bottom="24dp">
 
     <!-- Top Floating Sheet Handle Indicator -->
     <View
         android:layout_width="38dp"
         android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="18dp"
+        android:layout_margin Bottom="18dp"
         android:background="@drawable/bg_handle_bar" />
 
     <!-- Header -->
-    <TextView
+    <Text View
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Usage Instructions"
-        android:textColor="@color/hyper_text_primary"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:text Color="@color/hyper_text_primary"
+        android:text Size="20sp"
+        android:text Style="bold" />
 
     <!-- Feature Row 1: Archive -->
-    <LinearLayout
+    <Linear Layout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
+        android:layout_margin Top="22dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <FrameLayout
+        <Frame Layout
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/bg_icon_circle">
 
-            <ImageView
+            <Image View
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_help_gesture" />
-        </FrameLayout>
+        </Frame Layout>
 
-        <TextView
+        <Text View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_margin Start="16dp"
             android:layout_weight="1"
             android:text="Swipe left to hide card"
-            android:textColor="@color/hyper_text_primary"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:text Color="@color/hyper_text_primary"
+            android:text Size="16sp"
+            android:text Style="bold" />
+    </Linear Layout>
 
     <!-- Feature Row 2: Sort -->
-    <LinearLayout
+    <Linear Layout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
+        android:layout_margin Top="18dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <FrameLayout
+        <Frame Layout
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/bg_icon_circle">
 
-            <ImageView
+            <Image View
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_help_menu" />
-        </FrameLayout>
+        </Frame Layout>
 
-        <TextView
+        <Text View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_margin Start="16dp"
             android:layout_weight="1"
-            android:text="Press and holdrightdrag side handleSort"
-            android:textColor="@color/hyper_text_primary"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:text="Press and holdrightdrag side handle Sort"
+            android:text Color="@color/hyper_text_primary"
+            android:text Size="16sp"
+            android:text Style="bold" />
+    </Linear Layout>
 
     <!-- Feature Row 3: Sync -->
-    <LinearLayout
+    <Linear Layout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
+        android:layout_margin Top="18dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <FrameLayout
+        <Frame Layout
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/bg_icon_circle">
 
-            <ImageView
+            <Image View
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_help_sync" />
-        </FrameLayout>
+        </Frame Layout>
 
-        <TextView
+        <Text View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_margin Start="16dp"
             android:layout_weight="1"
             android:text="All changes take effect immediately"
-            android:textColor="@color/hyper_text_primary"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:text Color="@color/hyper_text_primary"
+            android:text Size="16sp"
+            android:text Style="bold" />
+    </Linear Layout>
 
     <!-- Action Button -->
-    <TextView
-        android:id="@+id/btnHelpConfirm"
+    <Text View
+        android:id="@+id/btn Help Confirm"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="26dp"
-        android:layout_marginHorizontal="10dp"
+        android:layout_margin Top="26dp"
+        android:layout_margin Horizontal="10dp"
         android:background="@drawable/bg_intro_btn"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"
         android:text="Got it"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:text Color="#FFFFFF"
+        android:text Size="16sp"
+        android:text Style="bold" />
 
-</LinearLayout>
+</Linear Layout>

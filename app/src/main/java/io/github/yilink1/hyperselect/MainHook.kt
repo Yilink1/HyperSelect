@@ -1,205 +1,205 @@
 package io.github.yilink1.hyperselect
 
-import android.content.ComponentName
+import android.content.Component Name
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInfo
-import android.content.pm.ResolveInfo
-import android.database.ContentObserver
+import android.content.pm.Package Info
+import android.content.pm.Resolve Info
+import android.database.Content Observer
 import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.Handler
-import android.os.HandlerThread
+import android.os.Handler Thread
 import android.os.Process
-import android.os.SystemClock
+import android.os.System Clock
 import android.util.Log
-import io.github.libxposed.api.XposedModule
-import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
-import io.github.libxposed.api.XposedModuleInterface.PackageReadyParam
-import io.github.libxposed.api.XposedModuleInterface.SystemServerStartingParam
+import io.github.libxposed.api.Xposed Module
+import io.github.libxposed.api.Xposed Module Interface.Module Loaded Param
+import io.github.libxposed.api.Xposed Module Interface.Package Ready Param
+import io.github.libxposed.api.Xposed Module Interface.System Server Starting Param
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 
-class MainHook : XposedModule() {
+class Main Hook : Xposed Module() {
 
     companion object {
-        private const val TAG = "HyperSelect"
+        private const val TAG = "Hyper Select"
         private const val DEBUG = false
         const val EXTRA_RAW_QUERY = "io.github.yilink1.hyperselect.EXTRA_RAW_QUERY"
 
         @Volatile
-        private var cachedRules: RuleConfig? = null
+        private var cached Rules: Rule Config? = null
 
         @Volatile
-        private var observerRegistered = false
+        private var observer Registered = false
 
         @Volatile
-        private var moduleUid = -1
+        private var module Uid = -1
 
         @Volatile
-        private var resolverAppId = -1
+        private var resolver App Id = -1
 
-        private val workerThread = HandlerThread("HyperSelect-Worker").apply {
-            setUncaughtExceptionHandler { _, throwable ->
-                Log.e(TAG, "Caught unhandled exception in HyperSelect-Worker:\n${Log.getStackTraceString(throwable)}")
+        private val worker Thread = Handler Thread("Hyper Select-Worker").apply {
+            set Uncaught Exception Handler { _, throwable ->
+                Log.e(TAG, "Caught unhandled exception in Hyper Select-Worker:\n${Log.get Stack Trace String(throwable)}")
             }
             start()
         }
-        private val workerHandler = Handler(workerThread.looper)
+        private val worker Handler = Handler(worker Thread.looper)
     }
 
-    @Volatile private var servicesReady = false
-    private val refreshLock = Any()
-    private var refreshAt = Long.MAX_VALUE
-    private var retryDelayMs = 1_000L
-    private val refreshTask = Runnable {
-        synchronized(refreshLock) { refreshAt = Long.MAX_VALUE }
-        if (!servicesReady) {
+    @Volatile private var services Ready = false
+    private val refresh Lock = Any()
+    private var refresh At = Long.MAX_VALUE
+    private var retry Delay Ms = 1_000L
+    private val refresh Task = Runnable {
+        synchronized(refresh Lock) { refresh At = Long.MAX_VALUE }
+        if (!services Ready) {
             // Fallback for ROMs without the expected boot-phase method.
-            servicesReady = runCatching {
-                Class.forName("android.os.SystemProperties")
-                    .getMethod("get", String::class.java)
+            services Ready = run Catching {
+                Class.for Name("android.os.System Properties")
+                    .get Method("get", String::class.java)
                     .invoke(null, "sys.boot_completed") == "1"
-            }.getOrDefault(false)
+            }.get Or Default(false)
         }
-        if (!servicesReady) {
-            scheduleRefresh(1_000L)
-        } else if (refreshRules()) {
-            retryDelayMs = 1_000L
+        if (!services Ready) {
+            schedule Refresh(1_000L)
+        } else if (refresh Rules()) {
+            retry Delay Ms = 1_000L
         } else {
-            scheduleRefresh(retryDelayMs)
-            retryDelayMs = (retryDelayMs * 2).coerceAtMost(60_000L)
+            schedule Refresh(retry Delay Ms)
+            retry Delay Ms = (retry Delay Ms * 2).coerce At Most(60_000L)
         }
     }
 
-    private fun scheduleRefresh(delayMs: Long = 0L) {
-        synchronized(refreshLock) {
-            val at = SystemClock.uptimeMillis() + delayMs
-            if (refreshAt <= at) return
-            workerHandler.removeCallbacks(refreshTask)
-            refreshAt = at
-            workerHandler.postAtTime(refreshTask, at)
+    private fun schedule Refresh(delay Ms: Long = 0L) {
+        synchronized(refresh Lock) {
+            val at = System Clock.uptime Millis() + delay Ms
+            if (refresh At <= at) return
+            worker Handler.remove Callbacks(refresh Task)
+            refresh At = at
+            worker Handler.post At Time(refresh Task, at)
         }
     }
 
-    override fun onModuleLoaded(param: ModuleLoadedParam) {
+    override fun on Module Loaded(param: Module Loaded Param) {
         if (DEBUG) {
-            log(Log.INFO, TAG, "onModuleLoaded: process=${param.processName}, isSystemServer=${param.isSystemServer}")
+            log(Log.INFO, TAG, "on Module Loaded: process=${param.process Name}, is System Server=${param.is System Server}")
         }
     }
 
-    override fun onPackageReady(param: PackageReadyParam) {
-        if (param.packageName == "com.android.intentresolver") {
-            hookIntentResolver(param.classLoader)
+    override fun on Package Ready(param: Package Ready Param) {
+        if (param.package Name == "com.android.intentresolver") {
+            hook Intent Resolver(param.class Loader)
         }
     }
 
-    override fun onSystemServerStarting(param: SystemServerStartingParam) {
-        val classLoader = param.classLoader
-        val sdkInt = Build.VERSION.SDK_INT
-        var resolveHooked = false
-        var queryHooked = false
-        var getPackageHooked = false
+    override fun on System Server Starting(param: System Server Starting Param) {
+        val class Loader = param.class Loader
+        val sdk Int = Build.VERSION.SDK_INT
+        var resolve Hooked = false
+        var query Hooked = false
+        var get Package Hooked = false
 
         // PHASE_THIRD_PARTY_APPS_CAN_START: application providers may now be started.
-        runCatching {
-            Class.forName("com.android.server.SystemServiceManager", false, classLoader)
-                .declaredMethods.filter {
-                    it.name == "startBootPhase" && it.parameterTypes.lastOrNull() == Int::class.javaPrimitiveType
-                }.forEach { method ->
+        run Catching {
+            Class.for Name("com.android.server.System Service Manager", false, class Loader)
+                .declared Methods.filter {
+                    it.name == "start Boot Phase" && it.parameter Types.last Or Null() == Int::class.java Primitive Type
+                }.for Each { method ->
                     hook(method).intercept { chain ->
                         val result = chain.proceed()
-                        if ((chain.args.last() as Int) >= 600 && !servicesReady) {
-                            servicesReady = true
-                            scheduleRefresh()
+                        if ((chain.args.last() as Int) >= 600 && !services Ready) {
+                            services Ready = true
+                            schedule Refresh()
                         }
                         result
                     }
                 }
-        }.onFailure { log(Log.WARN, TAG, "Boot-phase hook unavailable; using boot-completed fallback") }
-        scheduleRefresh(1_000L)
+        }.on Failure { log(Log.WARN, TAG, "Boot-phase hook unavailable; using boot-completed fallback") }
+        schedule Refresh(1_000L)
 
-        runCatching {
-            val ipmBaseClass = Class.forName("com.android.server.pm.IPackageManagerBase", false, classLoader)
+        run Catching {
+            val ipm Base Class = Class.for Name("com.android.server.pm.IPackage Manager Base", false, class Loader)
 
-            // 1. Hook resolveIntent -> Block Query search fallback
-            resolveHooked = hookResolveIntent(ipmBaseClass)
+            // 1. Hook resolve Intent -> Block Query search fallback
+            resolve Hooked = hook Resolve Intent(ipm Base Class)
 
-            // 2. Hook queryIntentActivities -> Block search fallback & manage PROCESS_TEXT items
-            queryHooked = hookQueryIntentActivities(ipmBaseClass, classLoader)
+            // 2. Hook query Intent Activities -> Block search fallback & manage PROCESS_TEXT items
+            query Hooked = hook Query Intent Activities(ipm Base Class, class Loader)
 
-            // 3. Hook getPackageInfo -> Globally block AiRecognition across all apps
-            getPackageHooked = hookGetPackageInfo(ipmBaseClass)
-        }.onFailure {
-            log(Log.ERROR, TAG, "Failed to hook system_server IPackageManagerBase on Android $sdkInt:\n${Log.getStackTraceString(it)}")
+            // 3. Hook get Package Info -> Globally block Ai Recognition across all apps
+            get Package Hooked = hook Get Package Info(ipm Base Class)
+        }.on Failure {
+            log(Log.ERROR, TAG, "Failed to hook system_server IPackage Manager Base on Android $sdk Int:\n${Log.get Stack Trace String(it)}")
         }
 
         // Diagnostic log: printed once on system_server startup
         log(
             Log.INFO,
             TAG,
-            "HyperSelect initialized on Android $sdkInt | Hooks: [resolveIntent=$resolveHooked, queryIntent=$queryHooked, getPackageInfo=$getPackageHooked]"
+            "Hyper Select initialized on Android $sdk Int | Hooks: [resolve Intent=$resolve Hooked, query Intent=$query Hooked, get Package Info=$get Package Hooked]"
         )
     }
 
-    private fun getSystemContext(): Context? {
-        return runCatching {
-            val activityThreadClass = Class.forName("android.app.ActivityThread")
-            val currentActivityThreadMethod = activityThreadClass.getDeclaredMethod("currentActivityThread")
-            val activityThread = currentActivityThreadMethod.invoke(null)
-            val getSystemContextMethod = activityThreadClass.getDeclaredMethod("getSystemContext")
-            getSystemContextMethod.invoke(activityThread) as? Context
-        }.getOrNull()
+    private fun get System Context(): Context? {
+        return run Catching {
+            val activity Thread Class = Class.for Name("android.app.Activity Thread")
+            val current Activity Thread Method = activity Thread Class.get Declared Method("current Activity Thread")
+            val activity Thread = current Activity Thread Method.invoke(null)
+            val get System Context Method = activity Thread Class.get Declared Method("get System Context")
+            get System Context Method.invoke(activity Thread) as? Context
+        }.get Or Null()
     }
 
     // Called only on the worker, after system services are ready.
-    private fun refreshRules(): Boolean {
-        val token = Binder.clearCallingIdentity()
+    private fun refresh Rules(): Boolean {
+        val token = Binder.clear Calling Identity()
         return try {
-            val context = getSystemContext() ?: return false
-            if (!observerRegistered) {
-                context.contentResolver.registerContentObserver(
-                    ConfigProvider.CONTENT_URI, true,
-                    object : ContentObserver(workerHandler) {
-                        override fun onChange(selfChange: Boolean) { scheduleRefresh() }
+            val context = get System Context() ?: return false
+            if (!observer Registered) {
+                context.content Resolver.register Content Observer(
+                    Config Provider.CONTENT_URI, true,
+                    object : Content Observer(worker Handler) {
+                        override fun on Change(self Change: Boolean) { schedule Refresh() }
                     }
                 )
-                observerRegistered = true
+                observer Registered = true
             }
-            val bundle = context.contentResolver.call(
-                ConfigProvider.CONTENT_URI,
-                ConfigProvider.METHOD_GET_RULES,
+            val bundle = context.content Resolver.call(
+                Config Provider.CONTENT_URI,
+                Config Provider.METHOD_GET_RULES,
                 null,
                 null
             )
-            val json = bundle?.getString(ConfigProvider.EXTRA_RULES_JSON)
-            val config = RuleConfig.parseResponse(json) ?: return false
-            cachedRules = config
-            runCatching {
-                val ai = context.packageManager.getApplicationInfo("com.android.intentresolver", 0)
-                resolverAppId = ai.uid % 100000
+            val json = bundle?.get String(Config Provider.EXTRA_RULES_JSON)
+            val config = Rule Config.parse Response(json) ?: return false
+            cached Rules = config
+            run Catching {
+                val ai = context.package Manager.get Application Info("com.android.intentresolver", 0)
+                resolver App Id = ai.uid % 100000
             }
-            if (DEBUG) log(Log.INFO, TAG, "Rules updated async: blacklist=${config.blacklist.size}, order=${config.customorder.size}, share=${config.shareBlacklist.size}, openWith=${config.openWithBlacklist.size}")
+            if (DEBUG) log(Log.INFO, TAG, "Rules updated async: blacklist=${config.blacklist.size}, order=${config.customorder.size}, share=${config.share Blacklist.size}, open With=${config.open With Blacklist.size}")
             true
         } catch (t: Throwable) {
             if (DEBUG) log(Log.WARN, TAG, "Failed to refresh rules async: ${t.message}")
             false
         } finally {
-            Binder.restoreCallingIdentity(token)
+            Binder.restore Calling Identity(token)
         }
     }
 
-    private fun isModuleCaller(callingUid: Int, context: Context?): Boolean {
-        if (callingUid <= 0) return false
-        if (moduleUid > 0 && callingUid == moduleUid) return true
-        val ctx = context ?: getSystemContext() ?: return false
-        val token = Binder.clearCallingIdentity()
+    private fun is Module Caller(calling Uid: Int, context: Context?): Boolean {
+        if (calling Uid <= 0) return false
+        if (module Uid > 0 && calling Uid == module Uid) return true
+        val ctx = context ?: get System Context() ?: return false
+        val token = Binder.clear Calling Identity()
         return try {
-            val pkgName = ctx.packageManager.getNameForUid(callingUid)
-            if (pkgName == "io.github.yilink1.hyperselect") {
-                moduleUid = callingUid
+            val pkg Name = ctx.package Manager.get Name For Uid(calling Uid)
+            if (pkg Name == "io.github.yilink1.hyperselect") {
+                module Uid = calling Uid
                 true
             } else {
                 false
@@ -207,275 +207,275 @@ class MainHook : XposedModule() {
         } catch (_: Throwable) {
             false
         } finally {
-            Binder.restoreCallingIdentity(token)
+            Binder.restore Calling Identity(token)
         }
     }
 
-    private fun isNotesAppCaller(callingUid: Int, context: Context?): Boolean {
-        if (callingUid <= 0) return false
-        val ctx = context ?: getSystemContext() ?: return false
-        val token = Binder.clearCallingIdentity()
+    private fun is Notes App Caller(calling Uid: Int, context: Context?): Boolean {
+        if (calling Uid <= 0) return false
+        val ctx = context ?: get System Context() ?: return false
+        val token = Binder.clear Calling Identity()
         return try {
-            ctx.packageManager.getPackagesForUid(callingUid)?.contains("com.miui.notes") == true
+            ctx.package Manager.get Packages For Uid(calling Uid)?.contains("com.miui.notes") == true
         } catch (_: Throwable) {
             false
         } finally {
-            Binder.restoreCallingIdentity(token)
+            Binder.restore Calling Identity(token)
         }
     }
 
-    private fun isIntentResolverCaller(callingUid: Int, context: Context?): Boolean {
-        if (callingUid <= 0) return false
-        val appId = callingUid % 100000
-        if (resolverAppId > 0) {
-            return appId == resolverAppId
+    private fun is Intent Resolver Caller(calling Uid: Int, context: Context?): Boolean {
+        if (calling Uid <= 0) return false
+        val app Id = calling Uid % 100000
+        if (resolver App Id > 0) {
+            return app Id == resolver App Id
         }
-        val ctx = context ?: getSystemContext() ?: return false
-        val token = Binder.clearCallingIdentity()
+        val ctx = context ?: get System Context() ?: return false
+        val token = Binder.clear Calling Identity()
         return try {
-            val ai = ctx.packageManager.getApplicationInfo("com.android.intentresolver", 0)
-            val resolvedAppId = ai.uid % 100000
-            resolverAppId = resolvedAppId
-            appId == resolvedAppId
+            val ai = ctx.package Manager.get Application Info("com.android.intentresolver", 0)
+            val resolved App Id = ai.uid % 100000
+            resolver App Id = resolved App Id
+            app Id == resolved App Id
         } catch (_: Throwable) {
             false
         } finally {
-            Binder.restoreCallingIdentity(token)
+            Binder.restore Calling Identity(token)
         }
     }
 
-    private fun hookResolveIntent(ipmBaseClass: Class<*>): Boolean {
-        return runCatching {
-            val resolveIntentMethod = ipmBaseClass.declaredMethods.firstOrNull { m ->
-                m.name == "resolveIntent" &&
-                    m.parameterTypes.size == 4 &&
-                    m.parameterTypes[0] == Intent::class.java &&
-                    m.parameterTypes[1] == String::class.java &&
-                    (m.parameterTypes[2] == Long::class.javaPrimitiveType || m.parameterTypes[2] == Int::class.javaPrimitiveType) &&
-                    m.parameterTypes[3] == Int::class.javaPrimitiveType
+    private fun hook Resolve Intent(ipm Base Class: Class<*>): Boolean {
+        return run Catching {
+            val resolve Intent Method = ipm Base Class.declared Methods.first Or Null { m ->
+                m.name == "resolve Intent" &&
+                    m.parameter Types.size == 4 &&
+                    m.parameter Types[0] == Intent::class.java &&
+                    m.parameter Types[1] == String::class.java &&
+                    (m.parameter Types[2] == Long::class.java Primitive Type || m.parameter Types[2] == Int::class.java Primitive Type) &&
+                    m.parameter Types[3] == Int::class.java Primitive Type
             }
-            if (resolveIntentMethod != null) {
-                hook(resolveIntentMethod).intercept { chain ->
+            if (resolve Intent Method != null) {
+                hook(resolve Intent Method).intercept { chain ->
                     val intent = chain.args[0] as? Intent
-                    if (HookPolicy.isEditorSearch(intent)) {
-                        if (DEBUG) log(Log.INFO, TAG, "Blocked Query resolveIntent: ${intent?.dataString}")
+                    if (Hook Policy.is Editor Search(intent)) {
+                        if (DEBUG) log(Log.INFO, TAG, "Blocked Query resolve Intent: ${intent?.data String}")
                         return@intercept null
                     }
                     chain.proceed()
                 }
                 true
             } else {
-                log(Log.WARN, TAG, "resolveIntent(Intent, String, long/int, int) not found in IPackageManagerBase")
+                log(Log.WARN, TAG, "resolve Intent(Intent, String, long/int, int) not found in IPackage Manager Base")
                 false
             }
-        }.onFailure {
-            log(Log.WARN, TAG, "Failed to hook resolveIntent:\n${Log.getStackTraceString(it)}")
-        }.getOrDefault(false)
+        }.on Failure {
+            log(Log.WARN, TAG, "Failed to hook resolve Intent:\n${Log.get Stack Trace String(it)}")
+        }.get Or Default(false)
     }
 
-    private fun hookQueryIntentActivities(ipmBaseClass: Class<*>, classLoader: ClassLoader): Boolean {
-        return runCatching {
-            val queryMethod = ipmBaseClass.declaredMethods.firstOrNull { m ->
-                m.name == "queryIntentActivities" &&
-                    m.parameterTypes.size == 4 &&
-                    m.parameterTypes[0] == Intent::class.java &&
-                    m.parameterTypes[1] == String::class.java &&
-                    (m.parameterTypes[2] == Long::class.javaPrimitiveType || m.parameterTypes[2] == Int::class.javaPrimitiveType) &&
-                    m.parameterTypes[3] == Int::class.javaPrimitiveType
+    private fun hook Query Intent Activities(ipm Base Class: Class<*>, class Loader: Class Loader): Boolean {
+        return run Catching {
+            val query Method = ipm Base Class.declared Methods.first Or Null { m ->
+                m.name == "query Intent Activities" &&
+                    m.parameter Types.size == 4 &&
+                    m.parameter Types[0] == Intent::class.java &&
+                    m.parameter Types[1] == String::class.java &&
+                    (m.parameter Types[2] == Long::class.java Primitive Type || m.parameter Types[2] == Int::class.java Primitive Type) &&
+                    m.parameter Types[3] == Int::class.java Primitive Type
             }
-            if (queryMethod != null) {
-                val sliceClass = Class.forName("android.content.pm.ParceledListSlice", false, classLoader)
-                val sliceConstructor = sliceClass.getConstructor(List::class.java)
-                val getListMethod = sliceClass.getMethod("getList")
+            if (query Method != null) {
+                val slice Class = Class.for Name("android.content.pm.Parceled List Slice", false, class Loader)
+                val slice Constructor = slice Class.get Constructor(List::class.java)
+                val get List Method = slice Class.get Method("get List")
 
-                hook(queryMethod).intercept { chain ->
+                hook(query Method).intercept { chain ->
                     val intent = chain.args[0] as? Intent
 
                     // 1. Block fallback search
-                    if (HookPolicy.isEditorSearch(intent)) {
-                        if (DEBUG) log(Log.INFO, TAG, "Blocked Query queryIntentActivities: ${intent?.dataString}")
-                        return@intercept sliceConstructor.newInstance(emptyList<Any>())
+                    if (Hook Policy.is Editor Search(intent)) {
+                        if (DEBUG) log(Log.INFO, TAG, "Blocked Query query Intent Activities: ${intent?.data String}")
+                        return@intercept slice Constructor.new Instance(empty List<Any>())
                     }
 
-                    val callingUid = Binder.getCallingUid()
+                    val calling Uid = Binder.get Calling Uid()
 
                     // 2. Filter & sort PROCESS_TEXT items
                     if (intent != null && Intent.ACTION_PROCESS_TEXT == intent.action) {
-                        val isBypass = intent.getBooleanExtra(EXTRA_RAW_QUERY, false) && isModuleCaller(callingUid, getSystemContext())
+                        val is Bypass = intent.get Boolean Extra(EXTRA_RAW_QUERY, false) && is Module Caller(calling Uid, get System Context())
 
-                        if (isBypass) {
+                        if (is Bypass) {
                             return@intercept chain.proceed()
                         }
 
-                        val rawResult = chain.proceed()
-                        if (rawResult != null) {
-                            return@intercept processTextActivities(rawResult, getListMethod, sliceConstructor)
+                        val raw Result = chain.proceed()
+                        if (raw Result != null) {
+                            return@intercept process Text Activities(raw Result, get List Method, slice Constructor)
                         }
-                        return@intercept rawResult
+                        return@intercept raw Result
                     }
 
                     // 3. Filter Share Menu & Open With Menu for com.android.intentresolver
-                    if (intent != null && isIntentResolverCaller(callingUid, getSystemContext())) {
-                        val rawResult = chain.proceed()
-                        if (rawResult != null) {
-                            return@intercept processResolverActivities(intent, rawResult, getListMethod, sliceConstructor)
+                    if (intent != null && is Intent Resolver Caller(calling Uid, get System Context())) {
+                        val raw Result = chain.proceed()
+                        if (raw Result != null) {
+                            return@intercept process Resolver Activities(intent, raw Result, get List Method, slice Constructor)
                         }
-                        return@intercept rawResult
+                        return@intercept raw Result
                     }
 
                     chain.proceed()
                 }
                 true
             } else {
-                log(Log.WARN, TAG, "queryIntentActivities(Intent, String, long/int, int) not found in IPackageManagerBase")
+                log(Log.WARN, TAG, "query Intent Activities(Intent, String, long/int, int) not found in IPackage Manager Base")
                 false
             }
-        }.onFailure {
-            log(Log.WARN, TAG, "Failed to hook queryIntentActivities:\n${Log.getStackTraceString(it)}")
-        }.getOrDefault(false)
+        }.on Failure {
+            log(Log.WARN, TAG, "Failed to hook query Intent Activities:\n${Log.get Stack Trace String(it)}")
+        }.get Or Default(false)
     }
 
-    private fun processTextActivities(
-        rawSlice: Any,
-        getListMethod: Method,
-        sliceConstructor: Constructor<*>
+    private fun process Text Activities(
+        raw Slice: Any,
+        get List Method: Method,
+        slice Constructor: Constructor<*>
     ): Any {
-        return runCatching {
+        return run Catching {
             @Suppress("UNCHECKED_CAST")
-            val originalList = getListMethod.invoke(rawSlice) as? List<ResolveInfo> ?: return rawSlice
-            if (originalList.isEmpty()) return rawSlice
+            val original List = get List Method.invoke(raw Slice) as? List<Resolve Info> ?: return raw Slice
+            if (original List.is Empty()) return raw Slice
 
-            val rules = cachedRules ?: RuleConfig()
+            val rules = cached Rules ?: Rule Config()
             val blacklist = rules.blacklist
             val customorder = rules.customorder
 
             // Filter out items in blacklist
-            val filtered = originalList.filterNot { resolveInfo ->
-                val activityInfo = resolveInfo.activityInfo ?: return@filterNot false
-                val pkg = activityInfo.packageName
-                val component = ComponentName(pkg, activityInfo.name).flattenToShortString()
+            val filtered = original List.filter Not { resolve Info ->
+                val activity Info = resolve Info.activity Info ?: return@filter Not false
+                val pkg = activity Info.package Name
+                val component = Component Name(pkg, activity Info.name).flatten To Short String()
                 blacklist.contains(component) || blacklist.contains(pkg)
             }
 
             // Reorder remaining items if custom order is defined
-            val resultList = if (customorder.isNotEmpty()) {
-                filtered.sortedWith(compareBy { resolveInfo ->
-                    val activityInfo = resolveInfo.activityInfo
-                    val pkg = activityInfo?.packageName ?: ""
-                    val component = if (activityInfo != null) ComponentName(pkg, activityInfo.name).flattenToShortString() else ""
+            val result List = if (customorder.is Not Empty()) {
+                filtered.sorted With(compare By { resolve Info ->
+                    val activity Info = resolve Info.activity Info
+                    val pkg = activity Info?.package Name ?: ""
+                    val component = if (activity Info != null) Component Name(pkg, activity Info.name).flatten To Short String() else ""
 
-                    val orderIndex = customorder.indexOf(component).takeIf { it >= 0 }
-                        ?: customorder.indexOf(pkg).takeIf { it >= 0 }
+                    val order Index = customorder.index Of(component).take If { it >= 0 }
+                        ?: customorder.index Of(pkg).take If { it >= 0 }
                         ?: Int.MAX_VALUE
-                    orderIndex
+                    order Index
                 })
             } else {
                 filtered
             }
 
-            // Create fresh ParceledListSlice with filtered & sorted list
-            sliceConstructor.newInstance(resultList)
-        }.getOrDefault(rawSlice)
+            // Create fresh Parceled List Slice with filtered & sorted list
+            slice Constructor.new Instance(result List)
+        }.get Or Default(raw Slice)
     }
 
-    private fun processResolverActivities(
+    private fun process Resolver Activities(
         intent: Intent,
-        rawSlice: Any,
-        getListMethod: Method,
-        sliceConstructor: Constructor<*>
+        raw Slice: Any,
+        get List Method: Method,
+        slice Constructor: Constructor<*>
     ): Any {
-        return runCatching {
+        return run Catching {
             @Suppress("UNCHECKED_CAST")
-            val originalList = getListMethod.invoke(rawSlice) as? List<ResolveInfo> ?: return rawSlice
-            if (originalList.isEmpty()) return rawSlice
+            val original List = get List Method.invoke(raw Slice) as? List<Resolve Info> ?: return raw Slice
+            if (original List.is Empty()) return raw Slice
 
-            val rules = cachedRules ?: RuleConfig()
+            val rules = cached Rules ?: Rule Config()
             val action = intent.action
 
             val blacklist = when {
-                action == Intent.ACTION_SEND || action == Intent.ACTION_SEND_MULTIPLE -> rules.shareBlacklist
-                action == Intent.ACTION_VIEW -> rules.openWithBlacklist
-                else -> emptySet()
+                action == Intent.ACTION_SEND || action == Intent.ACTION_SEND_MULTIPLE -> rules.share Blacklist
+                action == Intent.ACTION_VIEW -> rules.open With Blacklist
+                else -> empty Set()
             }
 
             val customorder = when {
-                action == Intent.ACTION_SEND || action == Intent.ACTION_SEND_MULTIPLE -> rules.shareCustomorder
-                action == Intent.ACTION_VIEW -> rules.openWithCustomorder
-                else -> emptyList()
+                action == Intent.ACTION_SEND || action == Intent.ACTION_SEND_MULTIPLE -> rules.share Customorder
+                action == Intent.ACTION_VIEW -> rules.open With Customorder
+                else -> empty List()
             }
 
-            val queryMsg = "Resolver query: action=$action, items=${originalList.size}, blacklist=${blacklist.size}, order=${customorder.size}"
-            Log.i(TAG, queryMsg)
-            if (DEBUG) log(Log.INFO, TAG, queryMsg)
+            val query Msg = "Resolver query: action=$action, items=${original List.size}, blacklist=${blacklist.size}, order=${customorder.size}"
+            Log.i(TAG, query Msg)
+            if (DEBUG) log(Log.INFO, TAG, query Msg)
 
-            if (blacklist.isEmpty() && customorder.isEmpty()) return rawSlice
+            if (blacklist.is Empty() && customorder.is Empty()) return raw Slice
 
-            val filtered = if (blacklist.isNotEmpty()) {
-                originalList.filterNot { resolveInfo ->
-                    val activityInfo = resolveInfo.activityInfo ?: return@filterNot false
-                    val pkg = activityInfo.packageName
-                    val component = ComponentName(pkg, activityInfo.name).flattenToShortString()
+            val filtered = if (blacklist.is Not Empty()) {
+                original List.filter Not { resolve Info ->
+                    val activity Info = resolve Info.activity Info ?: return@filter Not false
+                    val pkg = activity Info.package Name
+                    val component = Component Name(pkg, activity Info.name).flatten To Short String()
                     blacklist.contains(component) || blacklist.contains(pkg)
                 }
             } else {
-                originalList
+                original List
             }
 
-            if (blacklist.isNotEmpty()) {
-                val filteredMsg = "Resolver filtered: before=${originalList.size}, after=${filtered.size}"
-                Log.i(TAG, filteredMsg)
-                if (DEBUG) log(Log.INFO, TAG, filteredMsg)
+            if (blacklist.is Not Empty()) {
+                val filtered Msg = "Resolver filtered: before=${original List.size}, after=${filtered.size}"
+                Log.i(TAG, filtered Msg)
+                if (DEBUG) log(Log.INFO, TAG, filtered Msg)
             }
 
-            val resultList = if (customorder.isNotEmpty()) {
-                filtered.sortedWith(compareBy { resolveInfo ->
-                    val activityInfo = resolveInfo.activityInfo
-                    val pkg = activityInfo?.packageName ?: ""
-                    val component = if (activityInfo != null) ComponentName(pkg, activityInfo.name).flattenToShortString() else ""
+            val result List = if (customorder.is Not Empty()) {
+                filtered.sorted With(compare By { resolve Info ->
+                    val activity Info = resolve Info.activity Info
+                    val pkg = activity Info?.package Name ?: ""
+                    val component = if (activity Info != null) Component Name(pkg, activity Info.name).flatten To Short String() else ""
 
-                    val orderIndex = customorder.indexOf(component).takeIf { it >= 0 }
-                        ?: customorder.indexOf(pkg).takeIf { it >= 0 }
+                    val order Index = customorder.index Of(component).take If { it >= 0 }
+                        ?: customorder.index Of(pkg).take If { it >= 0 }
                         ?: Int.MAX_VALUE
-                    orderIndex
+                    order Index
                 })
             } else {
                 filtered
             }
 
-            sliceConstructor.newInstance(resultList)
-        }.getOrDefault(rawSlice)
+            slice Constructor.new Instance(result List)
+        }.get Or Default(raw Slice)
     }
 
-    private fun hookGetPackageInfo(ipmBaseClass: Class<*>): Boolean {
-        return runCatching {
-            val getPackageInfoMethod = ipmBaseClass.declaredMethods.firstOrNull { m ->
-                m.name == "getPackageInfo" &&
-                    m.parameterTypes.size == 3 &&
-                    m.parameterTypes[0] == String::class.java &&
-                    (m.parameterTypes[1] == Long::class.javaPrimitiveType || m.parameterTypes[1] == Int::class.javaPrimitiveType) &&
-                    m.parameterTypes[2] == Int::class.javaPrimitiveType
+    private fun hook Get Package Info(ipm Base Class: Class<*>): Boolean {
+        return run Catching {
+            val get Package Info Method = ipm Base Class.declared Methods.first Or Null { m ->
+                m.name == "get Package Info" &&
+                    m.parameter Types.size == 3 &&
+                    m.parameter Types[0] == String::class.java &&
+                    (m.parameter Types[1] == Long::class.java Primitive Type || m.parameter Types[1] == Int::class.java Primitive Type) &&
+                    m.parameter Types[2] == Int::class.java Primitive Type
             }
-            if (getPackageInfoMethod != null) {
-                hook(getPackageInfoMethod).intercept { chain ->
-                    val pkgName = chain.args[0] as? String
-                    val flags = (chain.args[1] as? Number)?.toLong() ?: 0L
+            if (get Package Info Method != null) {
+                hook(get Package Info Method).intercept { chain ->
+                    val pkg Name = chain.args[0] as? String
+                    val flags = (chain.args[1] as? Number)?.to Long() ?: 0L
 
-                    // Fast path: Only intercept Notes package info when flags == 0 and blockAiWriting is enabled
-                    val rules = cachedRules ?: RuleConfig()
-                    if (rules.blockAiWriting && pkgName == "com.miui.notes" && flags == 0L) {
-                        val callingPid = Binder.getCallingPid()
-                        val callingUid = Binder.getCallingUid()
-                        val myPid = Process.myPid()
-                        val context = getSystemContext()
+                    // Fast path: Only intercept Notes package info when flags == 0 and block Ai Writing is enabled
+                    val rules = cached Rules ?: Rule Config()
+                    if (rules.block Ai Writing && pkg Name == "com.miui.notes" && flags == 0L) {
+                        val calling Pid = Binder.get Calling Pid()
+                        val calling Uid = Binder.get Calling Uid()
+                        val my Pid = Process.my Pid()
+                        val context = get System Context()
                         // Don't spoof for system_server, and don't spoof for Notes itself
-                        if (callingPid != myPid && !isNotesAppCaller(callingUid, context)) {
-                            val original = chain.proceed() as? PackageInfo
+                        if (calling Pid != my Pid && !is Notes App Caller(calling Uid, context)) {
+                            val original = chain.proceed() as? Package Info
                             // Binder marshals after the hook returns. Clone first so even ROMs
-                            // returning cached PackageInfo objects keep their original version.
-                            val result = original?.let { HookPolicy.copyPackageInfo(it) }
+                            // returning cached Package Info objects keep their original version.
+                            val result = original?.let { Hook Policy.copy Package Info(it) }
                                 ?: return@intercept original
-                            if (DEBUG) log(Log.INFO, TAG, "Spoofing notes versionCode for pid=$callingPid, uid=$callingUid")
-                            result.longVersionCode = 1L
+                            if (DEBUG) log(Log.INFO, TAG, "Spoofing notes version Code for pid=$calling Pid, uid=$calling Uid")
+                            result.long Version Code = 1L
                             return@intercept result
                         }
                     }
@@ -483,260 +483,260 @@ class MainHook : XposedModule() {
                 }
                 true
             } else {
-                log(Log.WARN, TAG, "getPackageInfo(String, long/int, int) not found in IPackageManagerBase")
+                log(Log.WARN, TAG, "get Package Info(String, long/int, int) not found in IPackage Manager Base")
                 false
             }
-        }.onFailure {
-            log(Log.WARN, TAG, "Failed to hook getPackageInfo:\n${Log.getStackTraceString(it)}")
-        }.getOrDefault(false)
+        }.on Failure {
+            log(Log.WARN, TAG, "Failed to hook get Package Info:\n${Log.get Stack Trace String(it)}")
+        }.get Or Default(false)
     }
 
     @Volatile
-    private var latestIntentResolverAction: String? = null
+    private var latest Intent Resolver Action: String? = null
 
-    private fun hookIntentResolver(classLoader: ClassLoader) {
-        // 1. Hook ResolverListAdapter.processSortedList(List list, boolean b)
-        runCatching {
-            val adapterClass = Class.forName("com.android.intentresolver.ResolverListAdapter", false, classLoader)
-            val pslMethod = adapterClass.declaredMethods.firstOrNull {
-                it.name == "processSortedList" && it.parameterTypes.size == 2 && List::class.java.isAssignableFrom(it.parameterTypes[0])
+    private fun hook Intent Resolver(class Loader: Class Loader) {
+        // 1. Hook Resolver List Adapter.process Sorted List(List list, boolean b)
+        run Catching {
+            val adapter Class = Class.for Name("com.android.intentresolver.Resolver List Adapter", false, class Loader)
+            val psl Method = adapter Class.declared Methods.first Or Null {
+                it.name == "process Sorted List" && it.parameter Types.size == 2 && List::class.java.is Assignable From(it.parameter Types[0])
             }
-            if (pslMethod != null) {
-                var mContextField: Field? = null
-                var mTargetIntentField: Field? = null
-                var curr: Class<*>? = adapterClass
+            if (psl Method != null) {
+                var m Context Field: Field? = null
+                var m Target Intent Field: Field? = null
+                var curr: Class<*>? = adapter Class
                 while (curr != null && curr != Any::class.java) {
-                    if (mContextField == null) {
-                        runCatching { mContextField = curr.getDeclaredField("mContext").apply { isAccessible = true } }
+                    if (m Context Field == null) {
+                        run Catching { m Context Field = curr.get Declared Field("m Context").apply { is Accessible = true } }
                     }
-                    if (mTargetIntentField == null) {
-                        runCatching { mTargetIntentField = curr.getDeclaredField("mTargetIntent").apply { isAccessible = true } }
+                    if (m Target Intent Field == null) {
+                        run Catching { m Target Intent Field = curr.get Declared Field("m Target Intent").apply { is Accessible = true } }
                     }
                     curr = curr.superclass
                 }
 
-                hook(pslMethod).intercept { chain ->
-                    runCatching {
+                hook(psl Method).intercept { chain ->
+                    run Catching {
                         @Suppress("UNCHECKED_CAST")
-                        val list = chain.args[0] as? MutableList<Any> ?: return@runCatching
-                        val adapter = chain.thisObject
-                        val context = mContextField?.get(adapter) as? Context
-                        val targetIntent = mTargetIntentField?.get(adapter) as? Intent
-                        val action = targetIntent?.action
-                        if (!action.isNullOrBlank()) {
-                            latestIntentResolverAction = action
+                        val list = chain.args[0] as? Mutable List<Any> ?: return@run Catching
+                        val adapter = chain.this Object
+                        val context = m Context Field?.get(adapter) as? Context
+                        val target Intent = m Target Intent Field?.get(adapter) as? Intent
+                        val action = target Intent?.action
+                        if (!action.is Null Or Blank()) {
+                            latest Intent Resolver Action = action
                         }
-                        sortTargetsList(context, action, list, "processSortedList")
-                    }.onFailure {
-                        Log.e(TAG, "Failed in processSortedList sort hook: ${it.message}", it)
+                        sort Targets List(context, action, list, "process Sorted List")
+                    }.on Failure {
+                        Log.e(TAG, "Failed in process Sorted List sort hook: ${it.message}", it)
                     }
                     chain.proceed()
                 }
-                log(Log.INFO, TAG, "Successfully hooked com.android.intentresolver.ResolverListAdapter.processSortedList")
+                log(Log.INFO, TAG, "Successfully hooked com.android.intentresolver.Resolver List Adapter.process Sorted List")
             }
-        }.onFailure {
-            log(Log.WARN, TAG, "Failed to hook processSortedList:\n${Log.getStackTraceString(it)}")
+        }.on Failure {
+            log(Log.WARN, TAG, "Failed to hook process Sorted List:\n${Log.get Stack Trace String(it)}")
         }
 
-        // 2. Hook MiuiChooserGridAdapter$UpdateListTask.onPostExecute(Object)
-        runCatching {
-            val taskClass = Class.forName("com.android.intentresolver.adapter.MiuiChooserGridAdapter\$UpdateListTask", false, classLoader)
-            val postMethod = taskClass.declaredMethods.firstOrNull {
-                it.name == "onPostExecute" && it.parameterTypes.size == 1
+        // 2. Hook Miui Chooser Grid Adapter$Update List Task.on Post Execute(Object)
+        run Catching {
+            val task Class = Class.for Name("com.android.intentresolver.adapter.Miui Chooser Grid Adapter\$Update List Task", false, class Loader)
+            val post Method = task Class.declared Methods.first Or Null {
+                it.name == "on Post Execute" && it.parameter Types.size == 1
             }
-            if (postMethod != null) {
-                hook(postMethod).intercept { chain ->
-                    runCatching {
+            if (post Method != null) {
+                hook(post Method).intercept { chain ->
+                    run Catching {
                         @Suppress("UNCHECKED_CAST")
-                        val list = chain.args[0] as? MutableList<Any> ?: return@runCatching
-                        val action = latestIntentResolverAction ?: Intent.ACTION_SEND
-                        sortTargetsList(null, action, list, "MiuiChooserGrid")
-                    }.onFailure {
-                        Log.e(TAG, "Failed in MiuiChooserGrid onPostExecute hook: ${it.message}", it)
+                        val list = chain.args[0] as? Mutable List<Any> ?: return@run Catching
+                        val action = latest Intent Resolver Action ?: Intent.ACTION_SEND
+                        sort Targets List(null, action, list, "Miui Chooser Grid")
+                    }.on Failure {
+                        Log.e(TAG, "Failed in Miui Chooser Grid on Post Execute hook: ${it.message}", it)
                     }
                     chain.proceed()
                 }
-                log(Log.INFO, TAG, "Successfully hooked MiuiChooserGridAdapter\$UpdateListTask.onPostExecute")
+                log(Log.INFO, TAG, "Successfully hooked Miui Chooser Grid Adapter\$Update List Task.on Post Execute")
             }
-        }.onFailure {
-            log(Log.WARN, TAG, "Failed to hook MiuiChooserGridAdapter:\n${Log.getStackTraceString(it)}")
+        }.on Failure {
+            log(Log.WARN, TAG, "Failed to hook Miui Chooser Grid Adapter:\n${Log.get Stack Trace String(it)}")
         }
 
-        // 3. Hook ChooserListAdapter$2.onPostExecute(Object)
-        runCatching {
-            val taskClass = Class.forName("com.android.intentresolver.ChooserListAdapter\$2", false, classLoader)
-            val postMethod = taskClass.declaredMethods.firstOrNull {
-                it.name == "onPostExecute" && it.parameterTypes.size == 1
+        // 3. Hook Chooser List Adapter$2.on Post Execute(Object)
+        run Catching {
+            val task Class = Class.for Name("com.android.intentresolver.Chooser List Adapter\$2", false, class Loader)
+            val post Method = task Class.declared Methods.first Or Null {
+                it.name == "on Post Execute" && it.parameter Types.size == 1
             }
-            if (postMethod != null) {
-                hook(postMethod).intercept { chain ->
-                    runCatching {
+            if (post Method != null) {
+                hook(post Method).intercept { chain ->
+                    run Catching {
                         @Suppress("UNCHECKED_CAST")
-                        val list = chain.args[0] as? MutableList<Any> ?: return@runCatching
-                        val action = latestIntentResolverAction ?: Intent.ACTION_SEND
-                        sortTargetsList(null, action, list, "ChooserListAdapter2")
-                    }.onFailure {
-                        Log.e(TAG, "Failed in ChooserListAdapter\$2 onPostExecute hook: ${it.message}", it)
+                        val list = chain.args[0] as? Mutable List<Any> ?: return@run Catching
+                        val action = latest Intent Resolver Action ?: Intent.ACTION_SEND
+                        sort Targets List(null, action, list, "Chooser List Adapter2")
+                    }.on Failure {
+                        Log.e(TAG, "Failed in Chooser List Adapter\$2 on Post Execute hook: ${it.message}", it)
                     }
                     chain.proceed()
                 }
-                log(Log.INFO, TAG, "Successfully hooked ChooserListAdapter\$2.onPostExecute")
+                log(Log.INFO, TAG, "Successfully hooked Chooser List Adapter\$2.on Post Execute")
             }
-        }.onFailure {
-            log(Log.WARN, TAG, "Failed to hook ChooserListAdapter\$2:\n${Log.getStackTraceString(it)}")
+        }.on Failure {
+            log(Log.WARN, TAG, "Failed to hook Chooser List Adapter\$2:\n${Log.get Stack Trace String(it)}")
         }
 
-        // 4. Hook ResolverListController.sort(List) fallback
-        runCatching {
-            val controllerClass = Class.forName("com.android.intentresolver.ResolverListController", false, classLoader)
-            val sortMethod = controllerClass.declaredMethods.firstOrNull {
-                it.name == "sort" && it.parameterTypes.size == 1 && List::class.java.isAssignableFrom(it.parameterTypes[0])
+        // 4. Hook Resolver List Controller.sort(List) fallback
+        run Catching {
+            val controller Class = Class.for Name("com.android.intentresolver.Resolver List Controller", false, class Loader)
+            val sort Method = controller Class.declared Methods.first Or Null {
+                it.name == "sort" && it.parameter Types.size == 1 && List::class.java.is Assignable From(it.parameter Types[0])
             }
-            if (sortMethod != null) {
-                var mContextField: Field? = null
-                var mTargetIntentField: Field? = null
-                var curr: Class<*>? = controllerClass
+            if (sort Method != null) {
+                var m Context Field: Field? = null
+                var m Target Intent Field: Field? = null
+                var curr: Class<*>? = controller Class
                 while (curr != null && curr != Any::class.java) {
-                    if (mContextField == null) {
-                        runCatching { mContextField = curr.getDeclaredField("mContext").apply { isAccessible = true } }
+                    if (m Context Field == null) {
+                        run Catching { m Context Field = curr.get Declared Field("m Context").apply { is Accessible = true } }
                     }
-                    if (mTargetIntentField == null) {
-                        runCatching { mTargetIntentField = curr.getDeclaredField("mTargetIntent").apply { isAccessible = true } }
+                    if (m Target Intent Field == null) {
+                        run Catching { m Target Intent Field = curr.get Declared Field("m Target Intent").apply { is Accessible = true } }
                     }
                     curr = curr.superclass
                 }
 
-                hook(sortMethod).intercept { chain ->
+                hook(sort Method).intercept { chain ->
                     val result = chain.proceed()
-                    runCatching {
+                    run Catching {
                         @Suppress("UNCHECKED_CAST")
-                        val targets = chain.args[0] as? MutableList<Any> ?: return@runCatching
-                        val controller = chain.thisObject
-                        val context = mContextField?.get(controller) as? Context
-                        val targetIntent = mTargetIntentField?.get(controller) as? Intent
-                        val action = targetIntent?.action
-                        if (!action.isNullOrBlank()) {
-                            latestIntentResolverAction = action
+                        val targets = chain.args[0] as? Mutable List<Any> ?: return@run Catching
+                        val controller = chain.this Object
+                        val context = m Context Field?.get(controller) as? Context
+                        val target Intent = m Target Intent Field?.get(controller) as? Intent
+                        val action = target Intent?.action
+                        if (!action.is Null Or Blank()) {
+                            latest Intent Resolver Action = action
                         }
-                        sortTargetsList(context, action, targets, "ResolverListController.sort")
-                    }.onFailure {
-                        Log.e(TAG, "Failed in ResolverListController.sort hook: ${it.message}", it)
+                        sort Targets List(context, action, targets, "Resolver List Controller.sort")
+                    }.on Failure {
+                        Log.e(TAG, "Failed in Resolver List Controller.sort hook: ${it.message}", it)
                     }
                     result
                 }
-                log(Log.INFO, TAG, "Successfully hooked com.android.intentresolver.ResolverListController.sort")
+                log(Log.INFO, TAG, "Successfully hooked com.android.intentresolver.Resolver List Controller.sort")
             }
-        }.onFailure {
-            log(Log.WARN, TAG, "Failed to hook ResolverListController:\n${Log.getStackTraceString(it)}")
+        }.on Failure {
+            log(Log.WARN, TAG, "Failed to hook Resolver List Controller:\n${Log.get Stack Trace String(it)}")
         }
     }
 
-    private fun sortTargetsList(
+    private fun sort Targets List(
         context: Context?,
-        actionHint: String?,
-        targets: MutableList<Any>,
-        sourceTag: String
+        action Hint: String?,
+        targets: Mutable List<Any>,
+        source Tag: String
     ) {
-        if (targets.isEmpty()) return
-        val ctx = context ?: runCatching {
-            Class.forName("android.app.ActivityThread")
-                .getMethod("currentApplication")
+        if (targets.is Empty()) return
+        val ctx = context ?: run Catching {
+            Class.for Name("android.app.Activity Thread")
+                .get Method("current Application")
                 .invoke(null) as? Context
-        }.getOrNull() ?: return
+        }.get Or Null() ?: return
 
-        val bundle = runCatching {
-            ctx.contentResolver.call(
+        val bundle = run Catching {
+            ctx.content Resolver.call(
                 Uri.parse("content://io.github.yilink1.hyperselect.provider/rules"),
-                ConfigProvider.METHOD_GET_RULES,
+                Config Provider.METHOD_GET_RULES,
                 null,
                 null
             )
-        }.getOrNull()
+        }.get Or Null()
 
-        val json = bundle?.getString(ConfigProvider.EXTRA_RULES_JSON)
-        val config = RuleConfig.fromJson(json)
+        val json = bundle?.get String(Config Provider.EXTRA_RULES_JSON)
+        val config = Rule Config.from Json(json)
 
         val blacklist = when {
-            actionHint == Intent.ACTION_VIEW -> config.openWithBlacklist
-            else -> config.shareBlacklist
+            action Hint == Intent.ACTION_VIEW -> config.open With Blacklist
+            else -> config.share Blacklist
         }
 
-        if (blacklist.isNotEmpty()) {
-            val beforeCount = targets.size
-            targets.removeAll { item ->
-                val pair = extractTargetInfo(item)
+        if (blacklist.is Not Empty()) {
+            val before Count = targets.size
+            targets.remove All { item ->
+                val pair = extract Target Info(item)
                 val comp = pair?.first ?: ""
                 val pkg = pair?.second ?: ""
                 blacklist.contains(comp) || blacklist.contains(pkg)
             }
-            if (targets.size != beforeCount) {
-                Log.i(TAG, "IntentResolver blacklist filtered [$sourceTag]: before=$beforeCount, after=${targets.size}")
+            if (targets.size != before Count) {
+                Log.i(TAG, "Intent Resolver blacklist filtered [$source Tag]: before=$before Count, after=${targets.size}")
             }
         }
 
         val customorder = when {
-            actionHint == Intent.ACTION_VIEW -> config.openWithCustomorder
-            else -> config.shareCustomorder
+            action Hint == Intent.ACTION_VIEW -> config.open With Customorder
+            else -> config.share Customorder
         }
 
-        if (customorder.isNotEmpty()) {
-            val orderMap = HashMap<String, Int>(customorder.size)
+        if (customorder.is Not Empty()) {
+            val order Map = Hash Map<String, Int>(customorder.size)
             for (i in customorder.indices) {
-                orderMap[customorder[i]] = i
+                order Map[customorder[i]] = i
             }
 
-            val rankMap = java.util.IdentityHashMap<Any, Int>(targets.size)
+            val rank Map = java.util.Identity Hash Map<Any, Int>(targets.size)
             for (item in targets) {
-                val pair = extractTargetInfo(item)
+                val pair = extract Target Info(item)
                 val comp = pair?.first ?: ""
                 val pkg = pair?.second ?: ""
-                val rank = orderMap[comp] ?: orderMap[pkg] ?: Int.MAX_VALUE
-                rankMap[item] = rank
+                val rank = order Map[comp] ?: order Map[pkg] ?: Int.MAX_VALUE
+                rank Map[item] = rank
             }
 
-            targets.sortWith(compareBy { rankMap[it] ?: Int.MAX_VALUE })
-            val top3 = targets.take(3).mapNotNull { extractTargetInfo(it)?.first }
-            Log.i(TAG, "IntentResolver sort applied [$sourceTag]: action=$actionHint, customorderSize=${customorder.size}, targetsCount=${targets.size}, top3=$top3")
-            if (DEBUG) log(Log.INFO, TAG, "IntentResolver sort applied [$sourceTag]: action=$actionHint, targetsCount=${targets.size}")
+            targets.sort With(compare By { rank Map[it] ?: Int.MAX_VALUE })
+            val top3 = targets.take(3).map Not Null { extract Target Info(it)?.first }
+            Log.i(TAG, "Intent Resolver sort applied [$source Tag]: action=$action Hint, customorder Size=${customorder.size}, targets Count=${targets.size}, top3=$top3")
+            if (DEBUG) log(Log.INFO, TAG, "Intent Resolver sort applied [$source Tag]: action=$action Hint, targets Count=${targets.size}")
         }
     }
 
     @Volatile
-    private var cachedComponentNameField: Field? = null
+    private var cached Component Name Field: Field? = null
 
-    private fun extractTargetInfo(item: Any): Pair<String, String>? {
-        if (item is ResolveInfo) {
-            val ai = item.activityInfo ?: return null
-            return Pair(ComponentName(ai.packageName, ai.name).flattenToShortString(), ai.packageName)
+    private fun extract Target Info(item: Any): Pair<String, String>? {
+        if (item is Resolve Info) {
+            val ai = item.activity Info ?: return null
+            return Pair(Component Name(ai.package Name, ai.name).flatten To Short String(), ai.package Name)
         }
-        runCatching {
-            val comp = item.javaClass.getMethod("getResolvedComponentName").invoke(item) as? ComponentName
-            if (comp != null) return Pair(comp.flattenToShortString(), comp.packageName)
+        run Catching {
+            val comp = item.java Class.get Method("get Resolved Component Name").invoke(item) as? Component Name
+            if (comp != null) return Pair(comp.flatten To Short String(), comp.package Name)
         }
-        cachedComponentNameField?.let { field ->
-            runCatching {
-                val comp = field.get(item) as? ComponentName
-                if (comp != null) return Pair(comp.flattenToShortString(), comp.packageName)
+        cached Component Name Field?.let { field ->
+            run Catching {
+                val comp = field.get(item) as? Component Name
+                if (comp != null) return Pair(comp.flatten To Short String(), comp.package Name)
             }
         }
-        runCatching {
-            val comp = item.javaClass.getMethod("getComponentName").invoke(item) as? ComponentName
-            if (comp != null) return Pair(comp.flattenToShortString(), comp.packageName)
+        run Catching {
+            val comp = item.java Class.get Method("get Component Name").invoke(item) as? Component Name
+            if (comp != null) return Pair(comp.flatten To Short String(), comp.package Name)
         }
-        runCatching {
-            val ri = item.javaClass.getMethod("getResolveInfo").invoke(item) as? ResolveInfo
-            val ai = ri?.activityInfo
-            if (ai != null) return Pair(ComponentName(ai.packageName, ai.name).flattenToShortString(), ai.packageName)
+        run Catching {
+            val ri = item.java Class.get Method("get Resolve Info").invoke(item) as? Resolve Info
+            val ai = ri?.activity Info
+            if (ai != null) return Pair(Component Name(ai.package Name, ai.name).flatten To Short String(), ai.package Name)
         }
-        runCatching {
-            var clazz: Class<*>? = item.javaClass
+        run Catching {
+            var clazz: Class<*>? = item.java Class
             while (clazz != null && clazz != Any::class.java) {
-                for (f in clazz.declaredFields) {
-                    if (f.name == "name" && ComponentName::class.java.isAssignableFrom(f.type)) {
-                        f.isAccessible = true
-                        cachedComponentNameField = f
-                        val comp = f.get(item) as? ComponentName
-                        if (comp != null) return Pair(comp.flattenToShortString(), comp.packageName)
+                for (f in clazz.declared Fields) {
+                    if (f.name == "name" && Component Name::class.java.is Assignable From(f.type)) {
+                        f.is Accessible = true
+                        cached Component Name Field = f
+                        val comp = f.get(item) as? Component Name
+                        if (comp != null) return Pair(comp.flatten To Short String(), comp.package Name)
                     }
                 }
                 clazz = clazz.superclass
