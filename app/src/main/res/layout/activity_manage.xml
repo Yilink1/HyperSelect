@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Three management pages（TextSelection / SystemShare / OpenWith）Sharedof theUnified  -->
+<!-- Three management pages（Text Selection / SystemShare / Open With）Sharedof/theUnified  -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:layout_height="56dp">
 
         <LinearLayout
-            android:id="@+id/header Bar"
+            android:id="@+id/headerBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
@@ -25,7 +25,7 @@
                 android:id="@+id/btnBack"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="?attr/selectableItem BackgroundBorderless"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Back"
                 android:padding="10dp"
                 android:src="@drawable/ic_arrow_back"
@@ -46,7 +46,7 @@
                 android:id="@+id/btnSearch"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="?attr/selectableItem BackgroundBorderless"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Search"
                 android:padding="11dp"
                 android:src="@drawable/ic_search"
@@ -56,7 +56,7 @@
                 android:id="@+id/btnMore"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="?attr/selectableItem BackgroundBorderless"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="More"
                 android:padding="10dp"
                 android:src="@drawable/ic_more_vert"
@@ -79,7 +79,7 @@
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:importantFor Accessibility="no"
+                android:importantForAccessibility="no"
                 android:src="@drawable/ic_search"
                 app:tint="@color/hyper_text_secondary" />
 
@@ -95,15 +95,15 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:textColor="@color/hyper_text_primary"
-                android:textColor Hint="@color/hyper_text_secondary"
-                android:textCursor Drawable="@null"
+                android:textColorHint="@color/hyper_text_secondary"
+                android:textCursorDrawable="@null"
                 android:textSize="15sp" />
 
             <ImageView
-                android:id="@+id/btnClose Search"
+                android:id="@+id/btnCloseSearch"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:background="?attr/selectableItem BackgroundBorderless"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="DisableSearch"
                 android:padding="9dp"
                 android:src="@drawable/ic_close"
@@ -111,7 +111,7 @@
         </LinearLayout>
     </FrameLayout>
 
-    <!-- page of theSettings（TextSelectionpage 「BlockAI Writing」） -->
+    <!-- page of/the Settings（Text Selectionpage 「Block AI Writing」） -->
     <FrameLayout
         android:id="@+id/layoutExtra"
         android:layout_width="match_parent"
@@ -132,7 +132,7 @@
         android:padding="3dp">
 
         <TextView
-            android:id="@+id/tvTab Visible"
+            android:id="@+id/tvTabVisible"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -140,7 +140,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/tvTab Hidden"
+            android:id="@+id/tvTabHidden"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -155,7 +155,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="6dp"
-        android:text="long pressordrag handleSort，Swipe leftto hide"
+        android:text="@string/manage_hint"
         android:textColor="@color/hyper_text_secondary"
         android:textSize="12sp"
         android:visibility="gone" />
@@ -165,17 +165,17 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <androidx.recyclerview.widget.Recycler View
-            android:id="@+id/recycler View"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipTo Padding="false"
+            android:clipToPadding="false"
             android:overScrollMode="never"
             android:paddingTop="2dp"
             android:paddingBottom="24dp" />
 
         <ProgressBar
-            android:id="@+id/progress Bar"
+            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -193,7 +193,7 @@
 
         <!-- Undo ：hide / Restore /  after  -->
         <LinearLayout
-            android:id="@+id/undo Bar"
+            android:id="@+id/undoBar"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_gravity="bottom"
@@ -207,7 +207,7 @@
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/tvUndo Msg"
+                android:id="@+id/tvUndoMsg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -220,10 +220,10 @@
                 android:id="@+id/btnUndo"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="?attr/selectableItem Background"
+                android:background="?attr/selectableItemBackground"
                 android:gravity="center"
                 android:paddingHorizontal="20dp"
-                android:text="Undo"
+                android:text="@string/undo"
                 android:textColor="@color/hyper_undo_action"
                 android:textSize="14sp"
                 android:textStyle="bold" />

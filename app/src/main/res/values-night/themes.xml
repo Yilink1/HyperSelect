@@ -1,12 +1,12 @@
 <resources>
-    <style name="Theme.HyperSelect" parent="Theme.AppCompat.DayNight.NoAction Bar">
+    <style name="Theme.HyperSelect" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/hyper_bg</item>
-        <item name="android:status Bar Color">@color/hyper_bg</item>
-        <item name="android:navigation Bar Color">@color/hyper_bg</item>
-        <item name="android:windowLight Status Bar">false</item>
-        <item name="android:windowLight Navigation Bar">false</item>
+        <item name="android:statusBarColor">@color/hyper_bg</item>
+        <item name="android:navigationBarColor">@color/hyper_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
         <item name="colorPrimary">@color/hyper_accent</item>
         <item name="colorAccent">@color/hyper_accent</item>
-        <item name="colorControl Activated">@color/hyper_accent</item>
+        <item name="colorControlActivated">@color/hyper_accent</item>
     </style>
 </resources>

@@ -5,7 +5,7 @@
     android:viewportWidth="100"
     android:viewportHeight="100">
 
-    <!-- 1. OuterTop-LeftOrange Arc -->
+    <!-- 1. Outer Top-Left Orange Arc -->
     <path
         android:pathData="M 33 67 A 34 34 0 0 1 67 33"
         android:strokeWidth="12"
@@ -24,7 +24,7 @@
         </aapt:attr>
     </path>
 
-    <!-- 2. InnerTop-RightLavender Arc -->
+    <!-- 2. Inner Top-Right Lavender Arc -->
     <path
         android:pathData="M 45 44 A 20 20 0 0 1 71 52"
         android:strokeWidth="10"
@@ -43,7 +43,7 @@
         </aapt:attr>
     </path>
 
-    <!-- 3. OuterBottom-RightBlue Arc -->
+    <!-- 3. Outer Bottom-Right Blue Arc -->
     <path
         android:pathData="M 67 33 A 34 34 0 0 1 33 67"
         android:strokeWidth="12"
@@ -62,7 +62,7 @@
         </aapt:attr>
     </path>
 
-    <!-- 4. InnerBottom-LeftCyan Arc -->
+    <!-- 4. Inner Bottom-Left Cyan Arc -->
     <path
         android:pathData="M 55 56 A 20 20 0 0 1 29 48"
         android:strokeWidth="10"

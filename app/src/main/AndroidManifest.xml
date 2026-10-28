@@ -6,19 +6,19 @@
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT" />
-            <data android:mime Type="text/plain" />
+            <data android:mimeType="text/plain" />
         </intent>
         <intent>
             <action android:name="android.intent.action.SEND" />
-            <data android:mime Type="*/*" />
+            <data android:mimeType="*/*" />
         </intent>
         <intent>
             <action android:name="android.intent.action.SEND_MULTIPLE" />
-            <data android:mime Type="*/*" />
+            <data android:mimeType="*/*" />
         </intent>
         <intent>
             <action android:name="android.intent.action.VIEW" />
-            <data android:mime Type="*/*" />
+            <data android:mimeType="*/*" />
         </intent>
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -27,13 +27,13 @@
     </queries>
 
     <application
-        android:allow Backup="true"
+        android:allowBackup="true"
         android:description="@string/xposed_description"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:round Icon="@mipmap/ic_launcher_round"
-        android:supports Rtl="true"
-        android:theme="@style/Theme.Hyper Select">
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.HyperSelect">
 
         <!-- Xposed Module Description for LSPosed / EDXposed -->
         <meta-data
@@ -41,7 +41,7 @@
             android:resource="@string/xposed_description" />
 
         <activity
-            android:name=".Main Activity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,42 +50,42 @@
         </activity>
 
         <activity
-            android:name=".Text Action Activity"
+            android:name=".TextActionActivity"
             android:exported="false"
             android:label="Text Selection" />
 
         <activity
-            android:name=".Share Action Activity"
+            android:name=".ShareActionActivity"
             android:exported="false"
             android:label="System Share" />
 
         <activity
-            android:name=".Open With Action Activity"
+            android:name=".OpenWithActionActivity"
             android:exported="false"
             android:label="Open With" />
 
         <activity
-            android:name=".About Activity"
+            android:name=".AboutActivity"
             android:exported="false"
             android:label="About" />
 
         <activity
-            android:name=".Intro Activity"
+            android:name=".IntroActivity"
             android:exported="false"
             android:label="Welcome" />
 
         <provider
-            android:name=".Config Provider"
+            android:name=".ConfigProvider"
             android:authorities="io.github.yilink1.hyperselect.provider"
-            android:direct Boot Aware="true"
+            android:directBootAware="true"
             android:exported="true"
             android:multiprocess="false" />
 
         <provider
-            android:name="androidx.core.content.File Provider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="io.github.yilink1.hyperselect.fileprovider"
             android:exported="false"
-            android:grant Uri Permissions="true">
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />

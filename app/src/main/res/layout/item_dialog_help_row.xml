@@ -12,7 +12,7 @@
         android:background="@drawable/bg_icon_circle">
 
         <ImageView
-            android:id="@+id/ivHelp Icon"
+            android:id="@+id/ivHelpIcon"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_gravity="center" />
@@ -26,7 +26,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvHelp ItemTitle"
+            android:id="@+id/tvHelpItemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/hyper_text_primary"
@@ -34,11 +34,11 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvHelp ItemSub"
+            android:id="@+id/tvHelpItemSub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:lineSpacing Extra="2dp"
+            android:lineSpacingExtra="2dp"
             android:textColor="@color/hyper_desc_text"
             android:textSize="13sp" />
     </LinearLayout>

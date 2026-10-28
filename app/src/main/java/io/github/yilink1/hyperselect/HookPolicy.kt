@@ -1,22 +1,22 @@
 package io.github.yilink1.hyperselect
 
 import android.content.Intent
-import android.content.pm.Package Info
+import android.content.pm.PackageInfo
 import android.os.Parcel
 
-internal object Hook Policy {
-    fun is Editor Search(intent: Intent?): Boolean {
+internal object HookPolicy {
+    fun isEditorSearch(intent: Intent?): Boolean {
         val uri = intent?.data ?: return false
-        return uri.is Hierarchical && uri.scheme.equals("qsb", ignore Case = true) &&
-            uri.host == "query" && uri.get Query Parameter("ref") == "miui Editor"
+        return uri.isHierarchical && uri.scheme.equals("qsb", ignoreCase = true) &&
+            uri.host == "query" && uri.getQueryParameter("ref") == "miuiEditor"
     }
 
-    fun copy Package Info(original: Package Info): Package Info? {
+    fun copyPackageInfo(original: PackageInfo): PackageInfo? {
         val parcel = Parcel.obtain()
         return try {
-            original.write To Parcel(parcel, 0)
-            parcel.set Data Position(0)
-            Package Info.CREATOR.create From Parcel(parcel)
+            original.writeToParcel(parcel, 0)
+            parcel.setDataPosition(0)
+            PackageInfo.CREATOR.createFromParcel(parcel)
         } catch (_: Throwable) {
             // A ROM-specific parcel failure must not break the package query.
             null

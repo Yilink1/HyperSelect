@@ -5,9 +5,10 @@
     android:orientation="vertical"
     android:background="@color/hyper_bg">
 
-    <androidx.appcompat.widget.Toolbar android:id="@+id/toolbarAbout"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarAbout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/action Bar Size"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/hyper_bg" />
 
     <androidx.core.widget.NestedScrollView
@@ -15,32 +16,37 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <LinearLayout android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingBottom="40dp">
 
-            <!-- AppLogo Header -->
-            <LinearLayout android:layout_width="match_parent"
+            <!-- App Logo Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:paddingTop="20dp"
                 android:paddingBottom="24dp">
 
-                <FrameLayout android:layout_width="72dp"
+                <FrameLayout
+                    android:layout_width="72dp"
                     android:layout_height="72dp"
                     android:background="@drawable/bg_about_logo_card">
 
-                    <ImageView android:layout_width="72dp"
+                    <ImageView
+                        android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_about_logo" />
                 </FrameLayout>
 
-                <TextView android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="HyperSelect"
@@ -48,7 +54,8 @@
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <TextView android:id="@+id/tvAbout Version"
+                <TextView
+                    android:id="@+id/tvAboutVersion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
@@ -57,82 +64,93 @@
                     android:textSize="13sp" />
             </LinearLayout>
 
-            <!-- Section 1: ModuleInfo -->
-            <TextView android:layout_width="wrap_content"
+            <!-- Section 1: Module Info -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="6dp"
-                android:text="ModuleInfo"
+                android:text="@string/module_info"
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <LinearLayout android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_card_group"
                 android:orientation="vertical"
                 android:padding="16dp">
 
                 <!-- Row 1: Scope -->
-                <LinearLayout android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Scope"
+                        android:text="@string/scope"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
-                    <TextView android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="SystemFramework &amp; Resolver"
+                        android:text="@string/scope_value"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="14sp" />
                 </LinearLayout>
 
-                <View android:layout_width="match_parent"
+                <View
+                    android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
                     android:background="@color/hyper_divider" />
 
                 <!-- Row 2: Environment -->
-                <LinearLayout android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Environment"
+                        android:text="@string/environment"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
-                    <TextView android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="XiaomiHyper OS"
+                        android:text="@string/environment_value"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="14sp" />
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Section 2: HelpGuide Action -->
-            <TextView android:layout_width="wrap_content"
+            <!-- Section 2: Help Guide Action -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="6dp"
-                android:text="UsageGuide"
+                android:text="@string/usage_guide"
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <LinearLayout android:id="@+id/btnAbout Help"
+            <LinearLayout
+                android:id="@+id/btnAboutHelp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_card_group"
@@ -143,39 +161,84 @@
                 android:orientation="horizontal"
                 android:padding="16dp">
 
-                <TextView android:layout_width="0dp"
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text=" andInstructions"
+                    android:text="@string/help_instructions"
                     android:textColor="@color/hyper_text_primary"
                     android:textSize="15sp" />
 
-                <TextView android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="›"
                     android:textColor="@color/hyper_text_secondary"
                     android:textSize="20sp" />
             </LinearLayout>
 
-            <!-- Section 3: OpenSource -->
-            <TextView android:layout_width="wrap_content"
+            <!-- Section: Language -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="6dp"
-                android:text="Aboutand "
+                android:text="@string/language"
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <LinearLayout android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/btnAboutLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card_group"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/bg_item_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/language"
+                    android:textColor="@color/hyper_text_primary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tvAboutLanguage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/hyper_accent"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Section 3: Open Source -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="6dp"
+                android:text="@string/about_hyperselect"
+                android:textColor="@color/hyper_text_secondary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_card_group"
                 android:orientation="vertical"
                 android:padding="16dp">
 
                 <!-- GitHub -->
-                <LinearLayout android:id="@+id/btnAbout Github"
+                <LinearLayout
+                    android:id="@+id/btnAboutGithub"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
@@ -184,66 +247,76 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="GitHub  "
+                        android:text="GitHub"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
-                    <TextView android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="yilink1/HyperSelect ›"
                         android:textColor="@color/hyper_accent"
                         android:textSize="14sp" />
                 </LinearLayout>
 
-                <View android:layout_width="match_parent"
+                <View
+                    android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
                     android:background="@color/hyper_divider" />
 
                 <!-- Author -->
-                <LinearLayout android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text=" "
+                        android:text="@string/author"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
-                    <TextView android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Yilink"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="14sp" />
                 </LinearLayout>
 
-                <View android:layout_width="match_parent"
+                <View
+                    android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
                     android:background="@color/hyper_divider" />
 
                 <!-- License -->
-                <LinearLayout android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text=" License"
+                        android:text="@string/license"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
-                    <TextView android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="GPL-3.0"
                         android:textColor="@color/hyper_text_secondary"
@@ -252,11 +325,13 @@
 
             </LinearLayout>
 
-            <TextView android:layout_width="match_parent"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="8dp"
                 android:gravity="center"
-                android:text="Translated by TofuGG"
+                android:text="@string/translated_by"
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="12sp" />
 

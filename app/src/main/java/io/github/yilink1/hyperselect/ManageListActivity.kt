@@ -1,43 +1,44 @@
 package io.github.yilink1.hyperselect
 
 import android.animation.Animator
-import android.animation.Animator Listener Adapter
+import android.animation.AnimatorListenerAdapter
 import android.animation.Keyframe
-import android.animation.Property Values Holder
-import android.animation.Value Animator
-import android.content.pm.Package Manager
-import android.content.pm.Resolve Info
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
+import android.content.Context
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect F
+import android.graphics.RectF
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.System Clock
+import android.os.SystemClock
 import android.text.Editable
-import android.text.Text Watcher
-import android.view.Haptic Feedback Constants
-import android.view.Motion Event
+import android.text.TextWatcher
+import android.view.HapticFeedbackConstants
+import android.view.MotionEvent
 import android.view.View
-import android.view.View Group
-import android.view.animation.Decelerate Interpolator
-import android.view.animation.Overshoot Interpolator
-import android.view.inputmethod.Input Method Manager
-import android.widget.Edit Text
-import android.widget.Frame Layout
-import android.widget.Linear Layout
-import android.widget.Progress Bar
-import android.widget.Text View
+import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.OvershootInterpolator
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.On Back Pressed Callback
-import androidx.appcompat.app.App Compat Activity
-import androidx.core.content.Context Compat
-import androidx.core.view.View Compat
-import androidx.core.view.Window Insets Compat
-import androidx.recyclerview.widget.Default Item Animator
-import androidx.recyclerview.widget.Item Touch Helper
-import androidx.recyclerview.widget.Linear Layout Manager
-import androidx.recyclerview.widget.Recycler View
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import java.util.Locale
 import java.util.concurrent.Executors
 
@@ -45,31 +46,35 @@ import java.util.concurrent.Executors
  * Text Selection / System Share / Open with Shared UI and interactions for the three management pages。
  *
  * Interaction model (top dual-nav tabs + tactile cards + smart search):
- *  - Top dual-tab bar (Show N/Hide N): clearly shows status, quick tab switch ；
- *  -  Physical card：Showpage Dragorlong presscardtopbottom Sort，Swipe leftto hide；
- *  - Hidepage：cardright 「+」Restorebutton， Restore Showlist；
- *  - Top Search ：Search bottom 「Pin」、「hide」or「Restore」Actioncapsule；
- *  -  have Takes effect immediately， have Undo。
+ *  - Top dual-tab bar (Show N / Hide N): clearly shows status, quick tab switch;
+ *  -  Physical card：Showpage Dragorlong presscardtopbottomSort，Swipe leftto hide；
+ *  - Hide page: the "+" restore button on the right of each card restores it to the Show list;
+ *  - Top search: Pin / Hide / Restore action capsules below the search field;
+ *  - All changes take effect immediately, with undo support.
  */
-abstract class Manage List Activity : App Compat Activity() {
+abstract class ManageListActivity : AppCompatActivity() {
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
+    }
 
     // ───────── Subclass hooks ─────────
-    protected abstract val screen Title: String
-    protected abstract val empty Text: String
+    protected abstract val screenTitle: String
+    protected abstract val emptyText: String
 
-    /**  have Customorderwhen， Sort（Text Selection System Backorder）。 */
-    protected open val sort By Label When Noorder: Boolean = true
+    /**  have Customorderwhen， Sort（Text Selection SystemBackorder）。 */
+    protected open val sortByLabelWhenNoorder: Boolean = true
 
     /**  after 。 */
-    protected abstract fun query Targets(pm: Package Manager): List<Resolve Info>
-    protected abstract fun blacklist Of(config: Rule Config): Set<String>
-    protected abstract fun order Of(config: Rule Config): List<String>
-    protected abstract fun with Rules(config: Rule Config, blacklist: Set<String>, order: List<String>): Rule Config
+    protected abstract fun queryTargets(pm: PackageManager): List<ResolveInfo>
+    protected abstract fun blacklistOf(config: RuleConfig): Set<String>
+    protected abstract fun orderOf(config: RuleConfig): List<String>
+    protected abstract fun withRules(config: RuleConfig, blacklist: Set<String>, order: List<String>): RuleConfig
 
-    protected open fun test Actions(): List<Pair<String, () -> Unit>> = empty List()
-    protected open fun on Create Extra(container: View Group) {}
-    protected open fun on Config Loaded(config: Rule Config) {}
-    protected open fun apply Extra(config: Rule Config): Rule Config = config
+    protected open fun testActions(): List<Pair<String, () -> Unit>> = emptyList()
+    protected open fun onCreateExtra(container: ViewGroup) {}
+    protected open fun onConfigLoaded(config: RuleConfig) {}
+    protected open fun applyExtra(config: RuleConfig): RuleConfig = config
 
     // ───────── Status ─────────
     private companion object {
@@ -80,926 +85,926 @@ abstract class Manage List Activity : App Compat Activity() {
         const val TAB_HIDDEN = 1
     }
 
-    /** Yes No Enable Pin  + By system Tabs（System Shareand Open with Enable）。 */
-    protected open val enable Pinned Section: Boolean = false
+    /** YesNoEnablePin  + By system Tabs（System ShareandOpen with Enable）。 */
+    protected open val enablePinnedSection: Boolean = false
 
-    private val visible = Array List<Text Action Item>()
-    private val hidden = Array List<Text Action Item>()
-    private var pinned Count = 0
+    private val visible = ArrayList<TextActionItem>()
+    private val hidden = ArrayList<TextActionItem>()
+    private var pinnedCount = 0
     private var tab = TAB_VISIBLE
 
-    private var search Open = false
+    private var searchOpen = false
     private var query = ""
     private var loaded = false
-    private var drag Dirty = false
+    private var dragDirty = false
 
-    private lateinit var header Bar: View
-    private lateinit var search Box: View
-    private lateinit var et Search: Edit Text
-    private lateinit var layout Extra: Frame Layout
+    private lateinit var headerBar: View
+    private lateinit var searchBox: View
+    private lateinit var etSearch: EditText
+    private lateinit var layoutExtra: FrameLayout
     private lateinit var segment: View
-    private lateinit var tv Tab Visible: Text View
-    private lateinit var tv Tab Hidden: Text View
-    private lateinit var tv Hint: Text View
-    private lateinit var recycler View: Recycler View
-    private lateinit var progress Bar: Progress Bar
-    private lateinit var tv Empty: Text View
-    private lateinit var undo Bar: Linear Layout
-    private lateinit var tv Undo Msg: Text View
+    private lateinit var tvTabVisible: TextView
+    private lateinit var tvTabHidden: TextView
+    private lateinit var tvHint: TextView
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var tvEmpty: TextView
+    private lateinit var undoBar: LinearLayout
+    private lateinit var tvUndoMsg: TextView
 
-    private val adapter = Manage Adapter(
-        on Restore = { item -> restore Item(item) },
-        on Pin = { item -> pin Item(item) },
-        on Unpin = { item -> unpin Item(item) },
-        on Stash = { item -> stash Item(item) },
-        on Start Drag = { holder -> item Touch Helper.start Drag(holder) }
+    private val adapter = ManageAdapter(
+        onRestore = { item -> restoreItem(item) },
+        onPin = { item -> pinItem(item) },
+        onUnpin = { item -> unpinItem(item) },
+        onStash = { item -> stashItem(item) },
+        onStartDrag = { holder -> itemTouchHelper.startDrag(holder) }
     )
 
-    private lateinit var item Touch Helper: Item Touch Helper
-    private val executor = Executors.new Single Thread Executor()
+    private lateinit var itemTouchHelper: ItemTouchHelper
+    private val executor = Executors.newSingleThreadExecutor()
 
-    private var undo Snapshot: Triple<List<Text Action Item>, List<Text Action Item>, Int>? = null
-    private val hide Undo Runnable = Runnable { hide Undo() }
+    private var undoSnapshot: Triple<List<TextActionItem>, List<TextActionItem>, Int>? = null
+    private val hideUndoRunnable = Runnable { hideUndo() }
 
-    private val search Back Callback = object : On Back Pressed Callback(false) {
-        override fun handle On Back Pressed() {
-            close Search()
+    private val searchBackCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            closeSearch()
         }
     }
 
     // Swipe gesture background and hint animation drawing
-    private val bg Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
-    private val text Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { text Align = Paint.Align.CENTER }
-    private val pill Rect = Rect F()
-    private var hint Target View: View? = null
-    private var hint Offset Dx = 0f
-    private var swipe Hint Animator: Value Animator? = null
-    private var is Hint Scheduled = false
+    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL }
+    private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { textAlign = Paint.Align.CENTER }
+    private val pillRect = RectF()
+    private var hintTargetView: View? = null
+    private var hintOffsetDx = 0f
+    private var swipeHintAnimator: ValueAnimator? = null
+    private var isHintScheduled = false
 
     // ───────── Lifecycle ─────────
-    override fun on Create(saved Instance State: Bundle?) {
-        super.on Create(saved Instance State)
-        set Content View(R.layout.activity_manage)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_manage)
 
-        View Compat.set On Apply Window Insets Listener(find View By Id(android.R.id.content)) { view, insets ->
-            val system Bars = insets.get Insets(Window Insets Compat.Type.system Bars())
-            view.set Padding(0, system Bars.top, 0, system Bars.bottom)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(0, systemBars.top, 0, systemBars.bottom)
             insets
         }
 
-        text Paint.text Size = 13f * resources.display Metrics.density
-        text Paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        textPaint.textSize = 13f * resources.displayMetrics.density
+        textPaint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
 
-        header Bar = find View By Id(R.id.header Bar)
-        search Box = find View By Id(R.id.search Box)
-        et Search = find View By Id(R.id.et Search)
-        layout Extra = find View By Id(R.id.layout Extra)
-        segment = find View By Id(R.id.segment)
-        tv Tab Visible = find View By Id(R.id.tv Tab Visible)
-        tv Tab Hidden = find View By Id(R.id.tv Tab Hidden)
-        tv Hint = find View By Id(R.id.tv Hint)
-        recycler View = find View By Id(R.id.recycler View)
-        progress Bar = find View By Id(R.id.progress Bar)
-        tv Empty = find View By Id(R.id.tv Empty)
-        undo Bar = find View By Id(R.id.undo Bar)
-        tv Undo Msg = find View By Id(R.id.tv Undo Msg)
+        headerBar = findViewById(R.id.headerBar)
+        searchBox = findViewById(R.id.searchBox)
+        etSearch = findViewById(R.id.etSearch)
+        layoutExtra = findViewById(R.id.layoutExtra)
+        segment = findViewById(R.id.segment)
+        tvTabVisible = findViewById(R.id.tvTabVisible)
+        tvTabHidden = findViewById(R.id.tvTabHidden)
+        tvHint = findViewById(R.id.tvHint)
+        recyclerView = findViewById(R.id.recyclerView)
+        progressBar = findViewById(R.id.progressBar)
+        tvEmpty = findViewById(R.id.tvEmpty)
+        undoBar = findViewById(R.id.undoBar)
+        tvUndoMsg = findViewById(R.id.tvUndoMsg)
 
-        find View By Id<Text View>(R.id.tv Title).text = screen Title
-        find View By Id<View>(R.id.btn Back).set On Click Listener { finish() }
-        find View By Id<View>(R.id.btn Search).set On Click Listener { open Search() }
-        find View By Id<View>(R.id.btn Close Search).set On Click Listener { close Search() }
-        find View By Id<View>(R.id.btn More).set On Click Listener { show Menu(it) }
-        find View By Id<View>(R.id.btn Undo).set On Click Listener {
-            val snapshot = undo Snapshot ?: return@set On Click Listener
+        findViewById<TextView>(R.id.tvTitle).text = screenTitle
+        findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
+        findViewById<View>(R.id.btnSearch).setOnClickListener { openSearch() }
+        findViewById<View>(R.id.btnCloseSearch).setOnClickListener { closeSearch() }
+        findViewById<View>(R.id.btnMore).setOnClickListener { showMenu(it) }
+        findViewById<View>(R.id.btnUndo).setOnClickListener {
+            val snapshot = undoSnapshot ?: return@setOnClickListener
             restore(snapshot)
-            hide Undo()
+            hideUndo()
         }
 
-        tv Tab Visible.set On Click Listener { select Tab(TAB_VISIBLE) }
-        tv Tab Hidden.set On Click Listener { select Tab(TAB_HIDDEN) }
-        on Back Pressed Dispatcher.add Callback(this, search Back Callback)
+        tvTabVisible.setOnClickListener { selectTab(TAB_VISIBLE) }
+        tvTabHidden.setOnClickListener { selectTab(TAB_HIDDEN) }
+        onBackPressedDispatcher.addCallback(this, searchBackCallback)
 
-        et Search.add Text Changed Listener(object : Text Watcher {
-            override fun before Text Changed(s: Char Sequence?, start: Int, count: Int, after: Int) {}
-            override fun on Text Changed(s: Char Sequence?, start: Int, before: Int, count: Int) {
-                query = s?.to String().or Empty().trim().lowercase(Locale.get Default())
-                if (search Open) refresh Rows()
+        etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                query = s?.toString().orEmpty().trim().lowercase(Locale.getDefault())
+                if (searchOpen) refreshRows()
             }
-            override fun after Text Changed(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {}
         })
 
-        setup List()
-        on Create Extra(layout Extra)
+        setupList()
+        onCreateExtra(layoutExtra)
         load()
     }
 
-    override fun on Resume() {
-        super.on Resume()
-        maybe Play Swipe Hint()
+    override fun onResume() {
+        super.onResume()
+        maybePlaySwipeHint()
     }
 
-    override fun on Destroy() {
-        super.on Destroy()
-        swipe Hint Animator?.cancel()
-        swipe Hint Animator = null
-        undo Bar.remove Callbacks(hide Undo Runnable)
+    override fun onDestroy() {
+        super.onDestroy()
+        swipeHintAnimator?.cancel()
+        swipeHintAnimator = null
+        undoBar.removeCallbacks(hideUndoRunnable)
         executor.shutdown()
     }
 
     // ───────── Data loading / saving ─────────
     private fun load() {
-        progress Bar.visibility = View.VISIBLE
-        tv Empty.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+        tvEmpty.visibility = View.GONE
 
         executor.execute {
-            val pm = package Manager
-            val infos = run Catching { query Targets(pm) }.get Or Default(empty List())
-            val config = Rule Store.load(this)
-            val blacklist = blacklist Of(config)
-            val order = order Of(config)
+            val pm = packageManager
+            val infos = runCatching { queryTargets(pm) }.getOrDefault(emptyList())
+            val config = RuleStore.load(this)
+            val blacklist = blacklistOf(config)
+            val order = orderOf(config)
 
-            val seen = Hash Set<String>()
-            val all = Array List<Text Action Item>()
+            val seen = HashSet<String>()
+            val all = ArrayList<TextActionItem>()
             for (info in infos) {
-                val activity Info = info.activity Info ?: continue
-                val pkg = activity Info.package Name
-                if (pkg == package Name) continue
+                val activityInfo = info.activityInfo ?: continue
+                val pkg = activityInfo.packageName
+                if (pkg == packageName) continue
 
-                val component = android.content.Component Name(pkg, activity Info.name).flatten To Short String()
+                val component = android.content.ComponentName(pkg, activityInfo.name).flattenToShortString()
                 if (!seen.add(component)) continue
 
-                val label = info.load Label(pm)?.to String()?.take If { it.is Not Blank() }
-                    ?: activity Info.load Label(pm)?.to String()
-                    ?: activity Info.name
-                val icon = info.load Icon(pm) ?: activity Info.load Icon(pm)
+                val label = info.loadLabel(pm)?.toString()?.takeIf { it.isNotBlank() }
+                    ?: activityInfo.loadLabel(pm)?.toString()
+                    ?: activityInfo.name
+                val icon = info.loadIcon(pm) ?: activityInfo.loadIcon(pm)
                 val enabled = !blacklist.contains(component) && !blacklist.contains(pkg)
-                all.add(Text Action Item(label, pkg, component, icon, enabled))
+                all.add(TextActionItem(label, pkg, component, icon, enabled))
             }
 
-            val shown = Array List<Text Action Item>()
-            val hidden List = Array List<Text Action Item>()
-            for (item in all) if (item.is Enabled) shown.add(item) else hidden List.add(item)
+            val shown = ArrayList<TextActionItem>()
+            val hiddenList = ArrayList<TextActionItem>()
+            for (item in all) if (item.isEnabled) shown.add(item) else hiddenList.add(item)
 
             // Legacy migration fallback: older versions wrote all scanned apps to order.
             //  Pin have ，  order  （  10  ）， old  dump，Reset  0 Pin，Restore By system 。
-            val is Legacy Full Dump = enable Pinned Section && order.size > 10 && order.size >= (shown.size * 0.5)
-            val effectiveorder = if (is Legacy Full Dump) empty List() else order
+            val isLegacyFullDump = enablePinnedSection && order.size > 10 && order.size >= (shown.size * 0.5)
+            val effectiveorder = if (isLegacyFullDump) emptyList() else order
 
-            val order Index = Hash Map<String, Int>()
-            effectiveorder.for Each Indexed { index, key -> if (!order Index.contains Key(key)) order Index[key] = index }
+            val orderIndex = HashMap<String, Int>()
+            effectiveorder.forEachIndexed { index, key -> if (!orderIndex.containsKey(key)) orderIndex[key] = index }
 
-            var initial Pinned Count = 0
-            if (enable Pinned Section) {
-                val pinned List = Array List<Text Action Item>()
-                val flowing List = Array List<Text Action Item>()
+            var initialPinnedCount = 0
+            if (enablePinnedSection) {
+                val pinnedList = ArrayList<TextActionItem>()
+                val flowingList = ArrayList<TextActionItem>()
                 for (item in shown) {
-                    if (order Index.contains Key(item.component Name) || order Index.contains Key(item.package Name)) {
-                        pinned List.add(item)
+                    if (orderIndex.containsKey(item.componentName) || orderIndex.containsKey(item.packageName)) {
+                        pinnedList.add(item)
                     } else {
-                        flowing List.add(item)
+                        flowingList.add(item)
                     }
                 }
-                pinned List.sort With(compare By { item ->
-                    order Index[item.component Name] ?: order Index[item.package Name] ?: Int.MAX_VALUE
+                pinnedList.sortWith(compareBy { item ->
+                    orderIndex[item.componentName] ?: orderIndex[item.packageName] ?: Int.MAX_VALUE
                 })
-                flowing List.sort By { it.label }
+                flowingList.sortBy { it.label }
                 shown.clear()
-                shown.add All(pinned List)
-                shown.add All(flowing List)
-                initial Pinned Count = pinned List.size
+                shown.addAll(pinnedList)
+                shown.addAll(flowingList)
+                initialPinnedCount = pinnedList.size
             } else {
-                if (order.is Not Empty()) {
-                    shown.sort With(compare By { item ->
-                        order Index[item.component Name] ?: order Index[item.package Name] ?: Int.MAX_VALUE
+                if (order.isNotEmpty()) {
+                    shown.sortWith(compareBy { item ->
+                        orderIndex[item.componentName] ?: orderIndex[item.packageName] ?: Int.MAX_VALUE
                     })
-                } else if (sort By Label When Noorder) {
-                    shown.sort By { it.label }
+                } else if (sortByLabelWhenNoorder) {
+                    shown.sortBy { it.label }
                 }
             }
 
-            run On Ui Thread {
-                if (is Finishing || is Destroyed) return@run On Ui Thread
+            runOnUiThread {
+                if (isFinishing || isDestroyed) return@runOnUiThread
                 visible.clear()
-                visible.add All(shown)
-                pinned Count = initial Pinned Count
+                visible.addAll(shown)
+                pinnedCount = initialPinnedCount
                 hidden.clear()
-                hidden.add All(hidden List)
+                hidden.addAll(hiddenList)
                 loaded = true
-                progress Bar.visibility = View.GONE
-                on Config Loaded(config)
-                refresh Rows()
-                maybe Play Swipe Hint()
+                progressBar.visibility = View.GONE
+                onConfigLoaded(config)
+                refreshRows()
+                maybePlaySwipeHint()
             }
         }
     }
 
-    /**  before「Show / Hide / order」， System 。 */
-    protected fun save Rules() {
+    /** Persist current Show / Hide / order state to the system config. */
+    protected fun saveRules() {
         if (!loaded) return
-        val new Blacklist = Hash Set<String>()
-        val neworder = Array List<String>()
+        val newBlacklist = HashSet<String>()
+        val neworder = ArrayList<String>()
 
-        if (enable Pinned Section) {
-            val limit = pinned Count.coerce At Most(visible.size)
+        if (enablePinnedSection) {
+            val limit = pinnedCount.coerceAtMost(visible.size)
             for (i in 0 until limit) {
-                neworder.add(visible[i].component Name)
+                neworder.add(visible[i].componentName)
             }
         } else {
-            for (item in visible) neworder.add(item.component Name)
+            for (item in visible) neworder.add(item.componentName)
         }
 
         for (item in hidden) {
-            new Blacklist.add(item.component Name)
+            newBlacklist.add(item.componentName)
         }
-        val config = apply Extra(with Rules(Rule Store.load(this), new Blacklist, neworder))
-        Rule Store.save(this, config)
-        content Resolver.notify Change(Config Provider.CONTENT_URI, null)
+        val config = applyExtra(withRules(RuleStore.load(this), newBlacklist, neworder))
+        RuleStore.save(this, config)
+        contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
     }
 
     // ───────── List building & refresh ─────────
-    private fun matches(item: Text Action Item): Boolean {
-        if (query.is Empty()) return true
-        return item.label.lowercase(Locale.get Default()).contains(query) ||
-            item.package Name.lowercase(Locale.get Default()).contains(query)
+    private fun matches(item: TextActionItem): Boolean {
+        if (query.isEmpty()) return true
+        return item.label.lowercase(Locale.getDefault()).contains(query) ||
+            item.packageName.lowercase(Locale.getDefault()).contains(query)
     }
 
-    private fun build Rows(): List<Manage Row> {
-        if (search Open) {
-            val pinned Set = if (enable Pinned Section) {
-                visible.take(pinned Count).map { it.component Name }.to Set()
-            } else empty Set()
+    private fun buildRows(): List<ManageRow> {
+        if (searchOpen) {
+            val pinnedSet = if (enablePinnedSection) {
+                visible.take(pinnedCount).map { it.componentName }.toSet()
+            } else emptySet()
             val filtered = (visible + hidden).filter { matches(it) }
-            return filtered.map { Manage Row.Search(it, is Pinned = pinned Set.contains(it.component Name)) }
+            return filtered.map { ManageRow.Search(it, isPinned = pinnedSet.contains(it.componentName)) }
         }
         if (tab == TAB_HIDDEN) {
-            return hidden.map { Manage Row.Hidden(it) }
+            return hidden.map { ManageRow.Hidden(it) }
         }
         // tab == TAB_VISIBLE
-        if (enable Pinned Section) {
-            val rows = Array List<Manage Row>()
-            val actual Pinned = pinned Count.coerce At Most(visible.size)
-            val flowing Count = visible.size - actual Pinned
+        if (enablePinnedSection) {
+            val rows = ArrayList<ManageRow>()
+            val actualPinned = pinnedCount.coerceAtMost(visible.size)
+            val flowingCount = visible.size - actualPinned
 
-            if (actual Pinned > 0) {
-                rows.add(Manage Row.Header("Pin App", actual Pinned, "Always pinned at top, long press handle to reorder"))
-                for (i in 0 until actual Pinned) {
-                    rows.add(Manage Row.Pinned(visible[i]))
+            if (actualPinned > 0) {
+                rows.add(ManageRow.Header(getString(R.string.pinned_apps_header), actualPinned, getString(R.string.pinned_header_hint)))
+                for (i in 0 until actualPinned) {
+                    rows.add(ManageRow.Pinned(visible[i]))
                 }
             }
 
-            if (flowing Count > 0) {
-                val flowing Hint = if (actual Pinned > 0) "Sorted by system usage habits" else "Sorted by system usage habits，Tap「Pin」canpin totop"
-                rows.add(Manage Row.Header("  apps", flowing Count, flowing Hint))
-                for (i in actual Pinned until visible.size) {
-                    rows.add(Manage Row.Flowing(visible[i]))
+            if (flowingCount > 0) {
+                val flowingHint = if (actualPinned > 0) getString(R.string.sorted_hint) else getString(R.string.sorted_hint_tap)
+                rows.add(ManageRow.Header(getString(R.string.all_apps), flowingCount, flowingHint))
+                for (i in actualPinned until visible.size) {
+                    rows.add(ManageRow.Flowing(visible[i]))
                 }
             }
             return rows
         } else {
-            return visible.map { Manage Row.Showing(it) }
+            return visible.map { ManageRow.Showing(it) }
         }
     }
 
-    private fun refresh Rows() {
-        val rows = build Rows()
+    private fun refreshRows() {
+        val rows = buildRows()
         adapter.submit(rows)
-        update Chrome(rows)
+        updateChrome(rows)
     }
 
-    private fun update Chrome(rows: List<Manage Row>) {
-        tv Tab Visible.text = "Show ${visible.size}"
-        tv Tab Hidden.text = "Hide ${hidden.size}"
-        style Tab(tv Tab Visible, tab == TAB_VISIBLE)
-        style Tab(tv Tab Hidden, tab == TAB_HIDDEN)
-        segment.visibility = if (search Open) View.GONE else View.VISIBLE
+    private fun updateChrome(rows: List<ManageRow>) {
+        tvTabVisible.text = getString(R.string.show_count, visible.size)
+        tvTabHidden.text = getString(R.string.hide_tab_count, hidden.size)
+        styleTab(tvTabVisible, tab == TAB_VISIBLE)
+        styleTab(tvTabHidden, tab == TAB_HIDDEN)
+        segment.visibility = if (searchOpen) View.GONE else View.VISIBLE
 
-        val drag Hint Done = get Shared Preferences(PREFS, MODE_PRIVATE).get Boolean(KEY_DRAG_HINT_DONE, false)
-        tv Hint.visibility =
-            if (loaded && !search Open && tab == TAB_VISIBLE && !drag Hint Done && visible.size > 1 && !enable Pinned Section) View.VISIBLE
+        val dragHintDone = getSharedPreferences(PREFS, MODE_PRIVATE).getBoolean(KEY_DRAG_HINT_DONE, false)
+        tvHint.visibility =
+            if (loaded && !searchOpen && tab == TAB_VISIBLE && !dragHintDone && visible.size > 1 && !enablePinnedSection) View.VISIBLE
             else View.GONE
 
-        if (loaded && rows.is Empty()) {
-            tv Empty.text = when {
-                visible.is Empty() && hidden.is Empty() -> empty Text
-                search Open -> " have of the apps"
-                tab == TAB_VISIBLE -> " hide Hide"
-                else -> " have hideof the apps"
+        if (loaded && rows.isEmpty()) {
+            tvEmpty.text = when {
+                visible.isEmpty() && hidden.isEmpty() -> emptyText
+                searchOpen -> getString(R.string.no_apps_found)
+                tab == TAB_VISIBLE -> getString(R.string.no_hidden_apps)
+                else -> getString(R.string.no_hidden_apps)
             }
-            tv Empty.visibility = View.VISIBLE
+            tvEmpty.visibility = View.VISIBLE
         } else {
-            tv Empty.visibility = View.GONE
+            tvEmpty.visibility = View.GONE
         }
     }
 
-    private fun style Tab(tv: Text View, selected: Boolean) {
-        tv.set Background Resource(if (selected) R.drawable.bg_segment_thumb else 0)
-        tv.set Text Color(
-            Context Compat.get Color(this, if (selected) R.color.hyper_text_primary else R.color.hyper_text_secondary)
+    private fun styleTab(tv: TextView, selected: Boolean) {
+        tv.setBackgroundResource(if (selected) R.drawable.bg_segment_thumb else 0)
+        tv.setTextColor(
+            ContextCompat.getColor(this, if (selected) R.color.hyper_text_primary else R.color.hyper_text_secondary)
         )
         tv.typeface = if (selected) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
     }
 
-    private fun select Tab(new Tab: Int) {
-        if (tab == new Tab) return
-        tab = new Tab
-        refresh Rows()
-        recycler View.scroll To Position(0)
+    private fun selectTab(newTab: Int) {
+        if (tab == newTab) return
+        tab = newTab
+        refreshRows()
+        recyclerView.scrollToPosition(0)
     }
 
     // ───────── Search ─────────
-    private fun open Search() {
-        if (search Open) return
-        search Open = true
-        search Back Callback.is Enabled = true
-        header Bar.visibility = View.GONE
-        search Box.alpha = 0f
-        search Box.visibility = View.VISIBLE
-        search Box.animate().alpha(1f).set Duration(140L).start()
+    private fun openSearch() {
+        if (searchOpen) return
+        searchOpen = true
+        searchBackCallback.isEnabled = true
+        headerBar.visibility = View.GONE
+        searchBox.alpha = 0f
+        searchBox.visibility = View.VISIBLE
+        searchBox.animate().alpha(1f).setDuration(140L).start()
         query = ""
-        refresh Rows()
-        et Search.request Focus()
-        et Search.post {
-            get System Service(Input Method Manager::class.java)?.show Soft Input(et Search, Input Method Manager.SHOW_IMPLICIT)
+        refreshRows()
+        etSearch.requestFocus()
+        etSearch.post {
+            getSystemService(InputMethodManager::class.java)?.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 
-    private fun close Search() {
-        if (!search Open) return
-        search Open = false
-        search Back Callback.is Enabled = false
-        et Search.set Text("")
-        get System Service(Input Method Manager::class.java)?.hide Soft Input From Window(et Search.window Token, 0)
-        search Box.visibility = View.GONE
-        header Bar.visibility = View.VISIBLE
-        refresh Rows()
+    private fun closeSearch() {
+        if (!searchOpen) return
+        searchOpen = false
+        searchBackCallback.isEnabled = false
+        etSearch.setText("")
+        getSystemService(InputMethodManager::class.java)?.hideSoftInputFromWindow(etSearch.windowToken, 0)
+        searchBox.visibility = View.GONE
+        headerBar.visibility = View.VISIBLE
+        refreshRows()
     }
 
-    // ───────── card Action（Pin / hide / Restore） ─────────
-    private fun snapshot(): Triple<List<Text Action Item>, List<Text Action Item>, Int> =
-        Triple(visible.map { it.copy() }, hidden.map { it.copy() }, pinned Count)
+    // ───────── cardAction（Pin / hide / Restore） ─────────
+    private fun snapshot(): Triple<List<TextActionItem>, List<TextActionItem>, Int> =
+        Triple(visible.map { it.copy() }, hidden.map { it.copy() }, pinnedCount)
 
-    private fun pin Item(item: Text Action Item) {
+    private fun pinItem(item: TextActionItem) {
         val before = snapshot()
-        if (enable Pinned Section) {
-            val index = visible.index Of First { it.component Name == item.component Name }
+        if (enablePinnedSection) {
+            val index = visible.indexOfFirst { it.componentName == item.componentName }
             if (index >= 0) {
-                if (index >= pinned Count) {
-                    val moved = visible.remove At(index)
-                    visible.add(pinned Count, moved)
-                    pinned Count++
+                if (index >= pinnedCount) {
+                    val moved = visible.removeAt(index)
+                    visible.add(pinnedCount, moved)
+                    pinnedCount++
                 }
             } else {
-                hidden.remove All { it.component Name == item.component Name }
-                item.is Enabled = true
-                visible.add(pinned Count, item)
-                pinned Count++
+                hidden.removeAll { it.componentName == item.componentName }
+                item.isEnabled = true
+                visible.add(pinnedCount, item)
+                pinnedCount++
             }
         } else {
-            visible.remove All { it.component Name == item.component Name }
-            hidden.remove All { it.component Name == item.component Name }
-            item.is Enabled = true
+            visible.removeAll { it.componentName == item.componentName }
+            hidden.removeAll { it.componentName == item.componentName }
+            item.isEnabled = true
             visible.add(0, item)
         }
-        save Rules()
-        refresh Rows()
-        show Undo(" Pin「${item.label}」", before)
-        if (!search Open && tab == TAB_VISIBLE) {
-            recycler View.scroll To Position(0)
+        saveRules()
+        refreshRows()
+        showUndo(getString(R.string.undo_pinned, item.label), before)
+        if (!searchOpen && tab == TAB_VISIBLE) {
+            recyclerView.scrollToPosition(0)
         }
     }
 
-    private fun unpin Item(item: Text Action Item) {
+    private fun unpinItem(item: TextActionItem) {
         val before = snapshot()
-        if (enable Pinned Section) {
-            val index = visible.index Of First { it.component Name == item.component Name }
-            if (index in 0 until pinned Count) {
-                val moved = visible.remove At(index)
-                pinned Count--
-                visible.add(pinned Count, moved)
-                save Rules()
-                refresh Rows()
-                show Undo(" Cancel Pin「${item.label}」", before)
+        if (enablePinnedSection) {
+            val index = visible.indexOfFirst { it.componentName == item.componentName }
+            if (index in 0 until pinnedCount) {
+                val moved = visible.removeAt(index)
+                pinnedCount--
+                visible.add(pinnedCount, moved)
+                saveRules()
+                refreshRows()
+                showUndo(getString(R.string.undo_unpinned, item.label), before)
             }
         }
     }
 
-    private fun stash Item(item: Text Action Item) {
+    private fun stashItem(item: TextActionItem) {
         val before = snapshot()
-        val index = visible.index Of First { it.component Name == item.component Name }
+        val index = visible.indexOfFirst { it.componentName == item.componentName }
         if (index >= 0) {
-            visible.remove At(index)
-            if (enable Pinned Section && index < pinned Count) {
-                pinned Count = (pinned Count - 1).coerce At Least(0)
+            visible.removeAt(index)
+            if (enablePinnedSection && index < pinnedCount) {
+                pinnedCount = (pinnedCount - 1).coerceAtLeast(0)
             }
         }
-        hidden.remove All { it.component Name == item.component Name }
-        item.is Enabled = false
+        hidden.removeAll { it.componentName == item.componentName }
+        item.isEnabled = false
         hidden.add(0, item)
-        save Rules()
-        refresh Rows()
-        show Undo(" hide「${item.label}」", before)
+        saveRules()
+        refreshRows()
+        showUndo(getString(R.string.undo_hid, item.label), before)
     }
 
-    private fun restore Item(item: Text Action Item) {
+    private fun restoreItem(item: TextActionItem) {
         val before = snapshot()
-        hidden.remove All { it.component Name == item.component Name }
-        visible.remove All { it.component Name == item.component Name }
-        item.is Enabled = true
-        if (enable Pinned Section) {
-            visible.add(pinned Count, item)
+        hidden.removeAll { it.componentName == item.componentName }
+        visible.removeAll { it.componentName == item.componentName }
+        item.isEnabled = true
+        if (enablePinnedSection) {
+            visible.add(pinnedCount, item)
         } else {
             visible.add(0, item)
         }
-        save Rules()
-        refresh Rows()
-        show Undo(" Restore「${item.label}」", before)
+        saveRules()
+        refreshRows()
+        showUndo(getString(R.string.undo_restored, item.label), before)
     }
 
     private fun bulk(enable: Boolean) {
-        val targets: List<Text Action Item> = when {
-            search Open -> (visible + hidden).filter { matches(it) && it.is Enabled != enable }
-            enable -> Array List(hidden)
-            else -> Array List(visible)
+        val targets: List<TextActionItem> = when {
+            searchOpen -> (visible + hidden).filter { matches(it) && it.isEnabled != enable }
+            enable -> ArrayList(hidden)
+            else -> ArrayList(visible)
         }
-        if (targets.is Empty()) {
-            Toast.make Text(this, if (enable) " have Restoreof the apps" else " have hideof the apps", Toast.LENGTH_SHORT).show()
+        if (targets.isEmpty()) {
+            Toast.makeText(this, if (enable) getString(R.string.no_apps_restore) else getString(R.string.no_hidden_apps), Toast.LENGTH_SHORT).show()
             return
         }
         val before = snapshot()
-        for (item in targets.as Reversed()) {
+        for (item in targets.asReversed()) {
             if (enable) {
-                hidden.remove All { it.component Name == item.component Name }
-                item.is Enabled = true
-                if (enable Pinned Section) {
-                    visible.add(pinned Count, item)
+                hidden.removeAll { it.componentName == item.componentName }
+                item.isEnabled = true
+                if (enablePinnedSection) {
+                    visible.add(pinnedCount, item)
                 } else {
                     visible.add(0, item)
                 }
             } else {
-                val idx = visible.index Of First { it.component Name == item.component Name }
+                val idx = visible.indexOfFirst { it.componentName == item.componentName }
                 if (idx >= 0) {
-                    visible.remove At(idx)
-                    if (enable Pinned Section && idx < pinned Count) {
-                        pinned Count = (pinned Count - 1).coerce At Least(0)
+                    visible.removeAt(idx)
+                    if (enablePinnedSection && idx < pinnedCount) {
+                        pinnedCount = (pinnedCount - 1).coerceAtLeast(0)
                     }
                 }
-                item.is Enabled = false
+                item.isEnabled = false
                 hidden.add(0, item)
             }
         }
-        if (!enable && enable Pinned Section) {
-            pinned Count = 0
+        if (!enable && enablePinnedSection) {
+            pinnedCount = 0
         }
-        save Rules()
-        refresh Rows()
-        show Undo(if (enable) " Restore ${targets.size}  " else " hide ${targets.size}  ", before)
+        saveRules()
+        refreshRows()
+        showUndo(if (enable) getString(R.string.bulk_restore_count, targets.size) else getString(R.string.bulk_hide_count, targets.size), before)
     }
 
-    private fun restore(snapshot: Triple<List<Text Action Item>, List<Text Action Item>, Int>) {
+    private fun restore(snapshot: Triple<List<TextActionItem>, List<TextActionItem>, Int>) {
         visible.clear()
-        visible.add All(snapshot.first.map { it.copy() })
+        visible.addAll(snapshot.first.map { it.copy() })
         hidden.clear()
-        hidden.add All(snapshot.second.map { it.copy() })
-        pinned Count = snapshot.third
-        save Rules()
-        refresh Rows()
-        Toast.make Text(this, " Undo ", Toast.LENGTH_SHORT).show()
+        hidden.addAll(snapshot.second.map { it.copy() })
+        pinnedCount = snapshot.third
+        saveRules()
+        refreshRows()
+        Toast.makeText(this, getString(R.string.undo), Toast.LENGTH_SHORT).show()
     }
 
-    private fun reset Pinnedorder() {
-        if (pinned Count <= 1) return
+    private fun resetPinnedorder() {
+        if (pinnedCount <= 1) return
         val before = snapshot()
-        val pinned Sublist = Array List(visible.sub List(0, pinned Count))
-        pinned Sublist.sort By { it.label }
-        for (i in 0 until pinned Count) {
-            visible[i] = pinned Sublist[i]
+        val pinnedSublist = ArrayList(visible.subList(0, pinnedCount))
+        pinnedSublist.sortBy { it.label }
+        for (i in 0 until pinnedCount) {
+            visible[i] = pinnedSublist[i]
         }
-        save Rules()
-        refresh Rows()
-        show Undo(" Reset Pin Sort", before)
+        saveRules()
+        refreshRows()
+        showUndo(getString(R.string.reset_pinned_order), before)
     }
 
-    private fun clear All Pins() {
-        if (pinned Count == 0) return
+    private fun clearAllPins() {
+        if (pinnedCount == 0) return
         val before = snapshot()
-        pinned Count = 0
-        save Rules()
-        refresh Rows()
-        show Undo(" have Pin", before)
+        pinnedCount = 0
+        saveRules()
+        refreshRows()
+        showUndo(getString(R.string.unpin_all), before)
     }
 
     private fun resetorder() {
-        val config = Rule Store.load(this)
-        Rule Store.save(this, with Rules(config, blacklist Of(config), empty List()))
-        content Resolver.notify Change(Config Provider.CONTENT_URI, null)
+        val config = RuleStore.load(this)
+        RuleStore.save(this, withRules(config, blacklistOf(config), emptyList()))
+        contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
         load()
-        Toast.make Text(this, " Restore Sort", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.restore_default_order), Toast.LENGTH_SHORT).show()
     }
 
     // ───────── Undo  ─────────
-    private fun show Undo(message: String, before: Triple<List<Text Action Item>, List<Text Action Item>, Int>) {
-        undo Snapshot = before
-        tv Undo Msg.text = message
-        undo Bar.remove Callbacks(hide Undo Runnable)
-        undo Bar.animate().cancel()
-        undo Bar.visibility = View.VISIBLE
-        undo Bar.alpha = 0f
-        undo Bar.translation Y = dp(12).to Float()
-        undo Bar.animate().alpha(1f).translation Y(0f).set Duration(180L).start()
-        undo Bar.post Delayed(hide Undo Runnable, 4000L)
+    private fun showUndo(message: String, before: Triple<List<TextActionItem>, List<TextActionItem>, Int>) {
+        undoSnapshot = before
+        tvUndoMsg.text = message
+        undoBar.removeCallbacks(hideUndoRunnable)
+        undoBar.animate().cancel()
+        undoBar.visibility = View.VISIBLE
+        undoBar.alpha = 0f
+        undoBar.translationY = dp(12).toFloat()
+        undoBar.animate().alpha(1f).translationY(0f).setDuration(180L).start()
+        undoBar.postDelayed(hideUndoRunnable, 4000L)
     }
 
-    private fun hide Undo() {
-        undo Snapshot = null
-        undo Bar.remove Callbacks(hide Undo Runnable)
-        undo Bar.animate().cancel()
-        undo Bar.animate()
+    private fun hideUndo() {
+        undoSnapshot = null
+        undoBar.removeCallbacks(hideUndoRunnable)
+        undoBar.animate().cancel()
+        undoBar.animate()
             .alpha(0f)
-            .translation Y(dp(12).to Float())
-            .set Duration(160L)
-            .with End Action { undo Bar.visibility = View.GONE }
+            .translationY(dp(12).toFloat())
+            .setDuration(160L)
+            .withEndAction { undoBar.visibility = View.GONE }
             .start()
     }
 
     // ───────── Menu / Instructions ─────────
-    private fun show Menu(anchor: View) {
-        val items = Array List<Pair<String, () -> Unit>>()
-        if (search Open) {
-            items.add(Pair("Restore Search ", { bulk(true) }))
-            items.add(Pair("hide Search ", { bulk(false) }))
+    private fun showMenu(anchor: View) {
+        val items = ArrayList<Pair<String, () -> Unit>>()
+        if (searchOpen) {
+            items.add(Pair(getString(R.string.restore_all_results), { bulk(true) }))
+            items.add(Pair(getString(R.string.hide_all_results), { bulk(false) }))
         } else if (tab == TAB_VISIBLE) {
-            if (enable Pinned Section) {
-                if (pinned Count > 1) {
-                    items.add(Pair("Reset Pin Sort", { reset Pinnedorder() }))
+            if (enablePinnedSection) {
+                if (pinnedCount > 1) {
+                    items.add(Pair(getString(R.string.reset_pinned_order), { resetPinnedorder() }))
                 }
-                if (pinned Count > 0) {
-                    items.add(Pair(" have Pin", { clear All Pins() }))
+                if (pinnedCount > 0) {
+                    items.add(Pair(getString(R.string.unpin_all), { clearAllPins() }))
                 }
             } else {
-                items.add(Pair("Restore Sort", { resetorder() }))
+                items.add(Pair(getString(R.string.restore_default_order), { resetorder() }))
             }
-            items.add(Pair(" hide", { bulk(false) }))
-            items.add(Pair(" Restore", { bulk(true) }))
+            items.add(Pair(getString(R.string.hide_all), { bulk(false) }))
+            items.add(Pair(getString(R.string.restore_all), { bulk(true) }))
         } else {
-            items.add(Pair(" Restore", { bulk(true) }))
-            items.add(Pair(" hide", { bulk(false) }))
+            items.add(Pair(getString(R.string.restore_all), { bulk(true) }))
+            items.add(Pair(getString(R.string.hide_all), { bulk(false) }))
         }
-        items.add All(test Actions())
-        items.add(Pair("Usage Instructions", { show Help() }))
-        show Popup Menu(anchor, items)
+        items.addAll(testActions())
+        items.add(Pair(getString(R.string.usage_instructions), { showHelp() }))
+        showPopupMenu(anchor, items)
     }
 
-    private fun show Help() {
-        val items = if (enable Pinned Section) {
-            list Of(
-                Help Feature Item(
+    private fun showHelp() {
+        val items = if (enablePinnedSection) {
+            listOf(
+                HelpFeatureItem(
                     R.drawable.ic_help_gesture,
-                    "Swipe left to hide",
-                    " Hide ， Systempanelin Show"
+                    getString(R.string.help_title_swipe),
+                    getString(R.string.help_desc_swipe)
                 ),
-                Help Feature Item(
+                HelpFeatureItem(
                     R.drawable.ic_help_pin,
-                    "Tap「Pin」 ",
-                    " before； Pin apps Continue By system Sort"
+                    getString(R.string.help_title_tap_pin),
+                    getString(R.string.help_desc_pin)
                 ),
-                Help Feature Item(
+                HelpFeatureItem(
                     R.drawable.ic_help_drag,
-                    "Draghandle ",
-                    "Long pressright handle，adjust Pin appsof theorderorder"
+                    getString(R.string.help_title_drag),
+                    getString(R.string.help_desc_drag)
                 ),
-                Help Feature Item(
+                HelpFeatureItem(
                     R.drawable.ic_add,
-                    "Restore",
-                    " 「Hide」Tabs，Tap can Restore"
+                    getString(R.string.help_title_restore),
+                    getString(R.string.help_desc_restore)
                 )
             )
         } else {
-            list Of(
-                Help Feature Item(
+            listOf(
+                HelpFeatureItem(
                     R.drawable.ic_help_gesture,
-                    "Swipe left to hide",
-                    "Hide Unnecessaryof the Feature ，Streamlinelong press menu"
+                    getString(R.string.help_title_swipe),
+                    getString(R.string.help_desc_swipe_plain)
                 ),
-                Help Feature Item(
+                HelpFeatureItem(
                     R.drawable.ic_help_drag,
-                    "Drag the handle to sort",
-                    "Long pressright handle，adjust Menu of theorderorder"
+                    getString(R.string.help_title_sort),
+                    getString(R.string.help_desc_sort)
                 ),
-                Help Feature Item(
+                HelpFeatureItem(
                     R.drawable.ic_help_sync,
-                    "Takes effect immediately",
-                    " Syncs in real time System，support Undo"
+                    getString(R.string.help_title_immediate),
+                    getString(R.string.help_desc_immediate)
                 )
             )
         }
-        show Feature Help Sheet("$screen Title · Instructions", items)
+        showFeatureHelpSheet(getString(R.string.help_sheet_title, screenTitle), items)
     }
 
-    // ───────── list （Drag Sort + left hide） ─────────
-    private fun setup List() {
-        recycler View.apply {
-            layout Manager = Linear Layout Manager(this@Manage List Activity)
-            adapter = this@Manage List Activity.adapter
-            item Animator = Default Item Animator().apply {
-                supports Change Animations = false
-                remove Duration = 100L
-                move Duration = 150L
-                add Duration = 100L
+    // ───────── list （DragSort + left hide） ─────────
+    private fun setupList() {
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@ManageListActivity)
+            adapter = this@ManageListActivity.adapter
+            itemAnimator = DefaultItemAnimator().apply {
+                supportsChangeAnimations = false
+                removeDuration = 100L
+                moveDuration = 150L
+                addDuration = 100L
             }
         }
 
-        // first of theleft Demo 
-        recycler View.add Item Decoration(object : Recycler View.Item Decoration() {
-            override fun on Draw(c: Canvas, parent: Recycler View, state: Recycler View.State) {
-                val target = hint Target View
-                if (target != null && hint Offset Dx < 0f) {
-                    draw Swipe Background(c, target, hint Offset Dx, false, 0.88f)
+        // first of/theleft Demo 
+        recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                val target = hintTargetView
+                if (target != null && hintOffsetDx < 0f) {
+                    drawSwipeBackground(c, target, hintOffsetDx, false, 0.88f)
                 }
             }
         })
 
-        recycler View.add On Item Touch Listener(object : Recycler View.Simple On Item Touch Listener() {
-            override fun on Intercept Touch Event(rv: Recycler View, e: Motion Event): Boolean {
-                if (hint Target View != null) swipe Hint Animator?.cancel()
+        recyclerView.addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                if (hintTargetView != null) swipeHintAnimator?.cancel()
                 return false
             }
         })
 
-        item Touch Helper = Item Touch Helper(object : Item Touch Helper.Simple Callback(0, 0) {
-            private var is Threshold Crossed = false
-            private var current Scale = 0.85f
-            private var is Swiping Out = false
-            private var swipe Start Time = 0L
+        itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, 0) {
+            private var isThresholdCrossed = false
+            private var currentScale = 0.85f
+            private var isSwipingOut = false
+            private var swipeStartTime = 0L
 
-            override fun get Movement Flags(rv: Recycler View, view Holder: Recycler View.View Holder): Int {
-                if (is Swiping Out) {
-                    if (System Clock.uptime Millis() - swipe Start Time > 260L) is Swiping Out = false
-                    else return make Movement Flags(0, 0)
+            override fun getMovementFlags(rv: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+                if (isSwipingOut) {
+                    if (SystemClock.uptimeMillis() - swipeStartTime > 260L) isSwipingOut = false
+                    else return makeMovementFlags(0, 0)
                 }
-                //  Search 「Show」Tabswhen， Drag Sortandleft hide
-                if (search Open || tab != TAB_VISIBLE) return make Movement Flags(0, 0)
+                // Disable drag-sort and swipe-to-hide on search or non-Show tabs
+                if (searchOpen || tab != TAB_VISIBLE) return makeMovementFlags(0, 0)
 
-                val pos = view Holder.binding Adapter Position
-                val row = adapter.get Item(pos) ?: return make Movement Flags(0, 0)
+                val pos = viewHolder.bindingAdapterPosition
+                val row = adapter.getItem(pos) ?: return makeMovementFlags(0, 0)
 
-                return if (enable Pinned Section) {
+                return if (enablePinnedSection) {
                     when (row) {
-                        is Manage Row.Pinned -> make Movement Flags(Item Touch Helper.UP or Item Touch Helper.DOWN, Item Touch Helper.LEFT)
-                        is Manage Row.Flowing -> make Movement Flags(0, Item Touch Helper.LEFT)
-                        else -> make Movement Flags(0, 0)
+                        is ManageRow.Pinned -> makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT)
+                        is ManageRow.Flowing -> makeMovementFlags(0, ItemTouchHelper.LEFT)
+                        else -> makeMovementFlags(0, 0)
                     }
                 } else {
-                    if (pos !in visible.indices) make Movement Flags(0, 0)
-                    else make Movement Flags(Item Touch Helper.UP or Item Touch Helper.DOWN, Item Touch Helper.LEFT)
+                    if (pos !in visible.indices) makeMovementFlags(0, 0)
+                    else makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT)
                 }
             }
 
-            override fun can Drop Over(
-                rv: Recycler View,
-                current: Recycler View.View Holder,
-                target: Recycler View.View Holder
+            override fun canDropOver(
+                rv: RecyclerView,
+                current: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
             ): Boolean {
-                val to Pos = target.binding Adapter Position
-                val to Row = adapter.get Item(to Pos)
-                return if (enable Pinned Section) {
-                    to Row is Manage Row.Pinned
+                val toPos = target.bindingAdapterPosition
+                val toRow = adapter.getItem(toPos)
+                return if (enablePinnedSection) {
+                    toRow is ManageRow.Pinned
                 } else {
-                    to Pos in visible.indices
+                    toPos in visible.indices
                 }
             }
 
-            override fun on Move(
-                rv: Recycler View,
-                view Holder: Recycler View.View Holder,
-                target: Recycler View.View Holder
+            override fun onMove(
+                rv: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
             ): Boolean {
-                if (search Open || tab != TAB_VISIBLE) return false
-                val from Pos = view Holder.binding Adapter Position
-                val to Pos = target.binding Adapter Position
+                if (searchOpen || tab != TAB_VISIBLE) return false
+                val fromPos = viewHolder.bindingAdapterPosition
+                val toPos = target.bindingAdapterPosition
 
-                if (enable Pinned Section) {
-                    val from Row = adapter.get Item(from Pos)
-                    val to Row = adapter.get Item(to Pos)
-                    if (from Row !is Manage Row.Pinned || to Row !is Manage Row.Pinned) return false
-                    val from Index = from Pos - 1
-                    val to Index = to Pos - 1
-                    if (from Index !in 0 until pinned Count || to Index !in 0 until pinned Count) return false
+                if (enablePinnedSection) {
+                    val fromRow = adapter.getItem(fromPos)
+                    val toRow = adapter.getItem(toPos)
+                    if (fromRow !is ManageRow.Pinned || toRow !is ManageRow.Pinned) return false
+                    val fromIndex = fromPos - 1
+                    val toIndex = toPos - 1
+                    if (fromIndex !in 0 until pinnedCount || toIndex !in 0 until pinnedCount) return false
 
-                    val moved = visible.remove At(from Index)
-                    visible.add(to Index, moved)
-                    adapter.notify Item Moved(from Pos, to Pos)
-                    drag Dirty = true
-                    view Holder.item View.perform Haptic Feedback(Haptic Feedback Constants.CLOCK_TICK)
+                    val moved = visible.removeAt(fromIndex)
+                    visible.add(toIndex, moved)
+                    adapter.notifyItemMoved(fromPos, toPos)
+                    dragDirty = true
+                    viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                     return true
                 } else {
-                    if (from Pos !in visible.indices || to Pos !in visible.indices) return false
-                    val moved = visible.remove At(from Pos)
-                    visible.add(to Pos, moved)
-                    adapter.notify Item Moved(from Pos, to Pos)
-                    drag Dirty = true
-                    view Holder.item View.perform Haptic Feedback(Haptic Feedback Constants.CLOCK_TICK)
+                    if (fromPos !in visible.indices || toPos !in visible.indices) return false
+                    val moved = visible.removeAt(fromPos)
+                    visible.add(toPos, moved)
+                    adapter.notifyItemMoved(fromPos, toPos)
+                    dragDirty = true
+                    viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                     return true
                 }
             }
 
-            override fun on Selected Changed(view Holder: Recycler View.View Holder?, action State: Int) {
-                super.on Selected Changed(view Holder, action State)
-                if (action State == Item Touch Helper.ACTION_STATE_DRAG && view Holder != null) {
-                    view Holder.item View.perform Haptic Feedback(Haptic Feedback Constants.LONG_PRESS)
-                    view Holder.item View.set Background Resource(R.drawable.bg_row_lift)
-                    view Holder.item View.animate()
-                        .scale X(1.025f)
-                        .scale Y(1.025f)
-                        .translation Z(dp(14).to Float())
-                        .set Duration(140L)
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG && viewHolder != null) {
+                    viewHolder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                    viewHolder.itemView.setBackgroundResource(R.drawable.bg_row_lift)
+                    viewHolder.itemView.animate()
+                        .scaleX(1.025f)
+                        .scaleY(1.025f)
+                        .translationZ(dp(14).toFloat())
+                        .setDuration(140L)
                         .start()
                 }
             }
 
-            override fun get Swipe Threshold(view Holder: Recycler View.View Holder): Float = 0.22f
-            override fun get Swipe Escape Velocity(default Value: Float): Float = default Value * 0.45f
-            override fun get Swipe Velocity Threshold(default Value: Float): Float = default Value * 0.5f
+            override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float = 0.22f
+            override fun getSwipeEscapeVelocity(defaultValue: Float): Float = defaultValue * 0.45f
+            override fun getSwipeVelocityThreshold(defaultValue: Float): Float = defaultValue * 0.5f
 
-            override fun get Animation Duration(
-                rv: Recycler View,
-                animation Type: Int,
-                animate Dx: Float,
-                animate Dy: Float
+            override fun getAnimationDuration(
+                rv: RecyclerView,
+                animationType: Int,
+                animateDx: Float,
+                animateDy: Float
             ): Long {
-                if (animation Type == Item Touch Helper.ANIMATION_TYPE_SWIPE_SUCCESS) {
-                    is Swiping Out = true
-                    swipe Start Time = System Clock.uptime Millis()
+                if (animationType == ItemTouchHelper.ANIMATION_TYPE_SWIPE_SUCCESS) {
+                    isSwipingOut = true
+                    swipeStartTime = SystemClock.uptimeMillis()
                 }
-                return if (animation Type == Item Touch Helper.ANIMATION_TYPE_SWIPE_CANCEL) 150L else 100L
+                return if (animationType == ItemTouchHelper.ANIMATION_TYPE_SWIPE_CANCEL) 150L else 100L
             }
 
-            override fun on Swiped(view Holder: Recycler View.View Holder, direction: Int) {
-                if (direction == Item Touch Helper.LEFT) {
-                    val position = view Holder.binding Adapter Position
-                    val row = adapter.get Item(position)
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                if (direction == ItemTouchHelper.LEFT) {
+                    val position = viewHolder.bindingAdapterPosition
+                    val row = adapter.getItem(position)
                     val item = when (row) {
-                        is Manage Row.Pinned -> row.item
-                        is Manage Row.Flowing -> row.item
-                        is Manage Row.Showing -> row.item
+                        is ManageRow.Pinned -> row.item
+                        is ManageRow.Flowing -> row.item
+                        is ManageRow.Showing -> row.item
                         else -> null
                     }
-                    if (item != null) stash Item(item)
+                    if (item != null) stashItem(item)
                 }
-                recycler View.post Delayed({ is Swiping Out = false }, 135L)
+                recyclerView.postDelayed({ isSwipingOut = false }, 135L)
             }
 
-            override fun on Child Draw(
+            override fun onChildDraw(
                 c: Canvas,
-                rv: Recycler View,
-                view Holder: Recycler View.View Holder,
-                d X: Float,
-                d Y: Float,
-                action State: Int,
-                is Currently Active: Boolean
+                rv: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
             ) {
-                if (action State == Item Touch Helper.ACTION_STATE_SWIPE && d X < 0) {
-                    val item View = view Holder.item View
-                    val width = item View.width.to Float().coerce At Least(1f)
-                    val ratio = (-d X / width).coerce In(0f, 1f)
-                    val crossed Now = ratio >= get Swipe Threshold(view Holder)
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE && dX < 0) {
+                    val itemView = viewHolder.itemView
+                    val width = itemView.width.toFloat().coerceAtLeast(1f)
+                    val ratio = (-dX / width).coerceIn(0f, 1f)
+                    val crossedNow = ratio >= getSwipeThreshold(viewHolder)
 
-                    if (crossed Now != is Threshold Crossed && is Currently Active) {
-                        is Threshold Crossed = crossed Now
-                        item View.perform Haptic Feedback(Haptic Feedback Constants.CLOCK_TICK)
+                    if (crossedNow != isThresholdCrossed && isCurrentlyActive) {
+                        isThresholdCrossed = crossedNow
+                        itemView.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                     }
 
-                    val target Scale = if (crossed Now) 1.06f else 0.88f
-                    current Scale += (target Scale - current Scale) * 0.25f
+                    val targetScale = if (crossedNow) 1.06f else 0.88f
+                    currentScale += (targetScale - currentScale) * 0.25f
 
-                    draw Swipe Background(c, item View, d X, crossed Now, current Scale)
-                    item View.alpha = 1.0f - (ratio * 0.12f)
+                    drawSwipeBackground(c, itemView, dX, crossedNow, currentScale)
+                    itemView.alpha = 1.0f - (ratio * 0.12f)
                 } else {
-                    view Holder.item View.alpha = 1.0f
+                    viewHolder.itemView.alpha = 1.0f
                 }
-                super.on Child Draw(c, rv, view Holder, d X, d Y, action State, is Currently Active)
+                super.onChildDraw(c, rv, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
 
-            override fun clear View(rv: Recycler View, view Holder: Recycler View.View Holder) {
-                super.clear View(rv, view Holder)
+            override fun clearView(rv: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                super.clearView(rv, viewHolder)
                 //  bottom：Smooth ， 
-                view Holder.item View.animate()
-                    .scale X(1f)
-                    .scale Y(1f)
-                    .translation Z(0f)
-                    .set Duration(160L)
+                viewHolder.itemView.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .translationZ(0f)
+                    .setDuration(160L)
                     .start()
-                view Holder.item View.set Background Resource(R.drawable.bg_card_item)
-                view Holder.item View.alpha = 1.0f
-                is Threshold Crossed = false
-                current Scale = 0.85f
-                if (drag Dirty) {
-                    drag Dirty = false
-                    save Rules()
-                    get Shared Preferences(PREFS, MODE_PRIVATE).edit().put Boolean(KEY_DRAG_HINT_DONE, true).apply()
-                    tv Hint.visibility = View.GONE
+                viewHolder.itemView.setBackgroundResource(R.drawable.bg_card_item)
+                viewHolder.itemView.alpha = 1.0f
+                isThresholdCrossed = false
+                currentScale = 0.85f
+                if (dragDirty) {
+                    dragDirty = false
+                    saveRules()
+                    getSharedPreferences(PREFS, MODE_PRIVATE).edit().putBoolean(KEY_DRAG_HINT_DONE, true).apply()
+                    tvHint.visibility = View.GONE
                 }
             }
         })
-        item Touch Helper.attach To Recycler View(recycler View)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun draw Swipe Background(
+    private fun drawSwipeBackground(
         c: Canvas,
-        item View: View,
-        d X: Float,
+        itemView: View,
+        dX: Float,
         crossed: Boolean,
         scale: Float
     ) {
-        val density = resources.display Metrics.density
-        val pill Width = 56f * density
-        val pill Height = 32f * density
-        val radius = pill Height / 2f
+        val density = resources.displayMetrics.density
+        val pillWidth = 56f * density
+        val pillHeight = 32f * density
+        val radius = pillHeight / 2f
 
-        val revealed = (-d X).coerce At Least(0f)
-        val fade Start = 20f * density
-        if (revealed <= fade Start) return
-        val alpha Progress = ((revealed - fade Start) / (36f * density)).coerce In(0f, 1f)
+        val revealed = (-dX).coerceAtLeast(0f)
+        val fadeStart = 20f * density
+        if (revealed <= fadeStart) return
+        val alphaProgress = ((revealed - fadeStart) / (36f * density)).coerceIn(0f, 1f)
 
-        bg Paint.color = Context Compat.get Color(this, if (crossed) R.color.hyper_accent else R.color.hyper_segment_track)
-        bg Paint.alpha = (alpha Progress * 255).to Int()
-        text Paint.color = if (crossed) Color.WHITE else Context Compat.get Color(this, R.color.hyper_text_secondary)
-        text Paint.alpha = (alpha Progress * 255).to Int()
+        bgPaint.color = ContextCompat.getColor(this, if (crossed) R.color.hyper_accent else R.color.hyper_segment_track)
+        bgPaint.alpha = (alphaProgress * 255).toInt()
+        textPaint.color = if (crossed) Color.WHITE else ContextCompat.getColor(this, R.color.hyper_text_secondary)
+        textPaint.alpha = (alphaProgress * 255).toInt()
 
-        val right Bound = item View.right.to Float() - 16f * density
-        val base Offset = pill Width / 2f + 8f * density
-        val extra Pull = ((revealed - (pill Width + 16f * density)).coerce At Least(0f)) * 0.15f
-        val center X = right Bound - base Offset - extra Pull
-        val center Y = (item View.top + item View.bottom) / 2f
-        pill Rect.set(center X - pill Width / 2f, center Y - pill Height / 2f, center X + pill Width / 2f, center Y + pill Height / 2f)
+        val rightBound = itemView.right.toFloat() - 16f * density
+        val baseOffset = pillWidth / 2f + 8f * density
+        val extraPull = ((revealed - (pillWidth + 16f * density)).coerceAtLeast(0f)) * 0.15f
+        val centerX = rightBound - baseOffset - extraPull
+        val centerY = (itemView.top + itemView.bottom) / 2f
+        pillRect.set(centerX - pillWidth / 2f, centerY - pillHeight / 2f, centerX + pillWidth / 2f, centerY + pillHeight / 2f)
 
-        val save Count = c.save()
-        c.clip Rect(item View.right.to Float() + d X, item View.top.to Float(), item View.right.to Float(), item View.bottom.to Float())
-        c.scale(scale, scale, center X, center Y)
-        c.draw Round Rect(pill Rect, radius, radius, bg Paint)
-        val fm = text Paint.font Metrics
-        c.draw Text("hide", center X, center Y - (fm.ascent + fm.descent) / 2f, text Paint)
-        c.restore To Count(save Count)
+        val saveCount = c.save()
+        c.clipRect(itemView.right.toFloat() + dX, itemView.top.toFloat(), itemView.right.toFloat(), itemView.bottom.toFloat())
+        c.scale(scale, scale, centerX, centerY)
+        c.drawRoundRect(pillRect, radius, radius, bgPaint)
+        val fm = textPaint.fontMetrics
+        c.drawText(getString(R.string.hide), centerX, centerY - (fm.ascent + fm.descent) / 2f, textPaint)
+        c.restoreToCount(saveCount)
     }
 
-    // ───────── first of theleft Demo ─────────
-    private fun maybe Play Swipe Hint() {
+    // ───────── first of/theleft Demo ─────────
+    private fun maybePlaySwipeHint() {
         if (!loaded) return
-        val sp = get Shared Preferences(PREFS, MODE_PRIVATE)
-        if (!sp.get Boolean("intro_shown", false) || sp.get Boolean(KEY_SWIPE_HINT_SHOWN, false)) return
-        if (is Hint Scheduled || swipe Hint Animator?.is Running == true) return
-        if (search Open || tab != TAB_VISIBLE || visible.is Empty()) return
+        val sp = getSharedPreferences(PREFS, MODE_PRIVATE)
+        if (!sp.getBoolean("intro_shown", false) || sp.getBoolean(KEY_SWIPE_HINT_SHOWN, false)) return
+        if (isHintScheduled || swipeHintAnimator?.isRunning == true) return
+        if (searchOpen || tab != TAB_VISIBLE || visible.isEmpty()) return
 
-        is Hint Scheduled = true
-        recycler View.post Delayed({
-            is Hint Scheduled = false
-            if (is Finishing || is Destroyed) return@post Delayed
-            play Swipe Hint Animation()
+        isHintScheduled = true
+        recyclerView.postDelayed({
+            isHintScheduled = false
+            if (isFinishing || isDestroyed) return@postDelayed
+            playSwipeHintAnimation()
         }, 450L)
     }
 
-    private fun play Swipe Hint Animation() {
-        val sp = get Shared Preferences(PREFS, MODE_PRIVATE)
-        if (sp.get Boolean(KEY_SWIPE_HINT_SHOWN, false)) return
-        val holder = recycler View.find View Holder For Adapter Position(0) ?: return
+    private fun playSwipeHintAnimation() {
+        val sp = getSharedPreferences(PREFS, MODE_PRIVATE)
+        if (sp.getBoolean(KEY_SWIPE_HINT_SHOWN, false)) return
+        val holder = recyclerView.findViewHolderForAdapterPosition(0) ?: return
 
-        val target View = holder.item View
-        val max Peek Dx = -62f * resources.display Metrics.density
+        val targetView = holder.itemView
+        val maxPeekDx = -62f * resources.displayMetrics.density
 
-        swipe Hint Animator?.cancel()
-        hint Target View = target View
+        swipeHintAnimator?.cancel()
+        hintTargetView = targetView
 
-        val kf0 = Keyframe.of Float(0f, 0f)
-        val kf1 = Keyframe.of Float(0.38f, max Peek Dx).apply { interpolator = Decelerate Interpolator(1.6f) }
-        val kf2 = Keyframe.of Float(0.52f, max Peek Dx)
-        val kf3 = Keyframe.of Float(1.0f, 0f).apply { interpolator = Overshoot Interpolator(0.6f) }
-        val holder Values = Property Values Holder.of Keyframe("translation X", kf0, kf1, kf2, kf3)
+        val kf0 = Keyframe.ofFloat(0f, 0f)
+        val kf1 = Keyframe.ofFloat(0.38f, maxPeekDx).apply { interpolator = DecelerateInterpolator(1.6f) }
+        val kf2 = Keyframe.ofFloat(0.52f, maxPeekDx)
+        val kf3 = Keyframe.ofFloat(1.0f, 0f).apply { interpolator = OvershootInterpolator(0.6f) }
+        val holderValues = PropertyValuesHolder.ofKeyframe("translationX", kf0, kf1, kf2, kf3)
 
-        swipe Hint Animator = Value Animator.of Property Values Holder(holder Values).apply {
+        swipeHintAnimator = ValueAnimator.ofPropertyValuesHolder(holderValues).apply {
             duration = 750L
-            add Update Listener { animator ->
-                val dx = animator.get Animated Value("translation X") as Float
-                hint Offset Dx = dx
-                target View.translation X = dx
-                val ratio = (-dx / target View.width.to Float().coerce At Least(1f)).coerce In(0f, 1f)
-                target View.alpha = 1.0f - (ratio * 0.12f)
-                recycler View.invalidate()
+            addUpdateListener { animator ->
+                val dx = animator.getAnimatedValue("translationX") as Float
+                hintOffsetDx = dx
+                targetView.translationX = dx
+                val ratio = (-dx / targetView.width.toFloat().coerceAtLeast(1f)).coerceIn(0f, 1f)
+                targetView.alpha = 1.0f - (ratio * 0.12f)
+                recyclerView.invalidate()
             }
-            add Listener(object : Animator Listener Adapter() {
-                override fun on Animation End(animation: Animator) {
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
                     cleanup()
                 }
 
-                override fun on Animation Cancel(animation: Animator) {
+                override fun onAnimationCancel(animation: Animator) {
                     cleanup()
                 }
 
                 private fun cleanup() {
-                    hint Target View = null
-                    hint Offset Dx = 0f
-                    target View.translation X = 0f
-                    target View.alpha = 1.0f
-                    recycler View.invalidate()
-                    sp.edit().put Boolean(KEY_SWIPE_HINT_SHOWN, true).apply()
+                    hintTargetView = null
+                    hintOffsetDx = 0f
+                    targetView.translationX = 0f
+                    targetView.alpha = 1.0f
+                    recyclerView.invalidate()
+                    sp.edit().putBoolean(KEY_SWIPE_HINT_SHOWN, true).apply()
                 }
             })
             start()

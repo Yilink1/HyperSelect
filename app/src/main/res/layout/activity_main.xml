@@ -37,7 +37,7 @@
                 android:id="@+id/btnMenu"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="?attr/selectableItem BackgroundBorderless"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="More"
                 android:padding="10dp"
                 android:src="@drawable/ic_more_vert"
@@ -46,12 +46,12 @@
 
         <!-- status: one row, tap to view demo -->
         <LinearLayout
-            android:id="@+id/cardModule Status"
+            android:id="@+id/cardModuleStatus"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:background="?attr/selectableItem Background"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center_vertical"
@@ -65,7 +65,7 @@
                 android:background="@drawable/bg_status_circle_ok" />
 
             <TextView
-                android:id="@+id/tvStatus Title"
+                android:id="@+id/tvStatusTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -80,11 +80,11 @@
             android:layout_marginHorizontal="12dp"
             android:layout_marginTop="36dp"
             android:background="@drawable/bg_sheet"
-            android:clipTo Outline="true"
+            android:clipToOutline="true"
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/cardText Action"
+                android:id="@+id/cardTextAction"
                 android:layout_width="match_parent"
                 android:layout_height="76dp"
                 android:clickable="true"
@@ -98,7 +98,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:importantFor Accessibility="no"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/ic_text_select"
                     app:tint="@color/hyper_text_primary" />
 
@@ -112,7 +112,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TextSelection"
+                        android:text="@string/title_text_selection"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="17sp" />
 
@@ -120,13 +120,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Long press text menu"
+                        android:text="@string/main_card_text_menu"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvText ActionBadge"
+                    android:id="@+id/tvTextActionBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
@@ -137,7 +137,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginStart="4dp"
-                    android:importantFor Accessibility="no"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/ic_chevron_right" />
             </LinearLayout>
 
@@ -149,7 +149,7 @@
                 android:background="@color/hyper_divider" />
 
             <LinearLayout
-                android:id="@+id/cardShare Action"
+                android:id="@+id/cardShareAction"
                 android:layout_width="match_parent"
                 android:layout_height="76dp"
                 android:clickable="true"
@@ -163,7 +163,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:importantFor Accessibility="no"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/ic_share_sheet"
                     app:tint="@color/hyper_text_primary" />
 
@@ -177,7 +177,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="SystemShare"
+                        android:text="@string/title_system_share"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="17sp" />
 
@@ -185,13 +185,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Share panel app list"
+                        android:text="@string/main_card_share_panel"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvShare ActionBadge"
+                    android:id="@+id/tvShareActionBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
@@ -202,7 +202,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginStart="4dp"
-                    android:importantFor Accessibility="no"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/ic_chevron_right" />
             </LinearLayout>
 
@@ -214,7 +214,7 @@
                 android:background="@color/hyper_divider" />
 
             <LinearLayout
-                android:id="@+id/cardOpen WithAction"
+                android:id="@+id/cardOpenWithAction"
                 android:layout_width="match_parent"
                 android:layout_height="76dp"
                 android:clickable="true"
@@ -228,7 +228,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:importantFor Accessibility="no"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/ic_open_with"
                     app:tint="@color/hyper_text_primary" />
 
@@ -242,7 +242,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="OpenWith"
+                        android:text="@string/title_open_with"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="17sp" />
 
@@ -250,13 +250,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="File and link resolver dialog"
+                        android:text="@string/main_card_open_with"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tvOpen WithAction Badge"
+                    android:id="@+id/tvOpenWithActionBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="monospace"
@@ -267,7 +267,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginStart="4dp"
-                    android:importantFor Accessibility="no"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/ic_chevron_right" />
             </LinearLayout>
         </LinearLayout>

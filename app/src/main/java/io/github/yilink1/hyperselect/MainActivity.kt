@@ -1,91 +1,90 @@
 package io.github.yilink1.hyperselect
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.content.Context
 import android.view.View
-import android.widget.Text View
-import androidx.appcompat.app.App Compat Activity
-import androidx.core.view.View Compat
-import androidx.core.view.Window Insets Compat
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
-class Main Activity : App Compat Activity() {
+class MainActivity : AppCompatActivity() {
 
-    private lateinit var dot Status: View
-    private lateinit var tv Status Title: Text View
-    private lateinit var tv Text Action Badge: Text View
-    private lateinit var tv Share Action Badge: Text View
-    private lateinit var tv Open With Action Badge: Text View
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
+    }
 
-    override fun on Create(saved Instance State: Bundle?) {
-        super.on Create(saved Instance State)
-        set Content View(R.layout.activity_main)
+    private lateinit var dotStatus: View
+    private lateinit var tvStatusTitle: TextView
+    private lateinit var tvTextActionBadge: TextView
+    private lateinit var tvShareActionBadge: TextView
+    private lateinit var tvOpenWithActionBadge: TextView
 
-        View Compat.set On Apply Window Insets Listener(find View By Id(android.R.id.content)) { view, insets ->
-            val system Bars = insets.get Insets(Window Insets Compat.Type.system Bars())
-            view.set Padding(0, system Bars.top, 0, system Bars.bottom)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(0, systemBars.top, 0, systemBars.bottom)
             insets
         }
 
-        dot Status = find View By Id(R.id.dot Status)
-        tv Status Title = find View By Id(R.id.tv Status Title)
-        tv Text Action Badge = find View By Id(R.id.tv Text Action Badge)
-        tv Share Action Badge = find View By Id(R.id.tv Share Action Badge)
-        tv Open With Action Badge = find View By Id(R.id.tv Open With Action Badge)
+        dotStatus = findViewById(R.id.dotStatus)
+        tvStatusTitle = findViewById(R.id.tvStatusTitle)
+        tvTextActionBadge = findViewById(R.id.tvTextActionBadge)
+        tvShareActionBadge = findViewById(R.id.tvShareActionBadge)
+        tvOpenWithActionBadge = findViewById(R.id.tvOpenWithActionBadge)
 
-        find View By Id<View>(R.id.card Text Action).set On Click Listener {
-            start Activity(Intent(this, Text Action Activity::class.java))
+        findViewById<View>(R.id.cardTextAction).setOnClickListener {
+            startActivity(Intent(this, TextActionActivity::class.java))
         }
-        find View By Id<View>(R.id.card Share Action).set On Click Listener {
-            start Activity(Intent(this, Share Action Activity::class.java))
+        findViewById<View>(R.id.cardShareAction).setOnClickListener {
+            startActivity(Intent(this, ShareActionActivity::class.java))
         }
-        find View By Id<View>(R.id.card Open With Action).set On Click Listener {
-            start Activity(Intent(this, Open With Action Activity::class.java))
+        findViewById<View>(R.id.cardOpenWithAction).setOnClickListener {
+            startActivity(Intent(this, OpenWithActionActivity::class.java))
         }
-        find View By Id<View>(R.id.card Module Status).set On Click Listener {
-            start Activity(Intent(this, Intro Activity::class.java))
+        findViewById<View>(R.id.cardModuleStatus).setOnClickListener {
+            startActivity(Intent(this, IntroActivity::class.java))
         }
-        find View By Id<View>(R.id.btn Menu).set On Click Listener { anchor ->
-            show Popup Menu(
+        findViewById<View>(R.id.btnMenu).setOnClickListener { anchor ->
+            showPopupMenu(
                 anchor,
-                list Of(
-                    Pair("Feature Demo", { start Activity(Intent(this, Intro Activity::class.java)) }),
-                    Pair("About Hyper Select", { start Activity(Intent(this, About Activity::class.java)) })
+                listOf(
+                    Pair(getString(R.string.feature_demo), { startActivity(Intent(this, IntroActivity::class.java)) }),
+                    Pair(getString(R.string.about_hyperselect), { startActivity(Intent(this, AboutActivity::class.java)) })
                 )
             )
         }
 
         // Show tutorial on first install
-        val sp = get Shared Preferences("hyper_select_prefs", MODE_PRIVATE)
-        if (!sp.get Boolean("intro_shown", false)) {
-            start Activity(Intent(this, Intro Activity::class.java))
+        val sp = getSharedPreferences("hyper_select_prefs", MODE_PRIVATE)
+        if (!sp.getBoolean("intro_shown", false)) {
+            startActivity(Intent(this, IntroActivity::class.java))
         }
     }
 
-    override fun on Resume() {
-        super.on Resume()
-        update Status And Counts()
+    override fun onResume() {
+        super.onResume()
+        updateStatusAndCounts()
     }
 
-    private fun update Status And Counts() {
-        if (Rule Store.is Module Active Since Boot(this)) {
-            dot Status.set Background Resource(R.drawable.bg_status_circle_ok)
-            tv Status Title.text = "Module is active"
+    private fun updateStatusAndCounts() {
+        if (RuleStore.isModuleActiveSinceBoot(this)) {
+            dotStatus.setBackgroundResource(R.drawable.bg_status_circle_ok)
+            tvStatusTitle.text = getString(R.string.module_active)
         } else {
-            dot Status.set Background Resource(R.drawable.bg_status_circle_fail)
-            tv Status Title.text = "Module not active · Enable in LSPosed and reboot"
+            dotStatus.setBackgroundResource(R.drawable.bg_status_circle_fail)
+            tvStatusTitle.text = getString(R.string.module_inactive)
         }
 
-        val config = Rule Store.load(this)
-        tv Text Action Badge.text = hidden Label(config.blacklist.size)
-        tv Share Action Badge.text = hidden Label(config.share Blacklist.size)
-        tv Open With Action Badge.text = hidden Label(config.open With Blacklist.size)
+        val config = RuleStore.load(this)
+        tvTextActionBadge.text = hiddenLabel(config.blacklist.size)
+        tvShareActionBadge.text = hiddenLabel(config.shareBlacklist.size)
+        tvOpenWithActionBadge.text = hiddenLabel(config.openWithBlacklist.size)
     }
 
-    private fun hidden Label(count: Int): String = if (count > 0) "Hidden $count" else "—"
-}
-
-    override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(LocaleHelper.setLocale(newBase))
-    }
+    private fun hiddenLabel(count: Int): String = if (count > 0) getString(R.string.hidden_count, count) else "—"
 }

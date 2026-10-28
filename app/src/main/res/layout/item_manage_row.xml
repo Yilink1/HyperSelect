@@ -17,7 +17,7 @@
     android:paddingVertical="10dp">
 
     <ImageView
-        android:id="@+id/ivApp Icon"
+        android:id="@+id/ivAppIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:contentDescription="@null"
@@ -32,17 +32,17 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvApp Label"
+            android:id="@+id/tvAppLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/hyper_text_primary"
             android:textSize="15.5sp"
-            tools:text="BaiduTranslate" />
+            tools:text="Baidu Translate" />
 
         <TextView
-            android:id="@+id/tvPackage Name"
+            android:id="@+id/tvPackageName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
@@ -63,7 +63,7 @@
         android:background="@drawable/bg_btn_pill_neutral"
         android:gravity="center"
         android:paddingHorizontal="9dp"
-        android:text="Cancel"
+        android:text="@string/cancel"
         android:textColor="@color/hyper_pill_grey_text"
         android:textSize="12sp"
         android:textStyle="bold"
@@ -72,10 +72,10 @@
 
     <!-- drag handle（Showlist） -->
     <ImageView
-        android:id="@+id/ivDrag Handle"
+        android:id="@+id/ivDragHandle"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:background="?attr/selectableItem BackgroundBorderless"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="DragSort"
         android:padding="8dp"
         android:src="@drawable/ic_drag_handle"
@@ -89,7 +89,7 @@
         android:background="@drawable/bg_btn_pill_primary"
         android:gravity="center"
         android:paddingHorizontal="11dp"
-        android:text="Pin"
+        android:text="@string/pin"
         android:textColor="@color/hyper_pill_blue_text"
         android:textSize="12sp"
         android:textStyle="bold"
@@ -101,16 +101,16 @@
         android:id="@+id/btnRestore"
         android:layout_width="34dp"
         android:layout_height="34dp"
-        android:background="?attr/selectableItem BackgroundBorderless"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="RestoreShow"
         android:padding="6dp"
         android:src="@drawable/ic_add"
         app:tint="@color/hyper_accent"
         android:visibility="gone" />
 
-    <!-- SearchActioncapsule：Pin / hide / Restore -->
+    <!-- Search Actioncapsule：Pin / hide / Restore -->
     <LinearLayout
-        android:id="@+id/layoutSearch Actions"
+        android:id="@+id/layoutSearchActions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -118,38 +118,38 @@
         android:visibility="gone">
 
         <TextView
-            android:id="@+id/btnSearch Pin"
+            android:id="@+id/btnSearchPin"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:layout_marginEnd="6dp"
             android:background="@drawable/bg_btn_pill_primary"
             android:gravity="center"
             android:paddingHorizontal="11dp"
-            android:text="Pin"
+            android:text="@string/pin"
             android:textColor="@color/hyper_pill_blue_text"
             android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/btnSearch Hide"
+            android:id="@+id/btnSearchHide"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:background="@drawable/bg_btn_pill_neutral"
             android:gravity="center"
             android:paddingHorizontal="11dp"
-            android:text="hide"
+            android:text="@string/hide"
             android:textColor="@color/hyper_pill_grey_text"
             android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/btnSearch Restore"
+            android:id="@+id/btnSearchRestore"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:background="@drawable/bg_btn_pill_primary"
             android:gravity="center"
             android:paddingHorizontal="11dp"
-            android:text="Restore"
+            android:text="@string/restore"
             android:textColor="@color/hyper_pill_blue_text"
             android:textSize="12sp"
             android:textStyle="bold"

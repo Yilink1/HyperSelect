@@ -17,7 +17,7 @@
         android:background="@drawable/bg_handle_bar" />
 
     <TextView
-        android:id="@+id/tvHelp Title"
+        android:id="@+id/tvHelpTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/hyper_text_primary"
@@ -25,14 +25,14 @@
         android:textStyle="bold" />
 
     <LinearLayout
-        android:id="@+id/llHelp Items"
+        android:id="@+id/llHelpItems"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:orientation="vertical" />
 
     <TextView
-        android:id="@+id/btnHelp Confirm"
+        android:id="@+id/btnHelpConfirm"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="26dp"
@@ -41,7 +41,7 @@
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"
-        android:text="Got it"
+        android:text="@string/got_it"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold" />

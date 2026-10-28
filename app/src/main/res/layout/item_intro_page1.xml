@@ -7,12 +7,12 @@
     android:orientation="vertical"
     android:paddingHorizontal="24dp">
 
-    <!-- AnimationViewport Card -->
-    <androidx.cardview.widget.Card View
+    <!-- Animation Viewport Card -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="260dp"
-        app:cardBackground Color="@color/hyper_card_bg"
-        app:cardCorner Radius="24dp"
+        app:cardBackgroundColor="@color/hyper_card_bg"
+        app:cardCornerRadius="24dp"
         app:cardElevation="2dp">
 
         <LinearLayout
@@ -22,7 +22,7 @@
             android:orientation="vertical"
             android:paddingHorizontal="16dp">
 
-            <!-- SimulatedSearch Bar -->
+            <!-- Simulated Search Bar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -78,20 +78,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cancel"
+                    android:text="@string/cancel"
                     android:textColor="@color/hyper_accent"
                     android:textSize="13sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- FloatingAction Toolbar (mirrors realHyper OS horizontal bar) -->
-            <androidx.cardview.widget.Card View
+            <!-- Floating Action Toolbar (mirrors real HyperOS horizontal bar) -->
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardPage1Menu"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_marginTop="22dp"
-                app:cardBackground Color="@color/hyper_menu_bg"
-                app:cardCorner Radius="22dp"
+                app:cardBackgroundColor="@color/hyper_menu_bg"
+                app:cardCornerRadius="22dp"
                 app:cardElevation="6dp">
 
                 <LinearLayout
@@ -113,7 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="9dp"
-                        android:text="Translate"
+                        android:text="@string/translate"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -121,7 +121,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="9dp"
-                        android:text="Cut"
+                        android:text="@string/cut"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -129,11 +129,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="9dp"
-                        android:text="Copy"
+                        android:text="@string/copy"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
-                    <!-- Drawer container forPaste, clips text so it emerges smoothly from seam -->
+                    <!-- Drawer container for Paste, clips text so it emerges smoothly from seam -->
                     <FrameLayout
                         android:id="@+id/drawerPage1Paste"
                         android:layout_width="0dp"
@@ -146,7 +146,7 @@
                             android:layout_height="wrap_content"
                             android:paddingHorizontal="9dp"
                             android:singleLine="true"
-                            android:text="Paste"
+                            android:text="@string/paste"
                             android:textColor="@color/hyper_text_primary"
                             android:textSize="14sp" />
                     </FrameLayout>
@@ -159,17 +159,17 @@
                         android:src="@drawable/ic_more_vert"
                         app:tint="@color/hyper_text_primary" />
                 </LinearLayout>
-            </androidx.cardview.widget.Card View>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
-    </androidx.cardview.widget.Card View>
+    </androidx.cardview.widget.CardView>
 
-    <!-- Title & Description (TelegramStyle) -->
+    <!-- Title & Description (Telegram Style) -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="BlockAI Writing"
+        android:text="@string/block_ai_writing"
         android:textColor="@color/hyper_text_primary"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -179,9 +179,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:lineSpacing Extra="4dp"
+        android:lineSpacingExtra="4dp"
         android:paddingHorizontal="16dp"
-        android:text="Remove forcedof theAI Writing， of thePaste"
+        android:text="@string/intro1_desc"
         android:textColor="@color/hyper_desc_text"
         android:textSize="14sp" />
 

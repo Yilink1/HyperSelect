@@ -7,12 +7,12 @@
     android:orientation="vertical"
     android:paddingHorizontal="24dp">
 
-    <!-- AnimationViewport Card -->
-    <androidx.cardview.widget.Card View
+    <!-- Animation Viewport Card -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="260dp"
-        app:cardBackground Color="@color/hyper_card_bg"
-        app:cardCorner Radius="24dp"
+        app:cardBackgroundColor="@color/hyper_card_bg"
+        app:cardCornerRadius="24dp"
         app:cardElevation="2dp">
 
         <LinearLayout
@@ -22,13 +22,13 @@
             android:orientation="vertical"
             android:paddingHorizontal="20dp">
 
-            <!-- Floating selection menu (mirrors realHyper OS popup) -->
-            <androidx.cardview.widget.Card View
+            <!-- Floating selection menu (mirrors real HyperOS popup) -->
+            <androidx.cardview.widget.CardView
                 android:id="@+id/cardPage2Menu"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                app:cardBackground Color="@color/hyper_menu_bg"
-                app:cardCorner Radius="18dp"
+                app:cardBackgroundColor="@color/hyper_menu_bg"
+                app:cardCornerRadius="18dp"
                 app:cardElevation="8dp">
 
                 <LinearLayout
@@ -59,7 +59,7 @@
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="14dp"
-                        android:text="Paste"
+                        android:text="@string/paste"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -69,7 +69,7 @@
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="14dp"
-                        android:text="BaiduMaps"
+                        android:text="@string/baidu_maps"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -79,7 +79,7 @@
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="14dp"
-                        android:text="Translate"
+                        android:text="@string/translate"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -89,7 +89,7 @@
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="14dp"
-                        android:text="BaiduTranslate"
+                        android:text="@string/baidu_translate"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
 
@@ -99,21 +99,21 @@
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="14dp"
-                        android:text="AskDeep Seek"
+                        android:text="@string/ask_deepseek"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="14sp" />
                 </LinearLayout>
-            </androidx.cardview.widget.Card View>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
-    </androidx.cardview.widget.Card View>
+    </androidx.cardview.widget.CardView>
 
-    <!-- Title & Description (TelegramStyle) -->
+    <!-- Title & Description (Telegram Style) -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Sortandhide"
+        android:text="@string/sort_and_hide"
         android:textColor="@color/hyper_text_primary"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -123,9 +123,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:lineSpacing Extra="4dp"
+        android:lineSpacingExtra="4dp"
         android:paddingHorizontal="16dp"
-        android:text="frequentFeaturelong pressPin，rareOptionleft hide"
+        android:text="@string/intro2_desc"
         android:textColor="@color/hyper_desc_text"
         android:textSize="14sp" />
 

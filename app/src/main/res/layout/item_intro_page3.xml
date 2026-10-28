@@ -7,12 +7,12 @@
     android:orientation="vertical"
     android:paddingHorizontal="24dp">
 
-    <!-- AnimationViewport Card (same 260dp height asPage 1 & Page 2) -->
-    <androidx.cardview.widget.Card View
+    <!-- Animation Viewport Card (same 260dp height as Page 1 & Page 2) -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="260dp"
-        app:cardBackground Color="@color/hyper_card_bg"
-        app:cardCorner Radius="24dp"
+        app:cardBackgroundColor="@color/hyper_card_bg"
+        app:cardCornerRadius="24dp"
         app:cardElevation="2dp">
 
         <LinearLayout
@@ -21,9 +21,9 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <!-- StatusIcon (circle: checking / ok / fail) -->
+            <!-- Status Icon (circle: checking / ok / fail) -->
             <TextView
-                android:id="@+id/tvStatus Icon"
+                android:id="@+id/tvStatusIcon"
                 android:layout_width="76dp"
                 android:layout_height="76dp"
                 android:background="@drawable/bg_status_circle_checking"
@@ -33,28 +33,28 @@
                 android:textSize="32sp"
                 android:textStyle="bold" />
         </LinearLayout>
-    </androidx.cardview.widget.Card View>
+    </androidx.cardview.widget.CardView>
 
-    <!-- Title & Description (Strictly aligned withPage 1 & Page 2) -->
+    <!-- Title & Description (Strictly aligned with Page 1 & Page 2) -->
     <TextView
-        android:id="@+id/tvStatus Title"
+        android:id="@+id/tvStatusTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="In progressdetectModulestatus"
+        android:text="@string/detecting_status"
         android:textColor="@color/hyper_text_primary"
         android:textSize="24sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tvStatus Desc"
+        android:id="@+id/tvStatusDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:lineSpacing Extra="4dp"
+        android:lineSpacingExtra="4dp"
         android:paddingHorizontal="16dp"
-        android:text="In progressandSystem Frameworkhandshake，please wait…"
+        android:text="@string/handshaking"
         android:textColor="@color/hyper_desc_text"
         android:textSize="14sp" />
 

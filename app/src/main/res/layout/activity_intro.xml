@@ -7,14 +7,14 @@
     android:background="@color/hyper_bg"
     android:orientation="vertical">
 
-    <!-- Center View Pager2 -->
+    <!-- Center ViewPager2 -->
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager Intro"
+        android:id="@+id/viewPagerIntro"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- BottomIndicator & ActionArea -->
+    <!-- Bottom Indicator & Action Area -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         android:paddingHorizontal="42dp"
         android:paddingBottom="36dp">
 
-        <!-- DotIndicators (Fluid sliding track) -->
+        <!-- Dot Indicators (Fluid sliding track) -->
         <FrameLayout
             android:id="@+id/layoutDots"
             android:layout_width="wrap_content"
@@ -60,21 +60,21 @@
 
             <!-- Foreground active fluid sliding noodle -->
             <View
-                android:id="@+id/dotActive Pill"
+                android:id="@+id/dotActivePill"
                 android:layout_width="6.5dp"
                 android:layout_height="6.5dp"
                 android:background="@drawable/bg_intro_dot_active" />
         </FrameLayout>
 
-        <!-- MainAction PillButton -->
+        <!-- Main Action Pill Button -->
         <Button
-            android:id="@+id/btnIntro Action"
+            android:id="@+id/btnIntroAction"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/bg_intro_btn"
             android:elevation="0dp"
             android:stateListAnimator="@null"
-            android:text="Continue"
+            android:text="@string/continue_label"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold" />

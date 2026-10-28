@@ -1,105 +1,112 @@
 package io.github.yilink1.hyperselect
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.Color Drawable
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.content.Context
 import android.view.Gravity
-import android.view.Menu Item
+import android.view.MenuItem
 import android.view.View
-import android.view.View Group
-import android.widget.Text View
-import androidx.appcompat.app.Alert Dialog
-import androidx.appcompat.app.App Compat Activity
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.View Compat
-import androidx.core.view.Window Insets Compat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
-class About Activity : App Compat Activity() {
+class AboutActivity : AppCompatActivity() {
 
-    override fun on Create(saved Instance State: Bundle?) {
-        super.on Create(saved Instance State)
-        set Content View(R.layout.activity_about)
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
+    }
 
-        View Compat.set On Apply Window Insets Listener(find View By Id(android.R.id.content)) { view, insets ->
-            val system Bars = insets.get Insets(Window Insets Compat.Type.system Bars())
-            view.set Padding(0, system Bars.top, 0, system Bars.bottom)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_about)
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(0, systemBars.top, 0, systemBars.bottom)
             insets
         }
 
-        val toolbar: Toolbar = find View By Id(R.id.toolbar About)
-        set Support Action Bar(toolbar)
-        support Action Bar?.apply {
-            set Display Home As Up Enabled(true)
-            title = "About"
+        val toolbar: Toolbar = findViewById(R.id.toolbarAbout)
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            title = getString(R.string.about_title)
         }
 
-        val tv Version: Text View = find View By Id(R.id.tv About Version)
+        val tvVersion: TextView = findViewById(R.id.tvAboutVersion)
         try {
-            val p Info = package Manager.get Package Info(package Name, 0)
+            val pInfo = packageManager.getPackageInfo(packageName, 0)
             @Suppress("DEPRECATION")
             val code = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                p Info.long Version Code
+                pInfo.longVersionCode
             } else {
-                p Info.version Code.to Long()
+                pInfo.versionCode.toLong()
             }
-            tv Version.text = "v${p Info.version Name} ($code)"
+            tvVersion.text = "v${pInfo.versionName} ($code)"
         } catch (_: Exception) {
-            tv Version.text = "v1.0.0"
+            tvVersion.text = "v1.0.0"
         }
 
-        find View By Id<View>(R.id.btn About Help).set On Click Listener {
-            show Help Dialog()
+        val tvLanguage: TextView = findViewById(R.id.tvAboutLanguage)
+        tvLanguage.text = LocaleHelper.displayName(this)
+        findViewById<View>(R.id.btnAboutLanguage).setOnClickListener {
+            val next = if (LocaleHelper.getLanguage(this) == LocaleHelper.ZH) LocaleHelper.EN else LocaleHelper.ZH
+            LocaleHelper.setLanguage(this, next)
+            recreate()
         }
 
-        find View By Id<View>(R.id.btn About Github).set On Click Listener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/yilink1/Hyper Select"))
+        findViewById<View>(R.id.btnAboutHelp).setOnClickListener {
+            showHelpDialog()
+        }
+
+        findViewById<View>(R.id.btnAboutGithub).setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/yilink1/HyperSelect"))
             try {
-                start Activity(intent)
+                startActivity(intent)
             } catch (_: Exception) {
             }
         }
     }
 
-    override fun on Options Item Selected(item: Menu Item): Boolean {
-        if (item.item Id == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
             finish()
             return true
         }
-        return super.on Options Item Selected(item)
+        return super.onOptionsItemSelected(item)
     }
 
-    private fun show Help Dialog() {
-        val dialog View = layout Inflater.inflate(R.layout.dialog_help, null)
-        val dialog = Alert Dialog.Builder(this)
-            .set View(dialog View)
+    private fun showHelpDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_help, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
             .create()
 
-        dialog View.find View By Id<View>(R.id.btn Help Confirm).set On Click Listener {
+        dialogView.findViewById<View>(R.id.btnHelpConfirm).setOnClickListener {
             dialog.dismiss()
         }
 
         dialog.show()
 
         dialog.window?.let { window ->
-            window.set Background Drawable(Color Drawable(Color.TRANSPARENT))
-            window.set Dim Amount(0.45f)
-            window.set Gravity(Gravity.BOTTOM)
-            window.set Window Animations(android.R.style.Animation_Input Method)
-            val margin H = (16f * resources.display Metrics.density).to Int()
-            val margin V = (16f * resources.display Metrics.density).to Int()
-            val display Width = resources.display Metrics.width Pixels
-            window.set Layout(display Width - margin H * 2, View Group.Layout Params.WRAP_CONTENT)
+            window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            window.setDimAmount(0.45f)
+            window.setGravity(Gravity.BOTTOM)
+            window.setWindowAnimations(android.R.style.Animation_InputMethod)
+            val marginH = (16f * resources.displayMetrics.density).toInt()
+            val marginV = (16f * resources.displayMetrics.density).toInt()
+            val displayWidth = resources.displayMetrics.widthPixels
+            window.setLayout(displayWidth - marginH * 2, ViewGroup.LayoutParams.WRAP_CONTENT)
             val lp = window.attributes
-            lp.y = margin V
+            lp.y = marginV
             window.attributes = lp
         }
-    }
-}
-
-    override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(LocaleHelper.setLocale(newBase))
     }
 }

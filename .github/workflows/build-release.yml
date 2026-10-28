@@ -51,5 +51,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: github.event_name == 'workflow_dispatch'
         with:
-          name: HyperSelect-v1.0.1
+          name: HyperSelect-v1.0.3
           path: app/build/outputs/apk/release/HyperSelect-v1.0.3.apk
