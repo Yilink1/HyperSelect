@@ -100,7 +100,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="System Framework & Resolver"
+                        android:text="System Framework &amp; Resolver"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="14sp" />
                 </LinearLayout>
