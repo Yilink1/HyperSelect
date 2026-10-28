@@ -4,13 +4,13 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_card_item"
     android:clickable="true"
-    android:clip To Outline="true"
+    android:clipTo Outline="true"
     android:focusable="true"
     android:foreground="@drawable/bg_item_ripple"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding Horizontal="18dp"
-    android:padding Vertical="14dp">
+    android:paddingHorizontal="18dp"
+    android:paddingVertical="14dp">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -21,22 +21,22 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Block AI writing bubble"
+            android:text="BlockAI writing bubble"
             android:textColor="@color/hyper_text_primary"
-            android:textSize="16sp" />
+            android:text Size="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="long press Textwhen No more sticky notes AI  "
+            android:text="long pressTextwhen No more sticky notesAI  "
             android:textColor="@color/hyper_text_secondary"
-            android:textSize="12sp" />
+            android:text Size="12sp" />
     </LinearLayout>
 
-    <io.github.yilink1.hyperselect.Hyper Switch
-        android:id="@+id/switch Block Ai Writing"
+    <io.github.yilink1.hyperselect.HyperSwitch
+        android:id="@+id/switchBlock AiWriting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin Start="16dp" />
+        android:layout_marginStart="16dp" />
 </LinearLayout>

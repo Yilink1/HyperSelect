@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">HyperSelect</string>
-    <string name="xposed_description">去除 HyperOS AI 写作气泡，自由管理与净化文本选择、分享及打开方式菜单</string>
+    <string name="xposed_description">去除 HyperOSAI 写作气泡，自由管理与净化文本选择、分享及打开方式菜单</string>
 </resources>

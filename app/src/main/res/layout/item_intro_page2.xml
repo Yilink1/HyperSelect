@@ -5,128 +5,128 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding Horizontal="24dp">
+    android:paddingHorizontal="24dp">
 
-    <!-- Animation Viewport Card -->
-    <androidx.cardview.widget.CardView
+    <!-- AnimationViewport Card -->
+    <androidx.cardview.widget.Card View
         android:layout_width="match_parent"
         android:layout_height="260dp"
-        app:card Background Color="@color/hyper_card_bg"
-        app:card Corner Radius="24dp"
-        app:card Elevation="2dp">
+        app:cardBackground Color="@color/hyper_card_bg"
+        app:cardCorner Radius="24dp"
+        app:cardElevation="2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding Horizontal="20dp">
+            android:paddingHorizontal="20dp">
 
-            <!-- Floating selection menu (mirrors real Hyper OS popup) -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card Page2Menu"
+            <!-- Floating selection menu (mirrors realHyper OS popup) -->
+            <androidx.cardview.widget.Card View
+                android:id="@+id/cardPage2Menu"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                app:card Background Color="@color/hyper_menu_bg"
-                app:card Corner Radius="18dp"
-                app:card Elevation="8dp">
+                app:cardBackground Color="@color/hyper_menu_bg"
+                app:cardCorner Radius="18dp"
+                app:cardElevation="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding Vertical="6dp">
+                    android:paddingVertical="6dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:gravity="center_vertical"
-                        android:padding Horizontal="14dp"
+                        android:paddingHorizontal="14dp"
                         android:text="←"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="16sp"
-                        android:text Style="bold" />
+                        android:text Size="16sp"
+                        android:textStyle="bold" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:layout_margin Horizontal="12dp"
+                        android:layout_marginHorizontal="12dp"
                         android:background="@color/hyper_divider" />
 
                     <TextView
-                        android:id="@+id/tv Page2Paste"
+                        android:id="@+id/tvPage2Paste"
                         android:layout_width="match_parent"
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
-                        android:padding Horizontal="14dp"
+                        android:paddingHorizontal="14dp"
                         android:text="Paste"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
 
                     <TextView
-                        android:id="@+id/tv Page2Share"
+                        android:id="@+id/tvPage2Share"
                         android:layout_width="match_parent"
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
-                        android:padding Horizontal="14dp"
-                        android:text="Baidu Maps"
+                        android:paddingHorizontal="14dp"
+                        android:text="BaiduMaps"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
 
                     <TextView
-                        android:id="@+id/tv Page2Translate"
+                        android:id="@+id/tvPage2Translate"
                         android:layout_width="match_parent"
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
-                        android:padding Horizontal="14dp"
+                        android:paddingHorizontal="14dp"
                         android:text="Translate"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
 
                     <TextView
-                        android:id="@+id/tv Page2Baidu"
+                        android:id="@+id/tvPage2Baidu"
                         android:layout_width="match_parent"
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
-                        android:padding Horizontal="14dp"
-                        android:text="Baidu Translate"
+                        android:paddingHorizontal="14dp"
+                        android:text="BaiduTranslate"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
 
                     <TextView
-                        android:id="@+id/tv Page2Deep Seek"
+                        android:id="@+id/tvPage2DeepSeek"
                         android:layout_width="match_parent"
                         android:layout_height="34dp"
                         android:gravity="center_vertical"
-                        android:padding Horizontal="14dp"
-                        android:text="Ask Deep Seek"
+                        android:paddingHorizontal="14dp"
+                        android:text="AskDeep Seek"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.Card View>
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.Card View>
 
-    <!-- Title & Description (Telegram Style) -->
+    <!-- Title & Description (TelegramStyle) -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Sortandhide"
         android:textColor="@color/hyper_text_primary"
-        android:textSize="24sp"
-        android:text Style="bold" />
+        android:text Size="24sp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:line Spacing Extra="4dp"
-        android:padding Horizontal="16dp"
-        android:text="frequent Featurelong press Pin，rare Optionleft hide"
+        android:lineSpacing Extra="4dp"
+        android:paddingHorizontal="16dp"
+        android:text="frequentFeaturelong pressPin，rareOptionleft hide"
         android:textColor="@color/hyper_desc_text"
-        android:textSize="14sp" />
+        android:text Size="14sp" />
 
 </LinearLayout>

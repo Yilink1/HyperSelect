@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Three management pages（Text Selection / System Share / Open With）Sharedof the Unified  -->
+<!-- Three management pages（TextSelection / SystemShare / OpenWith）Sharedof theUnified  -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -7,7 +7,7 @@
     android:background="@color/hyper_bg"
     android:orientation="vertical">
 
-    <!--  ：Back / title / Search / More；Search whenby search Box Override -->
+    <!--  ：Back / title / Search / More；Search whenby searchBox Override -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="56dp">
@@ -18,105 +18,105 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding Start="6dp"
-            android:padding End="8dp">
+            android:paddingStart="6dp"
+            android:paddingEnd="8dp">
 
             <ImageView
-                android:id="@+id/btn Back"
+                android:id="@+id/btnBack"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="?attr/selectable Item Background Borderless"
-                android:content Description="Back"
+                android:background="?attr/selectableItem BackgroundBorderless"
+                android:contentDescription="Back"
                 android:padding="10dp"
                 android:src="@drawable/ic_arrow_back"
                 app:tint="@color/hyper_text_primary" />
 
             <TextView
-                android:id="@+id/tv Title"
+                android:id="@+id/tvTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin Start="4dp"
+                android:layout_marginStart="4dp"
                 android:layout_weight="1"
-                android:single Line="true"
+                android:singleLine="true"
                 android:textColor="@color/hyper_text_primary"
-                android:textSize="20sp"
-                android:text Style="bold" />
+                android:text Size="20sp"
+                android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/btn Search"
+                android:id="@+id/btnSearch"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="?attr/selectable Item Background Borderless"
-                android:content Description="Search"
+                android:background="?attr/selectableItem BackgroundBorderless"
+                android:contentDescription="Search"
                 android:padding="11dp"
                 android:src="@drawable/ic_search"
                 app:tint="@color/hyper_text_primary" />
 
             <ImageView
-                android:id="@+id/btn More"
+                android:id="@+id/btnMore"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="?attr/selectable Item Background Borderless"
-                android:content Description="More"
+                android:background="?attr/selectableItem BackgroundBorderless"
+                android:contentDescription="More"
                 android:padding="10dp"
                 android:src="@drawable/ic_more_vert"
                 app:tint="@color/hyper_text_primary" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/search Box"
+            android:id="@+id/searchBox"
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:layout_gravity="center_vertical"
-            android:layout_margin Horizontal="12dp"
+            android:layout_marginHorizontal="12dp"
             android:background="@drawable/bg_search_bar"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding Start="16dp"
-            android:padding End="4dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="4dp"
             android:visibility="gone">
 
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:important For Accessibility="no"
+                android:importantFor Accessibility="no"
                 android:src="@drawable/ic_search"
                 app:tint="@color/hyper_text_secondary" />
 
             <EditText
-                android:id="@+id/et Search"
+                android:id="@+id/etSearch"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin Start="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:background="@null"
                 android:hint="Searchapp or "
-                android:ime Options="action Search"
-                android:input Type="text"
-                android:max Lines="1"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
                 android:textColor="@color/hyper_text_primary"
                 android:textColor Hint="@color/hyper_text_secondary"
-                android:text Cursor Drawable="@null"
-                android:textSize="15sp" />
+                android:textCursor Drawable="@null"
+                android:text Size="15sp" />
 
             <ImageView
-                android:id="@+id/btn Close Search"
+                android:id="@+id/btnClose Search"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:background="?attr/selectable Item Background Borderless"
-                android:content Description="Disable Search"
+                android:background="?attr/selectableItem BackgroundBorderless"
+                android:contentDescription="DisableSearch"
                 android:padding="9dp"
                 android:src="@drawable/ic_close"
                 app:tint="@color/hyper_text_secondary" />
         </LinearLayout>
     </FrameLayout>
 
-    <!-- page of the Settings（Text Selectionpage 「Block AI Writing」） -->
+    <!-- page of theSettings（TextSelectionpage 「BlockAI Writing」） -->
     <FrameLayout
-        android:id="@+id/layout Extra"
+        android:id="@+id/layoutExtra"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin Horizontal="12dp"
+        android:layout_marginHorizontal="12dp"
         android:layout_marginBottom="6dp"
         android:visibility="gone" />
 
@@ -125,39 +125,39 @@
         android:id="@+id/segment"
         android:layout_width="match_parent"
         android:layout_height="38dp"
-        android:layout_margin Horizontal="12dp"
+        android:layout_marginHorizontal="12dp"
         android:layout_marginBottom="6dp"
         android:background="@drawable/bg_segment_track"
         android:orientation="horizontal"
         android:padding="3dp">
 
         <TextView
-            android:id="@+id/tv Tab Visible"
+            android:id="@+id/tvTab Visible"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="14sp" />
+            android:text Size="14sp" />
 
         <TextView
-            android:id="@+id/tv Tab Hidden"
+            android:id="@+id/tvTab Hidden"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="14sp" />
+            android:text Size="14sp" />
     </LinearLayout>
 
     <!--  Tip -->
     <TextView
-        android:id="@+id/tv Hint"
+        android:id="@+id/tvHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin Horizontal="20dp"
+        android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="6dp"
-        android:text="long pressordrag handle Sort，Swipe leftto hide"
+        android:text="long pressordrag handleSort，Swipe leftto hide"
         android:textColor="@color/hyper_text_secondary"
-        android:textSize="12sp"
+        android:text Size="12sp"
         android:visibility="gone" />
 
     <FrameLayout
@@ -165,30 +165,30 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.Recycler View
             android:id="@+id/recycler View"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clip To Padding="false"
-            android:over Scroll Mode="never"
-            android:padding Top="2dp"
-            android:padding Bottom="24dp" />
+            android:clipTo Padding="false"
+            android:overScroll Mode="never"
+            android:paddingTop="2dp"
+            android:paddingBottom="24dp" />
 
         <ProgressBar
             android:id="@+id/progress Bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:indeterminate Tint="@color/hyper_accent"
+            android:indeterminateTint="@color/hyper_accent"
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/tv Empty"
+            android:id="@+id/tvEmpty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textColor="@color/hyper_text_secondary"
-            android:textSize="14sp"
+            android:text Size="14sp"
             android:visibility="gone" />
 
         <!-- Undo ：hide / Restore /  after  -->
@@ -197,36 +197,36 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_gravity="bottom"
-            android:layout_margin Horizontal="24dp"
+            android:layout_marginHorizontal="24dp"
             android:layout_marginBottom="28dp"
             android:background="@drawable/bg_undo_bar"
             android:elevation="6dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding Start="20dp"
+            android:paddingStart="20dp"
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/tv Undo Msg"
+                android:id="@+id/tvUndo Msg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:single Line="true"
+                android:singleLine="true"
                 android:textColor="@color/hyper_btn_primary_text"
-                android:textSize="14sp" />
+                android:text Size="14sp" />
 
             <TextView
-                android:id="@+id/btn Undo"
+                android:id="@+id/btnUndo"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="?attr/selectable Item Background"
+                android:background="?attr/selectableItem Background"
                 android:gravity="center"
-                android:padding Horizontal="20dp"
+                android:paddingHorizontal="20dp"
                 android:text="Undo"
                 android:textColor="@color/hyper_undo_action"
-                android:textSize="14sp"
-                android:text Style="bold" />
+                android:text Size="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </FrameLayout>
 

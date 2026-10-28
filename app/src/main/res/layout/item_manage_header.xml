@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding Start="16dp"
-    android:padding End="16dp"
-    android:padding Top="12dp"
-    android:padding Bottom="6dp">
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="6dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,31 +16,31 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv Header Title"
+            android:id="@+id/tvHeader Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/hyper_text_primary"
-            android:textSize="13.5sp"
-            android:text Style="bold"
+            android:text Size="13.5sp"
+            android:textStyle="bold"
             tools:text="Pinapp" />
 
         <TextView
-            android:id="@+id/tv Header Count"
+            android:id="@+id/tvHeader Count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/hyper_text_secondary"
-            android:textSize="12sp"
+            android:text Size="12sp"
             tools:text="2" />
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv Header Hint"
+        android:id="@+id/tvHeader Hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:textColor="@color/hyper_text_secondary"
-        android:textSize="11.5sp"
+        android:text Size="11.5sp"
         android:visibility="gone"
         tools:text="Always pinned atmostbeforeorder，drag handlecan order"
         tools:visibility="visible" />

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<Scroll View xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/hyper_bg"
-    android:fill Viewport="true"
-    android:over Scroll Mode="never">
+    android:fillViewport="true"
+    android:overScroll Mode="never">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding Bottom="32dp">
+        android:paddingBottom="32dp">
 
         <!-- Title row -->
         <LinearLayout
@@ -19,26 +19,26 @@
             android:layout_height="wrap_content"
             android:gravity="top"
             android:orientation="horizontal"
-            android:padding Start="28dp"
-            android:padding Top="20dp"
-            android:padding End="8dp">
+            android:paddingStart="28dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="8dp">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
                 android:layout_weight="1"
-                android:text="Hyper Select"
+                android:text="HyperSelect"
                 android:textColor="@color/hyper_text_primary"
-                android:textSize="34sp"
-                android:text Style="bold" />
+                android:text Size="34sp"
+                android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/btn Menu"
+                android:id="@+id/btnMenu"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
-                android:background="?attr/selectable Item Background Borderless"
-                android:content Description="More"
+                android:background="?attr/selectableItem BackgroundBorderless"
+                android:contentDescription="More"
                 android:padding="10dp"
                 android:src="@drawable/ic_more_vert"
                 app:tint="@color/hyper_text_primary" />
@@ -46,45 +46,45 @@
 
         <!-- status: one row, tap to view demo -->
         <LinearLayout
-            android:id="@+id/card Module Status"
+            android:id="@+id/cardModule Status"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_margin Start="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:background="?attr/selectable Item Background"
+            android:background="?attr/selectableItem Background"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding Horizontal="12dp">
+            android:paddingHorizontal="12dp">
 
             <View
-                android:id="@+id/dot Status"
+                android:id="@+id/dotStatus"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:background="@drawable/bg_status_circle_ok" />
 
             <TextView
-                android:id="@+id/tv Status Title"
+                android:id="@+id/tvStatus Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin Start="10dp"
+                android:layout_marginStart="10dp"
                 android:textColor="@color/hyper_text_secondary"
-                android:textSize="13sp" />
+                android:text Size="13sp" />
         </LinearLayout>
 
         <!-- Three modules: one card panel with divider -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin Horizontal="12dp"
+            android:layout_marginHorizontal="12dp"
             android:layout_marginTop="36dp"
             android:background="@drawable/bg_sheet"
-            android:clip To Outline="true"
+            android:clipTo Outline="true"
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/card Text Action"
+                android:id="@+id/cardText Action"
                 android:layout_width="match_parent"
                 android:layout_height="76dp"
                 android:clickable="true"
@@ -92,29 +92,29 @@
                 android:foreground="@drawable/bg_row_ripple"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding Start="20dp"
-                android:padding End="16dp">
+                android:paddingStart="20dp"
+                android:paddingEnd="16dp">
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:important For Accessibility="no"
+                    android:importantFor Accessibility="no"
                     android:src="@drawable/ic_text_select"
                     app:tint="@color/hyper_text_primary" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin Start="18dp"
+                    android:layout_marginStart="18dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Text Selection"
+                        android:text="TextSelection"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="17sp" />
+                        android:text Size="17sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -122,34 +122,34 @@
                         android:layout_marginTop="2dp"
                         android:text="Long press text menu"
                         android:textColor="@color/hyper_text_secondary"
-                        android:textSize="12sp" />
+                        android:text Size="12sp" />
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv Text Action Badge"
+                    android:id="@+id/tvText ActionBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:font Family="monospace"
+                    android:fontFamily="monospace"
                     android:textColor="@color/hyper_text_secondary"
-                    android:textSize="13sp" />
+                    android:text Size="13sp" />
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_margin Start="4dp"
-                    android:important For Accessibility="no"
+                    android:layout_marginStart="4dp"
+                    android:importantFor Accessibility="no"
                     android:src="@drawable/ic_chevron_right" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_margin Start="62dp"
-                android:layout_margin End="16dp"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="16dp"
                 android:background="@color/hyper_divider" />
 
             <LinearLayout
-                android:id="@+id/card Share Action"
+                android:id="@+id/cardShare Action"
                 android:layout_width="match_parent"
                 android:layout_height="76dp"
                 android:clickable="true"
@@ -157,29 +157,29 @@
                 android:foreground="@drawable/bg_row_ripple"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding Start="20dp"
-                android:padding End="16dp">
+                android:paddingStart="20dp"
+                android:paddingEnd="16dp">
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:important For Accessibility="no"
+                    android:importantFor Accessibility="no"
                     android:src="@drawable/ic_share_sheet"
                     app:tint="@color/hyper_text_primary" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin Start="18dp"
+                    android:layout_marginStart="18dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="System Share"
+                        android:text="SystemShare"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="17sp" />
+                        android:text Size="17sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -187,34 +187,34 @@
                         android:layout_marginTop="2dp"
                         android:text="Share panel app list"
                         android:textColor="@color/hyper_text_secondary"
-                        android:textSize="12sp" />
+                        android:text Size="12sp" />
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv Share Action Badge"
+                    android:id="@+id/tvShare ActionBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:font Family="monospace"
+                    android:fontFamily="monospace"
                     android:textColor="@color/hyper_text_secondary"
-                    android:textSize="13sp" />
+                    android:text Size="13sp" />
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_margin Start="4dp"
-                    android:important For Accessibility="no"
+                    android:layout_marginStart="4dp"
+                    android:importantFor Accessibility="no"
                     android:src="@drawable/ic_chevron_right" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_margin Start="62dp"
-                android:layout_margin End="16dp"
+                android:layout_marginStart="62dp"
+                android:layout_marginEnd="16dp"
                 android:background="@color/hyper_divider" />
 
             <LinearLayout
-                android:id="@+id/card Open With Action"
+                android:id="@+id/cardOpen WithAction"
                 android:layout_width="match_parent"
                 android:layout_height="76dp"
                 android:clickable="true"
@@ -222,29 +222,29 @@
                 android:foreground="@drawable/bg_row_ripple"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding Start="20dp"
-                android:padding End="16dp">
+                android:paddingStart="20dp"
+                android:paddingEnd="16dp">
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:important For Accessibility="no"
+                    android:importantFor Accessibility="no"
                     android:src="@drawable/ic_open_with"
                     app:tint="@color/hyper_text_primary" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin Start="18dp"
+                    android:layout_marginStart="18dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Open With"
+                        android:text="OpenWith"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="17sp" />
+                        android:text Size="17sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -252,25 +252,25 @@
                         android:layout_marginTop="2dp"
                         android:text="File and link resolver dialog"
                         android:textColor="@color/hyper_text_secondary"
-                        android:textSize="12sp" />
+                        android:text Size="12sp" />
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv Open With Action Badge"
+                    android:id="@+id/tvOpen WithAction Badge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:font Family="monospace"
+                    android:fontFamily="monospace"
                     android:textColor="@color/hyper_text_secondary"
-                    android:textSize="13sp" />
+                    android:text Size="13sp" />
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_margin Start="4dp"
-                    android:important For Accessibility="no"
+                    android:layout_marginStart="4dp"
+                    android:importantFor Accessibility="no"
                     android:src="@drawable/ic_chevron_right" />
             </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
-</ScrollView>
+</Scroll View>

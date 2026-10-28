@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Hyper Select</string>
-    <string name="xposed_description">Remove Hyper OS AI Writing bubble and freely manage/purify text selection, share, and Open with menus</string>
+    <string name="app_name">HyperSelect</string>
+    <string name="xposed_description">RemoveHyper OSAI Writing bubble and freely manage/purify text selection, share, andOpen with menus</string>
 </resources>

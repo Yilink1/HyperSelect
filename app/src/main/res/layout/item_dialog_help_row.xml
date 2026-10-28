@@ -12,7 +12,7 @@
         android:background="@drawable/bg_icon_circle">
 
         <ImageView
-            android:id="@+id/iv Help Icon"
+            android:id="@+id/ivHelp Icon"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_gravity="center" />
@@ -21,26 +21,26 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin Start="16dp"
+        android:layout_marginStart="16dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv Help Item Title"
+            android:id="@+id/tvHelp ItemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/hyper_text_primary"
-            android:textSize="15sp"
-            android:text Style="bold" />
+            android:text Size="15sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tv Help Item Sub"
+            android:id="@+id/tvHelp ItemSub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:line Spacing Extra="2dp"
+            android:lineSpacing Extra="2dp"
             android:textColor="@color/hyper_desc_text"
-            android:textSize="13sp" />
+            android:text Size="13sp" />
     </LinearLayout>
 
 </LinearLayout>

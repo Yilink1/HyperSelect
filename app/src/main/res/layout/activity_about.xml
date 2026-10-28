@@ -11,27 +11,27 @@
         android:layout_height="?attr/action Bar Size"
         android:background="@color/hyper_bg" />
 
-    <androidx.core.widget.Nested ScrollView
+    <androidx.core.widget.NestedScroll View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fill Viewport="true">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding Start="16dp"
-            android:padding End="16dp"
-            android:padding Bottom="40dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="40dp">
 
-            <!-- App Logo Header -->
+            <!-- AppLogo Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding Top="20dp"
-                android:padding Bottom="24dp">
+                android:paddingTop="20dp"
+                android:paddingBottom="24dp">
 
                 <FrameLayout
                     android:layout_width="72dp"
@@ -49,31 +49,31 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="Hyper Select"
+                    android:text="HyperSelect"
                     android:textColor="@color/hyper_text_primary"
-                    android:textSize="22sp"
-                    android:text Style="bold" />
+                    android:text Size="22sp"
+                    android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tv About Version"
+                    android:id="@+id/tvAbout Version"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:text="v1.0.0 (Release)"
                     android:textColor="@color/hyper_text_secondary"
-                    android:textSize="13sp" />
+                    android:text Size="13sp" />
             </LinearLayout>
 
-            <!-- Section 1: Module Info -->
+            <!-- Section 1: ModuleInfo -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin Start="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginBottom="6dp"
-                android:text="Module Info"
+                android:text="ModuleInfo"
                 android:textColor="@color/hyper_text_secondary"
-                android:textSize="12sp"
-                android:text Style="bold" />
+                android:text Size="12sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -95,14 +95,14 @@
                         android:layout_weight="1"
                         android:text="Scope"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="15sp" />
+                        android:text Size="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="System Framework &amp; Resolver"
+                        android:text="SystemFramework &amp; Resolver"
                         android:textColor="@color/hyper_text_secondary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
                 </LinearLayout>
 
                 <View
@@ -125,32 +125,32 @@
                         android:layout_weight="1"
                         android:text="Environment"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="15sp" />
+                        android:text Size="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Xiaomi Hyper OS"
+                        android:text="XiaomiHyper OS"
                         android:textColor="@color/hyper_text_secondary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Section 2: Help Guide Action -->
+            <!-- Section 2: HelpGuide Action -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin Start="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="6dp"
-                android:text="Usage Guide"
+                android:text="UsageGuide"
                 android:textColor="@color/hyper_text_secondary"
-                android:textSize="12sp"
-                android:text Style="bold" />
+                android:text Size="12sp"
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/btn About Help"
+                android:id="@+id/btnAbout Help"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_card_group"
@@ -165,29 +165,29 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text=" and Instructions"
+                    android:text=" andInstructions"
                     android:textColor="@color/hyper_text_primary"
-                    android:textSize="15sp" />
+                    android:text Size="15sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="›"
                     android:textColor="@color/hyper_text_secondary"
-                    android:textSize="20sp" />
+                    android:text Size="20sp" />
             </LinearLayout>
 
-            <!-- Section 3: Open Source -->
+            <!-- Section 3: OpenSource -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin Start="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="6dp"
                 android:text="Aboutand "
                 android:textColor="@color/hyper_text_secondary"
-                android:textSize="12sp"
-                android:text Style="bold" />
+                android:text Size="12sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -196,9 +196,9 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- Git Hub -->
+                <!-- GitHub -->
                 <LinearLayout
-                    android:id="@+id/btn About Github"
+                    android:id="@+id/btnAbout Github"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
@@ -211,16 +211,16 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Git Hub  "
+                        android:text="GitHub  "
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="15sp" />
+                        android:text Size="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="yilink1/Hyper Select ›"
+                        android:text="yilink1/HyperSelect ›"
                         android:textColor="@color/hyper_accent"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
                 </LinearLayout>
 
                 <View
@@ -243,14 +243,14 @@
                         android:layout_weight="1"
                         android:text=" "
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="15sp" />
+                        android:text Size="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Yilink"
                         android:textColor="@color/hyper_text_secondary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
                 </LinearLayout>
 
                 <View
@@ -273,14 +273,14 @@
                         android:layout_weight="1"
                         android:text=" License"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="15sp" />
+                        android:text Size="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="GPL-3.0"
                         android:textColor="@color/hyper_text_secondary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -290,11 +290,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:gravity="center"
-                android:text="Translated by TofuGG"
+                android:text="Translated byTofuGG"
                 android:textColor="@color/hyper_text_secondary"
-                android:textSize="12sp" />
+                android:text Size="12sp" />
 
         </LinearLayout>
-    </androidx.core.widget.Nested ScrollView>
+    </androidx.core.widget.NestedScroll View>
 
 </LinearLayout>

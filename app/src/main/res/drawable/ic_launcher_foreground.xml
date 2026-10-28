@@ -7,19 +7,19 @@
     android:viewportHeight="108">
 
     <group
-        android:pivot X="54"
-        android:pivot Y="54"
-        android:scale X="0.72"
-        android:scale Y="0.72">
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.72"
+        android:scaleY="0.72">
 
-        <!-- Top capsule: sky blue to Hyper OS blue -->
+        <!-- Top capsule: sky blue toHyper OS blue -->
         <path android:pathData="M32,34 L76,34 A8,8 0 0,1 76,50 L32,50 A8,8 0 0,1 32,34 Z">
             <aapt:attr name="android:fillColor">
                 <gradient
-                    android:start X="24"
-                    android:start Y="42"
-                    android:end X="84"
-                    android:end Y="42"
+                    android:startX="24"
+                    android:startY="42"
+                    android:endX="84"
+                    android:endY="42"
                     android:type="linear">
                     <item android:color="#38BDF8" android:offset="0.0" />
                     <item android:color="#0077FF" android:offset="0.55" />
@@ -32,10 +32,10 @@
         <path android:pathData="M42,58 L72,58 A8,8 0 0,1 72,74 L42,74 A8,8 0 0,1 42,58 Z">
             <aapt:attr name="android:fillColor">
                 <gradient
-                    android:start X="34"
-                    android:start Y="66"
-                    android:end X="80"
-                    android:end Y="66"
+                    android:startX="34"
+                    android:startY="66"
+                    android:endX="80"
+                    android:endY="66"
                     android:type="linear">
                     <item android:color="#10B981" android:offset="0.0" />
                     <item android:color="#06B6D4" android:offset="1.0" />

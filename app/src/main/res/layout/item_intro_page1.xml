@@ -5,31 +5,31 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding Horizontal="24dp">
+    android:paddingHorizontal="24dp">
 
-    <!-- Animation Viewport Card -->
-    <androidx.cardview.widget.CardView
+    <!-- AnimationViewport Card -->
+    <androidx.cardview.widget.Card View
         android:layout_width="match_parent"
         android:layout_height="260dp"
-        app:card Background Color="@color/hyper_card_bg"
-        app:card Corner Radius="24dp"
-        app:card Elevation="2dp">
+        app:cardBackground Color="@color/hyper_card_bg"
+        app:cardCorner Radius="24dp"
+        app:cardElevation="2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding Horizontal="16dp">
+            android:paddingHorizontal="16dp">
 
-            <!-- Simulated Search Bar -->
+            <!-- SimulatedSearch Bar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/bg_demo_search"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding Horizontal="14dp">
+                android:paddingHorizontal="14dp">
 
                 <ImageView
                     android:layout_width="16dp"
@@ -40,7 +40,7 @@
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin Start="8dp">
+                    android:layout_marginStart="8dp">
 
                     <View
                         android:layout_width="54dp"
@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:text="hyper"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="15sp" />
+                        android:text Size="15sp" />
 
                     <View
                         android:layout_width="8dp"
@@ -80,109 +80,109 @@
                     android:layout_height="wrap_content"
                     android:text="Cancel"
                     android:textColor="@color/hyper_accent"
-                    android:textSize="13sp"
-                    android:text Style="bold" />
+                    android:text Size="13sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Floating Action Toolbar (mirrors real Hyper OS horizontal bar) -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card Page1Menu"
+            <!-- FloatingAction Toolbar (mirrors realHyper OS horizontal bar) -->
+            <androidx.cardview.widget.Card View
+                android:id="@+id/cardPage1Menu"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_marginTop="22dp"
-                app:card Background Color="@color/hyper_menu_bg"
-                app:card Corner Radius="22dp"
-                app:card Elevation="6dp">
+                app:cardBackground Color="@color/hyper_menu_bg"
+                app:cardCorner Radius="22dp"
+                app:cardElevation="6dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding Horizontal="14dp">
+                    android:paddingHorizontal="14dp">
 
                     <ImageView
-                        android:id="@+id/iv Page1Ai Icon"
+                        android:id="@+id/ivPage1AiIcon"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_margin End="10dp"
-                        android:scale Type="fit Center"
+                        android:layout_marginEnd="10dp"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_xiaomi_ai_light_retina" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding Horizontal="9dp"
+                        android:paddingHorizontal="9dp"
                         android:text="Translate"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding Horizontal="9dp"
+                        android:paddingHorizontal="9dp"
                         android:text="Cut"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding Horizontal="9dp"
+                        android:paddingHorizontal="9dp"
                         android:text="Copy"
                         android:textColor="@color/hyper_text_primary"
-                        android:textSize="14sp" />
+                        android:text Size="14sp" />
 
-                    <!-- Drawer container for Paste, clips text so it emerges smoothly from seam -->
+                    <!-- Drawer container forPaste, clips text so it emerges smoothly from seam -->
                     <FrameLayout
-                        android:id="@+id/drawer Page1Paste"
+                        android:id="@+id/drawerPage1Paste"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:clip Children="true">
+                        android:clipChildren="true">
 
                         <TextView
-                            android:id="@+id/tv Page1Paste"
+                            android:id="@+id/tvPage1Paste"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding Horizontal="9dp"
-                            android:single Line="true"
+                            android:paddingHorizontal="9dp"
+                            android:singleLine="true"
                             android:text="Paste"
                             android:textColor="@color/hyper_text_primary"
-                            android:textSize="14sp" />
+                            android:text Size="14sp" />
                     </FrameLayout>
 
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_margin Start="4dp"
-                        android:scale Type="fit Center"
+                        android:layout_marginStart="4dp"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_more_vert"
                         app:tint="@color/hyper_text_primary" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.Card View>
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.Card View>
 
-    <!-- Title & Description (Telegram Style) -->
+    <!-- Title & Description (TelegramStyle) -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Block AI Writing"
+        android:text="BlockAI Writing"
         android:textColor="@color/hyper_text_primary"
-        android:textSize="24sp"
-        android:text Style="bold" />
+        android:text Size="24sp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:line Spacing Extra="4dp"
-        android:padding Horizontal="16dp"
-        android:text="Remove forcedof the AI Writing， of the Paste"
+        android:lineSpacing Extra="4dp"
+        android:paddingHorizontal="16dp"
+        android:text="Remove forcedof theAI Writing， of thePaste"
         android:textColor="@color/hyper_desc_text"
-        android:textSize="14sp" />
+        android:text Size="14sp" />
 
 </LinearLayout>
