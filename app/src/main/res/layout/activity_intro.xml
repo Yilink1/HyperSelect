@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Linear Layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/intro Root"
     android:layout_width="match_parent"
@@ -7,15 +7,15 @@
     android:background="@color/hyper_bg"
     android:orientation="vertical">
 
-    <!-- Center View Pager2 -->
-    <androidx.viewpager2.widget.View Pager2
+    <!-- Center ViewPager2 -->
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view Pager Intro"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
     <!-- Bottom Indicator & Action Area -->
-    <Linear Layout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -23,15 +23,15 @@
         android:padding Bottom="36dp">
 
         <!-- Dot Indicators (Fluid sliding track) -->
-        <Frame Layout
+        <FrameLayout
             android:id="@+id/layout Dots"
             android:layout_width="wrap_content"
             android:layout_height="6.5dp"
             android:layout_gravity="center_horizontal"
-            android:layout_margin Bottom="24dp">
+            android:layout_marginBottom="24dp">
 
             <!-- Background inactive dots (3 static circles) -->
-            <Linear Layout
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="6.5dp"
                 android:gravity="center_vertical"
@@ -56,7 +56,7 @@
                     android:layout_height="6.5dp"
                     android:layout_margin Start="8dp"
                     android:background="@drawable/bg_intro_dot_inactive" />
-            </Linear Layout>
+            </LinearLayout>
 
             <!-- Foreground active fluid sliding noodle -->
             <View
@@ -64,7 +64,7 @@
                 android:layout_width="6.5dp"
                 android:layout_height="6.5dp"
                 android:background="@drawable/bg_intro_dot_active" />
-        </Frame Layout>
+        </FrameLayout>
 
         <!-- Main Action Pill Button -->
         <Button
@@ -75,9 +75,9 @@
             android:elevation="0dp"
             android:state List Animator="@null"
             android:text="Continue"
-            android:text Color="#FFFFFF"
-            android:text Size="16sp"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
             android:text Style="bold" />
-    </Linear Layout>
+    </LinearLayout>
 
-</Linear Layout>
+</LinearLayout>

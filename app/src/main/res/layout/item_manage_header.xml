@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Linear Layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,39 +9,39 @@
     android:padding Top="12dp"
     android:padding Bottom="6dp">
 
-    <Linear Layout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <Text View
+        <TextView
             android:id="@+id/tv Header Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text Color="@color/hyper_text_primary"
-            android:text Size="13.5sp"
+            android:textColor="@color/hyper_text_primary"
+            android:textSize="13.5sp"
             android:text Style="bold"
             tools:text="Pinapp" />
 
-        <Text View
+        <TextView
             android:id="@+id/tv Header Count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text Color="@color/hyper_text_secondary"
-            android:text Size="12sp"
+            android:textColor="@color/hyper_text_secondary"
+            android:textSize="12sp"
             tools:text="2" />
-    </Linear Layout>
+    </LinearLayout>
 
-    <Text View
+    <TextView
         android:id="@+id/tv Header Hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin Top="2dp"
-        android:text Color="@color/hyper_text_secondary"
-        android:text Size="11.5sp"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/hyper_text_secondary"
+        android:textSize="11.5sp"
         android:visibility="gone"
         tools:text="Always pinned atmostbeforeorder，drag handlecan order"
         tools:visibility="visible" />
-</Linear Layout>
+</LinearLayout>

@@ -1,5 +1,5 @@
 <resources>
-    <style name="Theme.HyperSelect" parent="Theme.App Compat.Day Night.No Action Bar">
+    <style name="Theme.HyperSelect" parent="Theme.AppCompat.Day Night.No Action Bar">
         <item name="android:windowBackground">@color/hyper_bg</item>
         <item name="android:statusBarColor">@color/hyper_bg</item>
         <item name="android:navigationBarColor">@color/hyper_bg</item>

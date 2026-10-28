@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Linear Layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,14 +16,14 @@
     android:padding Horizontal="14dp"
     android:padding Vertical="10dp">
 
-    <Image View
+    <ImageView
         android:id="@+id/iv App Icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:content Description="@null"
         tools:src="@mipmap/ic_launcher" />
 
-    <Linear Layout
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin Start="14dp"
@@ -31,31 +31,31 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <Text View
+        <TextView
             android:id="@+id/tv App Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:single Line="true"
-            android:text Color="@color/hyper_text_primary"
-            android:text Size="15.5sp"
+            android:textColor="@color/hyper_text_primary"
+            android:textSize="15.5sp"
             tools:text="Baidu Translate" />
 
-        <Text View
+        <TextView
             android:id="@+id/tv Package Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin Top="2dp"
+            android:layout_marginTop="2dp"
             android:ellipsize="middle"
             android:font Family="monospace"
             android:single Line="true"
-            android:text Color="@color/hyper_text_secondary"
-            android:text Size="11sp"
+            android:textColor="@color/hyper_text_secondary"
+            android:textSize="11sp"
             tools:text="com.baidu.baidutranslate" />
-    </Linear Layout>
+    </LinearLayout>
 
     <!-- Unpin capsule（Pin Pinned items） -->
-    <Text View
+    <TextView
         android:id="@+id/btn Unpin"
         android:layout_width="wrap_content"
         android:layout_height="28dp"
@@ -64,14 +64,14 @@
         android:gravity="center"
         android:padding Horizontal="9dp"
         android:text="Cancel"
-        android:text Color="@color/hyper_pill_grey_text"
-        android:text Size="12sp"
+        android:textColor="@color/hyper_pill_grey_text"
+        android:textSize="12sp"
         android:text Style="bold"
         android:visibility="gone"
         tools:visibility="visible" />
 
     <!-- drag handle（Showlist） -->
-    <Image View
+    <ImageView
         android:id="@+id/iv Drag Handle"
         android:layout_width="38dp"
         android:layout_height="38dp"
@@ -82,7 +82,7 @@
         app:tint="@color/hyper_text_secondary" />
 
     <!-- Pincapsule （ Showlist） -->
-    <Text View
+    <TextView
         android:id="@+id/btn Pin"
         android:layout_width="wrap_content"
         android:layout_height="28dp"
@@ -90,14 +90,14 @@
         android:gravity="center"
         android:padding Horizontal="11dp"
         android:text="Pin"
-        android:text Color="@color/hyper_pill_blue_text"
-        android:text Size="12sp"
+        android:textColor="@color/hyper_pill_blue_text"
+        android:textSize="12sp"
         android:text Style="bold"
         android:visibility="gone"
         tools:visibility="visible" />
 
     <!-- Restore （hide Hide ） -->
-    <Image View
+    <ImageView
         android:id="@+id/btn Restore"
         android:layout_width="34dp"
         android:layout_height="34dp"
@@ -109,7 +109,7 @@
         android:visibility="gone" />
 
     <!-- Search Actioncapsule：Pin / hide / Restore -->
-    <Linear Layout
+    <LinearLayout
         android:id="@+id/layout Search Actions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <Text View
+        <TextView
             android:id="@+id/btn Search Pin"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
@@ -126,11 +126,11 @@
             android:gravity="center"
             android:padding Horizontal="11dp"
             android:text="Pin"
-            android:text Color="@color/hyper_pill_blue_text"
-            android:text Size="12sp"
+            android:textColor="@color/hyper_pill_blue_text"
+            android:textSize="12sp"
             android:text Style="bold" />
 
-        <Text View
+        <TextView
             android:id="@+id/btn Search Hide"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
@@ -138,11 +138,11 @@
             android:gravity="center"
             android:padding Horizontal="11dp"
             android:text="hide"
-            android:text Color="@color/hyper_pill_grey_text"
-            android:text Size="12sp"
+            android:textColor="@color/hyper_pill_grey_text"
+            android:textSize="12sp"
             android:text Style="bold" />
 
-        <Text View
+        <TextView
             android:id="@+id/btn Search Restore"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
@@ -150,10 +150,10 @@
             android:gravity="center"
             android:padding Horizontal="11dp"
             android:text="Restore"
-            android:text Color="@color/hyper_pill_blue_text"
-            android:text Size="12sp"
+            android:textColor="@color/hyper_pill_blue_text"
+            android:textSize="12sp"
             android:text Style="bold"
             android:visibility="gone" />
-    </Linear Layout>
+    </LinearLayout>
 
-</Linear Layout>
+</LinearLayout>

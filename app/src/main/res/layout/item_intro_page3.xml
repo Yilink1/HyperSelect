@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Linear Layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,54 +8,54 @@
     android:padding Horizontal="24dp">
 
     <!-- Animation Viewport Card (same 260dp height as Page 1 & Page 2) -->
-    <androidx.cardview.widget.Card View
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="260dp"
         app:card Background Color="@color/hyper_card_bg"
         app:card Corner Radius="24dp"
         app:card Elevation="2dp">
 
-        <Linear Layout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical">
 
             <!-- Status Icon (circle: checking / ok / fail) -->
-            <Text View
+            <TextView
                 android:id="@+id/tv Status Icon"
                 android:layout_width="76dp"
                 android:layout_height="76dp"
                 android:background="@drawable/bg_status_circle_checking"
                 android:gravity="center"
                 android:text="…"
-                android:text Color="#FFFFFF"
-                android:text Size="32sp"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
                 android:text Style="bold" />
-        </Linear Layout>
-    </androidx.cardview.widget.Card View>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <!-- Title & Description (Strictly aligned with Page 1 & Page 2) -->
-    <Text View
+    <TextView
         android:id="@+id/tv Status Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin Top="32dp"
+        android:layout_marginTop="32dp"
         android:text="In progressdetect Modulestatus"
-        android:text Color="@color/hyper_text_primary"
-        android:text Size="24sp"
+        android:textColor="@color/hyper_text_primary"
+        android:textSize="24sp"
         android:text Style="bold" />
 
-    <Text View
+    <TextView
         android:id="@+id/tv Status Desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin Top="10dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:line Spacing Extra="4dp"
         android:padding Horizontal="16dp"
         android:text="In progressand System Frameworkhandshake，please wait…"
-        android:text Color="@color/hyper_desc_text"
-        android:text Size="14sp" />
+        android:textColor="@color/hyper_desc_text"
+        android:textSize="14sp" />
 
-</Linear Layout>
+</LinearLayout>

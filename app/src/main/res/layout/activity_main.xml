@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Scroll View xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,14 +7,14 @@
     android:fill Viewport="true"
     android:over Scroll Mode="never">
 
-    <Linear Layout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding Bottom="32dp">
 
         <!-- Title row -->
-        <Linear Layout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="top"
@@ -23,17 +23,17 @@
             android:padding Top="20dp"
             android:padding End="8dp">
 
-            <Text View
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin Top="40dp"
+                android:layout_marginTop="40dp"
                 android:layout_weight="1"
                 android:text="Hyper Select"
-                android:text Color="@color/hyper_text_primary"
-                android:text Size="34sp"
+                android:textColor="@color/hyper_text_primary"
+                android:textSize="34sp"
                 android:text Style="bold" />
 
-            <Image View
+            <ImageView
                 android:id="@+id/btn Menu"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
@@ -42,15 +42,15 @@
                 android:padding="10dp"
                 android:src="@drawable/ic_more_vert"
                 app:tint="@color/hyper_text_primary" />
-        </Linear Layout>
+        </LinearLayout>
 
         <!-- status: one row, tap to view demo -->
-        <Linear Layout
+        <LinearLayout
             android:id="@+id/card Module Status"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:layout_margin Start="16dp"
-            android:layout_margin Top="4dp"
+            android:layout_marginTop="4dp"
             android:background="?attr/selectable Item Background"
             android:clickable="true"
             android:focusable="true"
@@ -64,26 +64,26 @@
                 android:layout_height="8dp"
                 android:background="@drawable/bg_status_circle_ok" />
 
-            <Text View
+            <TextView
                 android:id="@+id/tv Status Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin Start="10dp"
-                android:text Color="@color/hyper_text_secondary"
-                android:text Size="13sp" />
-        </Linear Layout>
+                android:textColor="@color/hyper_text_secondary"
+                android:textSize="13sp" />
+        </LinearLayout>
 
         <!-- Three modules: one card panel with divider -->
-        <Linear Layout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin Horizontal="12dp"
-            android:layout_margin Top="36dp"
+            android:layout_marginTop="36dp"
             android:background="@drawable/bg_sheet"
             android:clip To Outline="true"
             android:orientation="vertical">
 
-            <Linear Layout
+            <LinearLayout
                 android:id="@+id/card Text Action"
                 android:layout_width="match_parent"
                 android:layout_height="76dp"
@@ -95,51 +95,51 @@
                 android:padding Start="20dp"
                 android:padding End="16dp">
 
-                <Image View
+                <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:important For Accessibility="no"
                     android:src="@drawable/ic_text_select"
                     app:tint="@color/hyper_text_primary" />
 
-                <Linear Layout
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin Start="18dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <Text View
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Text Selection"
-                        android:text Color="@color/hyper_text_primary"
-                        android:text Size="17sp" />
+                        android:textColor="@color/hyper_text_primary"
+                        android:textSize="17sp" />
 
-                    <Text View
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin Top="2dp"
+                        android:layout_marginTop="2dp"
                         android:text="Long press text menu"
-                        android:text Color="@color/hyper_text_secondary"
-                        android:text Size="12sp" />
-                </Linear Layout>
+                        android:textColor="@color/hyper_text_secondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
-                <Text View
+                <TextView
                     android:id="@+id/tv Text Action Badge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:font Family="monospace"
-                    android:text Color="@color/hyper_text_secondary"
-                    android:text Size="13sp" />
+                    android:textColor="@color/hyper_text_secondary"
+                    android:textSize="13sp" />
 
-                <Image View
+                <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_margin Start="4dp"
                     android:important For Accessibility="no"
                     android:src="@drawable/ic_chevron_right" />
-            </Linear Layout>
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -148,7 +148,7 @@
                 android:layout_margin End="16dp"
                 android:background="@color/hyper_divider" />
 
-            <Linear Layout
+            <LinearLayout
                 android:id="@+id/card Share Action"
                 android:layout_width="match_parent"
                 android:layout_height="76dp"
@@ -160,51 +160,51 @@
                 android:padding Start="20dp"
                 android:padding End="16dp">
 
-                <Image View
+                <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:important For Accessibility="no"
                     android:src="@drawable/ic_share_sheet"
                     app:tint="@color/hyper_text_primary" />
 
-                <Linear Layout
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin Start="18dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <Text View
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="System Share"
-                        android:text Color="@color/hyper_text_primary"
-                        android:text Size="17sp" />
+                        android:textColor="@color/hyper_text_primary"
+                        android:textSize="17sp" />
 
-                    <Text View
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin Top="2dp"
+                        android:layout_marginTop="2dp"
                         android:text="Share panel app list"
-                        android:text Color="@color/hyper_text_secondary"
-                        android:text Size="12sp" />
-                </Linear Layout>
+                        android:textColor="@color/hyper_text_secondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
-                <Text View
+                <TextView
                     android:id="@+id/tv Share Action Badge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:font Family="monospace"
-                    android:text Color="@color/hyper_text_secondary"
-                    android:text Size="13sp" />
+                    android:textColor="@color/hyper_text_secondary"
+                    android:textSize="13sp" />
 
-                <Image View
+                <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_margin Start="4dp"
                     android:important For Accessibility="no"
                     android:src="@drawable/ic_chevron_right" />
-            </Linear Layout>
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -213,7 +213,7 @@
                 android:layout_margin End="16dp"
                 android:background="@color/hyper_divider" />
 
-            <Linear Layout
+            <LinearLayout
                 android:id="@+id/card Open With Action"
                 android:layout_width="match_parent"
                 android:layout_height="76dp"
@@ -225,52 +225,52 @@
                 android:padding Start="20dp"
                 android:padding End="16dp">
 
-                <Image View
+                <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:important For Accessibility="no"
                     android:src="@drawable/ic_open_with"
                     app:tint="@color/hyper_text_primary" />
 
-                <Linear Layout
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin Start="18dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <Text View
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Open With"
-                        android:text Color="@color/hyper_text_primary"
-                        android:text Size="17sp" />
+                        android:textColor="@color/hyper_text_primary"
+                        android:textSize="17sp" />
 
-                    <Text View
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin Top="2dp"
+                        android:layout_marginTop="2dp"
                         android:text="File and link resolver dialog"
-                        android:text Color="@color/hyper_text_secondary"
-                        android:text Size="12sp" />
-                </Linear Layout>
+                        android:textColor="@color/hyper_text_secondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
-                <Text View
+                <TextView
                     android:id="@+id/tv Open With Action Badge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:font Family="monospace"
-                    android:text Color="@color/hyper_text_secondary"
-                    android:text Size="13sp" />
+                    android:textColor="@color/hyper_text_secondary"
+                    android:textSize="13sp" />
 
-                <Image View
+                <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_margin Start="4dp"
                     android:important For Accessibility="no"
                     android:src="@drawable/ic_chevron_right" />
-            </Linear Layout>
-        </Linear Layout>
+            </LinearLayout>
+        </LinearLayout>
 
-    </Linear Layout>
-</Scroll View>
+    </LinearLayout>
+</ScrollView>
