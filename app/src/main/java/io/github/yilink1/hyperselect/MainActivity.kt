@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
                 anchor,
                 listOf(
                     Pair(getString(R.string.feature_demo), { startActivity(Intent(this, IntroActivity::class.java)) }),
+                    Pair(getString(R.string.settings_title), { startActivity(Intent(this, SettingsActivity::class.java)) }),
                     Pair(getString(R.string.about_hyperselect), { startActivity(Intent(this, AboutActivity::class.java)) })
                 )
             )

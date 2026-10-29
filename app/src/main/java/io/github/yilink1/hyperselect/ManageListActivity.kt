@@ -123,7 +123,12 @@ abstract class ManageListActivity : AppCompatActivity() {
     private lateinit var itemTouchHelper: ItemTouchHelper
     private val executor = Executors.newSingleThreadExecutor()
 
-    private var undoSnapshot: Triple<List<TextActionItem>, List<TextActionItem>, Int>? = null
+    private data class UndoEntry(
+        val state: Triple<List<TextActionItem>, List<TextActionItem>, Int>,
+        val message: String
+    )
+    private val undoHistory = ArrayDeque<UndoEntry>()
+    private val maxUndoDepth = 10
     private val hideUndoRunnable = Runnable { hideUndo() }
 
     private val searchBackCallback = object : OnBackPressedCallback(false) {
@@ -175,9 +180,9 @@ abstract class ManageListActivity : AppCompatActivity() {
         findViewById<View>(R.id.btnCloseSearch).setOnClickListener { closeSearch() }
         findViewById<View>(R.id.btnMore).setOnClickListener { showMenu(it) }
         findViewById<View>(R.id.btnUndo).setOnClickListener {
-            val snapshot = undoSnapshot ?: return@setOnClickListener
-            restore(snapshot)
-            hideUndo()
+            val entry = undoHistory.removeLastOrNull() ?: return@setOnClickListener
+            restore(entry.state)
+            if (undoHistory.isEmpty()) hideUndo() else presentUndoBar()
         }
 
         tvTabVisible.setOnClickListener { selectTab(TAB_VISIBLE) }
@@ -603,8 +608,15 @@ abstract class ManageListActivity : AppCompatActivity() {
 
     // ───────── Undo  ─────────
     private fun showUndo(message: String, before: Triple<List<TextActionItem>, List<TextActionItem>, Int>) {
-        undoSnapshot = before
-        tvUndoMsg.text = message
+        undoHistory.addLast(UndoEntry(before, message))
+        while (undoHistory.size > maxUndoDepth) undoHistory.removeFirst()
+        presentUndoBar()
+    }
+
+    /** Show the undo bar for the most recent entry, restarting the auto-hide timer. */
+    private fun presentUndoBar() {
+        val top = undoHistory.lastOrNull() ?: return
+        tvUndoMsg.text = top.message
         undoBar.removeCallbacks(hideUndoRunnable)
         undoBar.animate().cancel()
         undoBar.visibility = View.VISIBLE
@@ -615,7 +627,7 @@ abstract class ManageListActivity : AppCompatActivity() {
     }
 
     private fun hideUndo() {
-        undoSnapshot = null
+        undoHistory.clear()
         undoBar.removeCallbacks(hideUndoRunnable)
         undoBar.animate().cancel()
         undoBar.animate()

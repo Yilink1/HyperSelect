@@ -154,6 +154,12 @@ class MainHook : XposedModule() {
         }.getOrNull()
     }
 
+    /** True when the text-selection menu should be modified at all. */
+    private fun textMenuEnabled(): Boolean {
+        val r = cachedRules ?: return true
+        return r.moduleEnabled && r.textEnabled
+    }
+
     // Called only on the worker, after system services are ready.
     private fun refreshRules(): Boolean {
         val token = Binder.clearCallingIdentity()
@@ -257,7 +263,7 @@ class MainHook : XposedModule() {
             if (resolveIntentMethod != null) {
                 hook(resolveIntentMethod).intercept { chain ->
                     val intent = chain.args[0] as? Intent
-                    if (HookPolicy.isEditorSearch(intent)) {
+                    if (textMenuEnabled() && HookPolicy.isEditorSearch(intent)) {
                         if (DEBUG) log(Log.INFO, TAG, "Blocked Query resolveIntent: ${intent?.dataString}")
                         return@intercept null
                     }
@@ -292,7 +298,7 @@ class MainHook : XposedModule() {
                     val intent = chain.args[0] as? Intent
 
                     // 1. Block fallback search
-                    if (HookPolicy.isEditorSearch(intent)) {
+                    if (textMenuEnabled() && HookPolicy.isEditorSearch(intent)) {
                         if (DEBUG) log(Log.INFO, TAG, "Blocked Query queryIntentActivities: ${intent?.dataString}")
                         return@intercept sliceConstructor.newInstance(emptyList<Any>())
                     }
@@ -346,6 +352,7 @@ class MainHook : XposedModule() {
             if (originalList.isEmpty()) return rawSlice
 
             val rules = cachedRules ?: RuleConfig()
+            if (!rules.moduleEnabled || !rules.textEnabled) return rawSlice
             val blacklist = rules.blacklist
             val customorder = rules.customorder
 
@@ -390,7 +397,13 @@ class MainHook : XposedModule() {
             if (originalList.isEmpty()) return rawSlice
 
             val rules = cachedRules ?: RuleConfig()
+            if (!rules.moduleEnabled) return rawSlice
             val action = intent.action
+
+            val isShare = action == Intent.ACTION_SEND || action == Intent.ACTION_SEND_MULTIPLE
+            val isView = action == Intent.ACTION_VIEW
+            if (isShare && !rules.shareEnabled) return rawSlice
+            if (isView && !rules.openWithEnabled) return rawSlice
 
             val blacklist = when {
                 action == Intent.ACTION_SEND || action == Intent.ACTION_SEND_MULTIPLE -> rules.shareBlacklist
@@ -462,7 +475,7 @@ class MainHook : XposedModule() {
 
                     // Fast path: Only intercept Notes package info when flags == 0 and blockAiWriting is enabled
                     val rules = cachedRules ?: RuleConfig()
-                    if (rules.blockAiWriting && pkgName == "com.miui.notes" && flags == 0L) {
+                    if (rules.moduleEnabled && rules.textEnabled && rules.blockAiWriting && pkgName == "com.miui.notes" && flags == 0L) {
                         val callingPid = Binder.getCallingPid()
                         val callingUid = Binder.getCallingUid()
                         val myPid = Process.myPid()
@@ -655,6 +668,11 @@ class MainHook : XposedModule() {
 
         val json = bundle?.getString(ConfigProvider.EXTRA_RULES_JSON)
         val config = RuleConfig.fromJson(json)
+
+        if (!config.moduleEnabled) return
+        val isViewHint = actionHint == Intent.ACTION_VIEW
+        if (isViewHint && !config.openWithEnabled) return
+        if (!isViewHint && !config.shareEnabled) return
 
         val blacklist = when {
             actionHint == Intent.ACTION_VIEW -> config.openWithBlacklist

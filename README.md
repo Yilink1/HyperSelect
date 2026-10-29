@@ -7,8 +7,10 @@ A module for Xiaomi Hyper OS that customizes the text selection menu, system sha
 ## Features
 
 - **Remove AI Writing**: Completely remove the AI Writing bubble that appears first when selecting text
-- **Text Selection Menu**: Freely drag to reorder and swipe to hide options in the module panel
+- **Text Selection Menu**: Freely drag to reorder and swipe to hide options, with multi-level undo in the module panel
 - **Share & Open With**: Pin frequently used apps to the top and hide rarely used ones
+- **Settings & Toggles**: Master switch plus per-menu on/off for Text Selection, Share, and Open With
+- **Backup & Updates**: Import/export rules as JSON and check for new releases in-app
 - **Instant Effect**: No phone reboot required, changes take effect immediately
 
 ---

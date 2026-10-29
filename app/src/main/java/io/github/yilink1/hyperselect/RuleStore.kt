@@ -10,7 +10,7 @@ object RuleStore {
     private const val KEY_CONFIG = "rule_config_json"
     private const val KEY_LAST_SYSTEM_READ_BOOT = "last_system_read_boot"
 
-    // Tolerance for boot time estimation (override NTP drift; acrossRebootmust exceed this value）
+    // Tolerance for boot-time estimation (absorbs NTP drift across reboots).
     private const val BOOT_TIME_TOLERANCE_MS = 10_000L
 
     fun getPrefs(context: Context): SharedPreferences {
@@ -41,8 +41,8 @@ object RuleStore {
     }
 
     /**
-     * Module self-check：system_server  【 Boot】after rules。
-     *   ⟺ Hook  In progress ； InstructionsModule or after Reboot。
+     * Module self-check: system_server has read the rules during this boot.
+     * This is equivalent to the hook being active after boot.
      */
     fun isModuleActiveSinceBoot(context: Context): Boolean {
         val storedBoot = getPrefs(context).getLong(KEY_LAST_SYSTEM_READ_BOOT, -1L)

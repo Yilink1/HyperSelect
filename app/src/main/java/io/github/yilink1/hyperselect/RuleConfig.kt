@@ -10,7 +10,11 @@ data class RuleConfig(
     val shareBlacklist: Set<String> = emptySet(),
     val shareCustomorder: List<String> = emptyList(),
     val openWithBlacklist: Set<String> = emptySet(),
-    val openWithCustomorder: List<String> = emptyList()
+    val openWithCustomorder: List<String> = emptyList(),
+    val moduleEnabled: Boolean = true,
+    val textEnabled: Boolean = true,
+    val shareEnabled: Boolean = true,
+    val openWithEnabled: Boolean = true
 ) {
     fun toJson(): String {
         val root = JSONObject()
@@ -44,6 +48,12 @@ data class RuleConfig(
         openWithCustomorder.forEach { openWithorderArray.put(it) }
         root.put("openWithorder", openWithorderArray)
 
+        // 4. Feature toggles
+        root.put("moduleEnabled", moduleEnabled)
+        root.put("textEnabled", textEnabled)
+        root.put("shareEnabled", shareEnabled)
+        root.put("openWithEnabled", openWithEnabled)
+
         return root.toString()
     }
 
@@ -59,6 +69,10 @@ data class RuleConfig(
             val shareorder = root.optJSONArray("shareorder") ?: JSONArray()
             val openWithBlacklist = root.optJSONArray("openWithBlacklist") ?: JSONArray()
             val openWithorder = root.optJSONArray("openWithorder") ?: JSONArray()
+            val moduleEnabled = root.optBoolean("moduleEnabled", true)
+            val textEnabled = root.optBoolean("textEnabled", true)
+            val shareEnabled = root.optBoolean("shareEnabled", true)
+            val openWithEnabled = root.optBoolean("openWithEnabled", true)
 
             fun strings(array: JSONArray): List<String> = (0 until array.length()).mapNotNull {
                 val value = array.opt(it)
@@ -72,7 +86,11 @@ data class RuleConfig(
                 shareBlacklist = strings(shareBlacklist).toSet(),
                 shareCustomorder = strings(shareorder),
                 openWithBlacklist = strings(openWithBlacklist).toSet(),
-                openWithCustomorder = strings(openWithorder)
+                openWithCustomorder = strings(openWithorder),
+                moduleEnabled = moduleEnabled,
+                textEnabled = textEnabled,
+                shareEnabled = shareEnabled,
+                openWithEnabled = openWithEnabled
             )
         }.getOrNull()
 
@@ -113,6 +131,11 @@ data class RuleConfig(
                     for (i in 0 until arr.length()) openWithorderList.add(arr.getString(i))
                 }
 
+                val moduleEnabled = root.optBoolean("moduleEnabled", true)
+                val textEnabled = root.optBoolean("textEnabled", true)
+                val shareEnabled = root.optBoolean("shareEnabled", true)
+                val openWithEnabled = root.optBoolean("openWithEnabled", true)
+
                 RuleConfig(
                     blacklist = blacklistSet,
                     customorder = orderList,
@@ -120,7 +143,11 @@ data class RuleConfig(
                     shareBlacklist = shareBlacklistSet,
                     shareCustomorder = shareorderList,
                     openWithBlacklist = openWithBlacklistSet,
-                    openWithCustomorder = openWithorderList
+                    openWithCustomorder = openWithorderList,
+                    moduleEnabled = moduleEnabled,
+                    textEnabled = textEnabled,
+                    shareEnabled = shareEnabled,
+                    openWithEnabled = openWithEnabled
                 )
             }.getOrDefault(RuleConfig())
         }

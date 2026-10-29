@@ -117,4 +117,38 @@
     <string name="intro_inactive_title">Module not active</string>
     <string name="intro_inactive_steps">Follow these steps:\n\n1. Open LSPosed Manager → Modules → Enable HyperSelect\n2. Reboot your phone (the module hooks the system framework, so a reboot is required)\n3. After rebooting, return to this page to auto-detect</string>
     <string name="help_desc_swipe_plain">Hide unnecessary features to streamline the long press menu</string>
+
+    <!-- Settings screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_features">Feature switches</string>
+    <string name="settings_master">Enable module</string>
+    <string name="settings_master_desc">Master switch. When off, no menu is modified.</string>
+    <string name="settings_text">Text selection menu</string>
+    <string name="settings_text_desc">Filter, reorder and hide items in the text selection menu.</string>
+    <string name="settings_share">Share menu</string>
+    <string name="settings_share_desc">Apply rules to the system share sheet.</string>
+    <string name="settings_openwith">Open With menu</string>
+    <string name="settings_openwith_desc">Apply rules to the Open With chooser.</string>
+    <string name="settings_section_data">Data</string>
+    <string name="settings_export">Export rules</string>
+    <string name="settings_export_desc">Save all rules to a JSON file.</string>
+    <string name="settings_import">Import rules</string>
+    <string name="settings_import_desc">Restore rules from a JSON file.</string>
+    <string name="settings_section_more">More</string>
+    <string name="settings_check_update">Check for updates</string>
+    <string name="settings_check_update_desc">Look for the latest release on GitHub.</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_diag_active">Module active this boot</string>
+    <string name="settings_diag_inactive">Module not active - enable it in LSPosed and reboot</string>
+    <string name="export_success">Rules exported</string>
+    <string name="export_failed">Export failed: %1$s</string>
+    <string name="import_success">Rules imported</string>
+    <string name="import_failed">Import failed: invalid file</string>
+    <string name="update_checking">Checking for updates</string>
+    <string name="update_latest">You are on the latest version</string>
+    <string name="update_available">New version %1$s available</string>
+    <string name="update_available_desc">You have %1$s. The latest release is %2$s.</string>
+    <string name="update_open">Open</string>
+    <string name="update_cancel">Later</string>
+    <string name="update_failed">Check failed: %1$s</string>
 </resources>
