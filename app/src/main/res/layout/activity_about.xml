@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="6dp"
-                android:text="模块信息"
+                android:text="@string/about_section_module_info"
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -93,14 +93,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="作用域"
+                        android:text="@string/about_scope_label"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="系统框架与选择器"
+                        android:text="@string/about_scope_value"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -123,14 +123,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="适配环境"
+                        android:text="@string/about_env_label"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Xiaomi HyperOS"
+                        android:text="@string/about_env_value"
                         android:textColor="@color/hyper_text_secondary"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -144,7 +144,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="6dp"
-                android:text="使用指南"
+                android:text="@string/about_section_guide"
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -165,7 +165,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="查看操作指南与手势说明"
+                    android:text="@string/about_guide_desc"
                     android:textColor="@color/hyper_text_primary"
                     android:textSize="15sp" />
 
@@ -184,7 +184,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginBottom="6dp"
-                android:text="关于与开源"
+                android:text="@string/about_section_open_source"
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -211,7 +211,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="GitHub 仓库"
+                        android:text="@string/about_github_repo"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
@@ -241,7 +241,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="开发者"
+                        android:text="@string/about_developer"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 
@@ -271,7 +271,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="开源协议"
+                        android:text="@string/about_license"
                         android:textColor="@color/hyper_text_primary"
                         android:textSize="15sp" />
 

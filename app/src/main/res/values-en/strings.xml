@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App & Module Metadata -->
+    <string name="app_name">HyperSelect</string>
+    <string name="xposed_description">Remove HyperOS AI Writing bubble; freely manage and purify text selection, share, and open-with menus</string>
+
+    <!-- Navigation & Common Actions -->
+    <string name="action_more">More</string>
+    <string name="action_back">Back</string>
+    <string name="action_search">Search</string>
+    <string name="action_close_search">Close search</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_got_it">Got it</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_pin">Pin</string>
+    <string name="action_unpin">Unpin</string>
+    <string name="action_unpin_compact">Unpin</string>
+    <string name="action_hide">Hide</string>
+    <string name="action_restore">Restore</string>
+    <string name="desc_drag_sort">Drag to reorder</string>
+    <string name="desc_restore_display">Restore item</string>
+
+    <!-- Main Screen -->
+    <string name="title_text_selection">Text Selection</string>
+    <string name="desc_text_selection">Long-press text menu</string>
+    <string name="title_system_share">System Share</string>
+    <string name="desc_system_share">Share sheet app list</string>
+    <string name="title_open_with">Open With</string>
+    <string name="desc_open_with">File and link resolver dialog</string>
+    <string name="status_module_active">Module is active</string>
+    <string name="status_module_inactive">Module not active · Enable in LSPosed and reboot</string>
+    <string name="action_feature_demo">Feature Demo</string>
+    <string name="action_about_hyperselect">About HyperSelect</string>
+    <string name="format_hidden_count">Hidden %d</string>
+
+    <!-- Manage Screen (Shared by Text / Share / Open With) -->
+    <string name="search_hint">Search app name or package</string>
+    <string name="manage_top_hint">Drag handle to reorder, swipe left to hide</string>
+    <string name="header_pinned_apps">Pinned Apps</string>
+    <string name="header_pinned_apps_hint">Always pinned at the top; drag handle to reorder</string>
+    <string name="header_regular_apps">Regular Apps</string>
+    <string name="hint_system_order_flow">Default order</string>
+    <string name="hint_system_order_flow_tap_pin">Default order. Tap Pin to keep at the top</string>
+    <string name="tab_visible_count">Visible %d</string>
+    <string name="tab_hidden_count">Hidden %d</string>
+    <string name="empty_no_matching_apps">No matching apps found</string>
+    <string name="empty_all_hidden">All apps are hidden</string>
+    <string name="empty_no_hidden_apps">No hidden apps</string>
+    <string name="empty_no_apps_available_text">No apps support text actions</string>
+    <string name="empty_no_apps_available_share">No apps available for sharing</string>
+    <string name="empty_no_apps_available_open_with">No apps available for Open With</string>
+
+    <!-- Undo & Operations -->
+    <string name="undo_pinned">Pinned \"%s\"</string>
+    <string name="undo_unpinned">Unpinned \"%s\"</string>
+    <string name="undo_hidden">Hidden \"%s\"</string>
+    <string name="undo_restored">Restored \"%s\"</string>
+    <string name="undo_bulk_restored">Restored %d items</string>
+    <string name="undo_bulk_hidden">Hidden %d items</string>
+    <string name="undo_action_done">Action undone</string>
+    <string name="undo_pinned_order_reset">Pinned order reset</string>
+    <string name="undo_all_pins_cleared">Cleared all pinned apps</string>
+    <string name="undo_default_order_restored">Default order restored</string>
+
+    <!-- Manage Menu -->
+    <string name="menu_restore_all_search">Restore all search results</string>
+    <string name="menu_hide_all_search">Hide all search results</string>
+    <string name="menu_reset_pinned_order">Reset pinned order</string>
+    <string name="menu_clear_all_pins">Clear all pinned apps</string>
+    <string name="menu_restore_default_order">Restore default order</string>
+    <string name="menu_hide_all">Hide all</string>
+    <string name="menu_restore_all">Restore all</string>
+    <string name="menu_instructions">Instructions</string>
+    <string name="toast_no_apps_to_restore">No apps to restore</string>
+    <string name="toast_no_apps_to_hide">No apps to hide</string>
+
+    <!-- Feature Help Sheet -->
+    <string name="help_sheet_title_format">%s · Instructions</string>
+    <string name="help_swipe_hide_title">Swipe left to hide</string>
+    <string name="help_swipe_hide_desc_share">Add to hidden list; no longer shown in system panel</string>
+    <string name="help_swipe_hide_desc_text">Hide unnecessary items to streamline long-press menu</string>
+    <string name="help_pin_tap_title">Tap Pin to keep at the top</string>
+    <string name="help_pin_tap_desc">Keeps item at the front; unpinned apps follow default order</string>
+    <string name="help_drag_order_title">Drag handle to reorder</string>
+    <string name="help_drag_sort_title">Drag handle to reorder</string>
+    <string name="help_drag_order_desc_pinned">Press and drag right handle to reorder pinned apps</string>
+    <string name="help_drag_order_desc_menu">Press and drag right handle to reorder menu items</string>
+    <string name="help_restore_title">Restore items</string>
+    <string name="help_restore_desc">Switch to \"Hidden\" tab and tap + to restore</string>
+    <string name="help_immediate_title">Instant effect</string>
+    <string name="help_immediate_desc">Changes sync in real time; undo supported via bottom bar</string>
+
+    <!-- Generic Help Dialog -->
+    <string name="dialog_help_title">Instructions</string>
+    <string name="help_card_swipe_desc">Swipe left on card to hide</string>
+    <string name="help_card_drag_desc">Press and hold right handle to reorder</string>
+    <string name="help_card_immediate_desc">All changes take effect immediately</string>
+
+    <!-- Setting Switches -->
+    <string name="switch_block_ai_writing_title">Block AI Writing Bubble</string>
+    <string name="switch_block_ai_writing_desc">Prevent Mi Notes AI bubble on long-press</string>
+
+    <!-- Intro / Onboarding Guide -->
+    <string name="intro_page1_badge">Block AI Writing</string>
+    <string name="intro_page1_title">Remove intrusive AI Writing and bring back Paste</string>
+    <string name="demo_cancel">Cancel</string>
+    <string name="demo_translate">Translate</string>
+    <string name="demo_cut">Cut</string>
+    <string name="demo_copy">Copy</string>
+    <string name="demo_paste">Paste</string>
+    <string name="intro_page2_badge">Reorder &amp; Hide</string>
+    <string name="intro_page2_title">Pin frequent items to the top; swipe left to hide unwanted ones</string>
+    <string name="demo_baidu_maps">Baidu Maps</string>
+    <string name="demo_baidu_translate">Baidu Translate</string>
+    <string name="demo_deepseek">Ask DeepSeek</string>
+    <string name="intro_btn_continue">Continue</string>
+    <string name="intro_btn_start">Start Clean Experience</string>
+    <string name="intro_btn_redetect">Re-detect</string>
+    <string name="intro_detecting_title">Checking module status</string>
+    <string name="intro_detecting_desc">Handshaking with system framework, please wait…</string>
+    <string name="intro_inactive_title">Module not active</string>
+    <string name="intro_inactive_desc">Please follow these steps:\n\n1. Open LSPosed Manager → Modules → Enable HyperSelect\n2. Reboot device (module hooks framework, reboot required)\n3. Reopen this page after reboot to complete check</string>
+    <string name="intro_active_title">Module is active</string>
+    <string name="intro_active_desc">Ready! All changes take effect immediately</string>
+
+    <!-- About Screen -->
+    <string name="title_about">About</string>
+    <string name="title_welcome">Welcome</string>
+    <string name="about_section_module_info">Module Info</string>
+    <string name="about_scope_label">Scope</string>
+    <string name="about_scope_value">System Framework &amp; Resolver</string>
+    <string name="about_env_label">Environment</string>
+    <string name="about_env_value">Xiaomi HyperOS</string>
+    <string name="about_section_guide">Guide</string>
+    <string name="about_guide_desc">View gestures and usage instructions</string>
+    <string name="about_section_open_source">About &amp; Open Source</string>
+    <string name="about_github_repo">GitHub Repository</string>
+    <string name="about_developer">Developer</string>
+    <string name="about_license">License</string>
+
+    <!-- Test Actions -->
+    <string name="action_test_effect">Test effect</string>
+    <string name="test_share_plain_text">Share plain text</string>
+    <string name="test_share_file">Share test text file</string>
+    <string name="test_share_dialog_title">Select System Share Test Type</string>
+    <string name="test_share_text_content">HyperSelect share test text: sample content to verify share panel hiding and ordering.</string>
+    <string name="test_share_file_content">HyperSelect share file test: sample file to verify app hiding and ordering.</string>
+    <string name="test_share_title">HyperSelect Share Test</string>
+    <string name="test_share_failed">Failed to launch share: %s</string>
+    <string name="test_open_web">Test web file (HTML / all browsers)</string>
+    <string name="test_open_text">Test plain text file (text/plain)</string>
+    <string name="test_open_link">Test online link (HTTP/HTTPS)</string>
+    <string name="test_open_dialog_title">Select Open With Test Type</string>
+    <string name="test_open_action_web">Test opening web file</string>
+    <string name="test_open_action_text">Test opening text file</string>
+    <string name="test_open_action_link">Test opening online link</string>
+    <string name="test_open_failed">Failed to launch Open With: %s</string>
+</resources>

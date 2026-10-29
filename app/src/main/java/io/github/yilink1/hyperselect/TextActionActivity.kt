@@ -9,8 +9,8 @@ import android.view.ViewGroup
 /** 文本选择：长按文字时弹出的操作项。 */
 class TextActionActivity : ManageListActivity() {
 
-    override val screenTitle = "文本选择"
-    override val emptyText = "暂无支持文本操作的应用"
+    override val screenTitle: String by lazy { getString(R.string.title_text_selection) }
+    override val emptyText: String by lazy { getString(R.string.empty_no_apps_available_text) }
     override val sortByLabelWhenNoOrder = false
 
     private var switchBlockAiWriting: HyperSwitch? = null

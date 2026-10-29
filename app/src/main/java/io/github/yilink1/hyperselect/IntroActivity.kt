@@ -138,9 +138,9 @@ class IntroActivity : AppCompatActivity() {
 
     private fun updateActionBtnText(position: Int) {
         btnAction.text = when {
-            position < 2 -> "继续"
-            moduleStatus == ModuleStatus.ACTIVE -> "开启纯净体验"
-            else -> "重新检测"
+            position < 2 -> getString(R.string.intro_btn_continue)
+            moduleStatus == ModuleStatus.ACTIVE -> getString(R.string.intro_btn_start)
+            else -> getString(R.string.intro_btn_redetect)
         }
     }
 
@@ -191,8 +191,8 @@ class IntroActivity : AppCompatActivity() {
             ModuleStatus.CHECKING -> {
                 icon.text = "…"
                 icon.setBackgroundResource(R.drawable.bg_status_circle_checking)
-                title.text = "正在检测模块状态"
-                desc.text = "正在与系统框架握手，请稍候…"
+                title.setText(R.string.intro_detecting_title)
+                desc.setText(R.string.intro_detecting_desc)
                 startPulse(icon)
             }
             ModuleStatus.INACTIVE -> {
@@ -200,16 +200,16 @@ class IntroActivity : AppCompatActivity() {
                 icon.alpha = 1f
                 icon.text = "!"
                 icon.setBackgroundResource(R.drawable.bg_status_circle_fail)
-                title.text = "模块未生效"
-                desc.text = "请按以下步骤操作：\n\n1. 打开 LSPosed 管理器 → 模块 → 启用 HyperSelect\n2. 重启手机（模块挂载于系统框架，必须重启才会生效）\n3. 重启后回到本页，将自动完成检测"
+                title.setText(R.string.intro_inactive_title)
+                desc.setText(R.string.intro_inactive_desc)
             }
             ModuleStatus.ACTIVE -> {
                 stopPulse()
                 icon.alpha = 1f
                 icon.text = "✓"
                 icon.setBackgroundResource(R.drawable.bg_status_circle_ok)
-                title.text = "模块已生效"
-                desc.text = "已准备就绪，所有设置即时生效"
+                title.setText(R.string.intro_active_title)
+                desc.setText(R.string.intro_active_desc)
             }
         }
     }

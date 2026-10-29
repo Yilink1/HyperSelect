@@ -12,8 +12,8 @@ import java.io.File
 /** 打开方式：打开文件 / 链接时弹出的应用解析列表。 */
 class OpenWithActionActivity : ManageListActivity() {
 
-    override val screenTitle = "打开方式"
-    override val emptyText = "暂无可用的打开方式应用"
+    override val screenTitle: String by lazy { getString(R.string.title_open_with) }
+    override val emptyText: String by lazy { getString(R.string.empty_no_apps_available_open_with) }
     override val enablePinnedSection = true
 
     @Suppress("DEPRECATION")
@@ -89,16 +89,16 @@ class OpenWithActionActivity : ManageListActivity() {
         config.copy(openWithBlacklist = blacklist, openWithCustomOrder = order)
 
     override fun testActions(): List<Pair<String, () -> Unit>> =
-        listOf(Pair("测试效果", { showTestDialog() }))
+        listOf(Pair(getString(R.string.action_test_effect), { showTestDialog() }))
 
     private fun showTestDialog() {
         val options = arrayOf(
-            "测试网页文件 (HTML / 支持所有浏览器)",
-            "测试普通文本文件 (text/plain)",
-            "测试在线链接 (Http/Https)"
+            getString(R.string.test_open_web),
+            getString(R.string.test_open_text),
+            getString(R.string.test_open_link)
         )
         AlertDialog.Builder(this)
-            .setTitle("选择打开方式测试类型")
+            .setTitle(R.string.test_open_dialog_title)
             .setItems(options) { _, which ->
                 runCatching {
                     val testIntent = when (which) {
@@ -127,17 +127,17 @@ class OpenWithActionActivity : ManageListActivity() {
                         }
                     }
                     val chooserTitle = when (which) {
-                        0 -> "测试打开网页文件"
-                        1 -> "测试打开文本文件"
-                        else -> "测试打开在线链接"
+                        0 -> getString(R.string.test_open_action_web)
+                        1 -> getString(R.string.test_open_action_text)
+                        else -> getString(R.string.test_open_action_link)
                     }
                     val chooser = Intent.createChooser(testIntent, chooserTitle)
                     startActivity(chooser)
                 }.onFailure { e ->
-                    Toast.makeText(this, "调起打开方式失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.test_open_failed, e.message ?: ""), Toast.LENGTH_SHORT).show()
                 }
             }
-            .setNegativeButton("取消", null)
+            .setNegativeButton(R.string.action_cancel, null)
             .show()
     }
 }

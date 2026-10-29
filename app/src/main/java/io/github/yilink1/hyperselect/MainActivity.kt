@@ -48,8 +48,8 @@ class MainActivity : AppCompatActivity() {
             showPopupMenu(
                 anchor,
                 listOf(
-                    Pair("功能演示", { startActivity(Intent(this, IntroActivity::class.java)) }),
-                    Pair("关于 HyperSelect", { startActivity(Intent(this, AboutActivity::class.java)) })
+                    Pair(getString(R.string.action_feature_demo), { startActivity(Intent(this, IntroActivity::class.java)) }),
+                    Pair(getString(R.string.action_about_hyperselect), { startActivity(Intent(this, AboutActivity::class.java)) })
                 )
             )
         }
@@ -69,10 +69,10 @@ class MainActivity : AppCompatActivity() {
     private fun updateStatusAndCounts() {
         if (RuleStore.isModuleActiveSinceBoot(this)) {
             dotStatus.setBackgroundResource(R.drawable.bg_status_circle_ok)
-            tvStatusTitle.text = "模块已生效"
+            tvStatusTitle.setText(R.string.status_module_active)
         } else {
             dotStatus.setBackgroundResource(R.drawable.bg_status_circle_fail)
-            tvStatusTitle.text = "模块未生效 · 请在 LSPosed 中勾选并重启"
+            tvStatusTitle.setText(R.string.status_module_inactive)
         }
 
         val config = RuleStore.load(this)
@@ -81,5 +81,5 @@ class MainActivity : AppCompatActivity() {
         tvOpenWithActionBadge.text = hiddenLabel(config.openWithBlacklist.size)
     }
 
-    private fun hiddenLabel(count: Int): String = if (count > 0) "隐藏 $count" else "—"
+    private fun hiddenLabel(count: Int): String = if (count > 0) getString(R.string.format_hidden_count, count) else "—"
 }

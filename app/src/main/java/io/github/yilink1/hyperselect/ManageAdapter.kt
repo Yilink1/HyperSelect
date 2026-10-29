@@ -224,10 +224,10 @@ class ManageAdapter(
                     itemHolder.btnSearchRestore.visibility = View.GONE
 
                     if (row.isPinned) {
-                        itemHolder.btnSearchPin.text = "取消置顶"
+                        itemHolder.btnSearchPin.setText(R.string.action_unpin)
                         itemHolder.btnSearchPin.setOnClickListener { onUnpin(item) }
                     } else {
-                        itemHolder.btnSearchPin.text = "置顶"
+                        itemHolder.btnSearchPin.setText(R.string.action_pin)
                         itemHolder.btnSearchPin.setOnClickListener { onPin(item) }
                     }
 

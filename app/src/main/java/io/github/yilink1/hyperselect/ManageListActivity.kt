@@ -341,15 +341,15 @@ abstract class ManageListActivity : AppCompatActivity() {
             val flowingCount = visible.size - actualPinned
 
             if (actualPinned > 0) {
-                rows.add(ManageRow.Header("置顶应用", actualPinned, "始终固定在面板最前面，长按手柄可调整顺序"))
+                rows.add(ManageRow.Header(getString(R.string.header_pinned_apps), actualPinned, getString(R.string.header_pinned_apps_hint)))
                 for (i in 0 until actualPinned) {
                     rows.add(ManageRow.Pinned(visible[i]))
                 }
             }
 
             if (flowingCount > 0) {
-                val flowingHint = if (actualPinned > 0) "随系统使用习惯动态排序" else "随系统使用习惯动态排序，点击「置顶」可固定排在最前面"
-                rows.add(ManageRow.Header("常规应用", flowingCount, flowingHint))
+                val flowingHint = if (actualPinned > 0) getString(R.string.hint_system_order_flow) else getString(R.string.hint_system_order_flow_tap_pin)
+                rows.add(ManageRow.Header(getString(R.string.header_regular_apps), flowingCount, flowingHint))
                 for (i in actualPinned until visible.size) {
                     rows.add(ManageRow.Flowing(visible[i]))
                 }
@@ -367,8 +367,8 @@ abstract class ManageListActivity : AppCompatActivity() {
     }
 
     private fun updateChrome(rows: List<ManageRow>) {
-        tvTabVisible.text = "显示 ${visible.size}"
-        tvTabHidden.text = "隐藏 ${hidden.size}"
+        tvTabVisible.text = getString(R.string.tab_visible_count, visible.size)
+        tvTabHidden.text = getString(R.string.tab_hidden_count, hidden.size)
         styleTab(tvTabVisible, tab == TAB_VISIBLE)
         styleTab(tvTabHidden, tab == TAB_HIDDEN)
         segment.visibility = if (searchOpen) View.GONE else View.VISIBLE
@@ -381,9 +381,9 @@ abstract class ManageListActivity : AppCompatActivity() {
         if (loaded && rows.isEmpty()) {
             tvEmpty.text = when {
                 visible.isEmpty() && hidden.isEmpty() -> emptyText
-                searchOpen -> "没有匹配的应用"
-                tab == TAB_VISIBLE -> "全部已收纳隐藏"
-                else -> "没有已收纳的应用"
+                searchOpen -> getString(R.string.empty_no_matching_apps)
+                tab == TAB_VISIBLE -> getString(R.string.empty_all_hidden)
+                else -> getString(R.string.empty_no_hidden_apps)
             }
             tvEmpty.visibility = View.VISIBLE
         } else {
@@ -462,7 +462,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         }
         saveRules()
         refreshRows()
-        showUndo("已置顶「${item.label}」", before)
+        showUndo(getString(R.string.undo_pinned, item.label), before)
         if (!searchOpen && tab == TAB_VISIBLE) {
             recyclerView.scrollToPosition(0)
         }
@@ -478,7 +478,7 @@ abstract class ManageListActivity : AppCompatActivity() {
                 visible.add(pinnedCount, moved)
                 saveRules()
                 refreshRows()
-                showUndo("已取消置顶「${item.label}」", before)
+                showUndo(getString(R.string.undo_unpinned, item.label), before)
             }
         }
     }
@@ -497,7 +497,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         hidden.add(0, item)
         saveRules()
         refreshRows()
-        showUndo("已收纳「${item.label}」", before)
+        showUndo(getString(R.string.undo_hidden, item.label), before)
     }
 
     private fun restoreItem(item: TextActionItem) {
@@ -512,7 +512,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         }
         saveRules()
         refreshRows()
-        showUndo("已恢复「${item.label}」", before)
+        showUndo(getString(R.string.undo_restored, item.label), before)
     }
 
     private fun bulk(enable: Boolean) {
@@ -522,7 +522,7 @@ abstract class ManageListActivity : AppCompatActivity() {
             else -> ArrayList(visible)
         }
         if (targets.isEmpty()) {
-            Toast.makeText(this, if (enable) "没有需要恢复的应用" else "没有需要收纳的应用", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, if (enable) getString(R.string.toast_no_apps_to_restore) else getString(R.string.toast_no_apps_to_hide), Toast.LENGTH_SHORT).show()
             return
         }
         val before = snapshot()
@@ -552,7 +552,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         }
         saveRules()
         refreshRows()
-        showUndo(if (enable) "已恢复 ${targets.size} 项" else "已收纳 ${targets.size} 项", before)
+        showUndo(if (enable) getString(R.string.undo_bulk_restored, targets.size) else getString(R.string.undo_bulk_hidden, targets.size), before)
     }
 
     private fun restore(snapshot: Triple<List<TextActionItem>, List<TextActionItem>, Int>) {
@@ -563,7 +563,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         pinnedCount = snapshot.third
         saveRules()
         refreshRows()
-        Toast.makeText(this, "已撤销操作", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.undo_action_done), Toast.LENGTH_SHORT).show()
     }
 
     private fun resetPinnedOrder() {
@@ -576,7 +576,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         }
         saveRules()
         refreshRows()
-        showUndo("已重置置顶排序", before)
+        showUndo(getString(R.string.undo_pinned_order_reset), before)
     }
 
     private fun clearAllPins() {
@@ -585,7 +585,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         pinnedCount = 0
         saveRules()
         refreshRows()
-        showUndo("已清空所有置顶", before)
+        showUndo(getString(R.string.undo_all_pins_cleared), before)
     }
 
     private fun resetOrder() {
@@ -593,7 +593,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         RuleStore.save(this, withRules(config, blacklistOf(config), emptyList()))
         contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
         load()
-        Toast.makeText(this, "已恢复默认排序", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.undo_default_order_restored), Toast.LENGTH_SHORT).show()
     }
 
     // ───────── 撤销条 ─────────
@@ -625,27 +625,27 @@ abstract class ManageListActivity : AppCompatActivity() {
     private fun showMenu(anchor: View) {
         val items = ArrayList<Pair<String, () -> Unit>>()
         if (searchOpen) {
-            items.add(Pair("恢复全部搜索结果", { bulk(true) }))
-            items.add(Pair("收纳全部搜索结果", { bulk(false) }))
+            items.add(Pair(getString(R.string.menu_restore_all_search), { bulk(true) }))
+            items.add(Pair(getString(R.string.menu_hide_all_search), { bulk(false) }))
         } else if (tab == TAB_VISIBLE) {
             if (enablePinnedSection) {
                 if (pinnedCount > 1) {
-                    items.add(Pair("重置置顶排序", { resetPinnedOrder() }))
+                    items.add(Pair(getString(R.string.menu_reset_pinned_order), { resetPinnedOrder() }))
                 }
                 if (pinnedCount > 0) {
-                    items.add(Pair("清空所有置顶", { clearAllPins() }))
+                    items.add(Pair(getString(R.string.menu_clear_all_pins), { clearAllPins() }))
                 }
             } else {
-                items.add(Pair("恢复默认排序", { resetOrder() }))
+                items.add(Pair(getString(R.string.menu_restore_default_order), { resetOrder() }))
             }
-            items.add(Pair("全部收纳", { bulk(false) }))
-            items.add(Pair("全部恢复", { bulk(true) }))
+            items.add(Pair(getString(R.string.menu_hide_all), { bulk(false) }))
+            items.add(Pair(getString(R.string.menu_restore_all), { bulk(true) }))
         } else {
-            items.add(Pair("全部恢复", { bulk(true) }))
-            items.add(Pair("全部收纳", { bulk(false) }))
+            items.add(Pair(getString(R.string.menu_restore_all), { bulk(true) }))
+            items.add(Pair(getString(R.string.menu_hide_all), { bulk(false) }))
         }
         items.addAll(testActions())
-        items.add(Pair("使用说明", { showHelp() }))
+        items.add(Pair(getString(R.string.menu_instructions), { showHelp() }))
         showPopupMenu(anchor, items)
     }
 
@@ -654,45 +654,45 @@ abstract class ManageListActivity : AppCompatActivity() {
             listOf(
                 HelpFeatureItem(
                     R.drawable.ic_help_gesture,
-                    "向左滑动收纳",
-                    "加入隐藏名单，不再在系统面板中显示"
+                    getString(R.string.help_swipe_hide_title),
+                    getString(R.string.help_swipe_hide_desc_share)
                 ),
                 HelpFeatureItem(
                     R.drawable.ic_help_pin,
-                    "点击「置顶」固定",
-                    "固定于前列；未置顶应用继续随系统习惯排序"
+                    getString(R.string.help_pin_tap_title),
+                    getString(R.string.help_pin_tap_desc)
                 ),
                 HelpFeatureItem(
                     R.drawable.ic_help_drag,
-                    "拖动手柄调序",
-                    "长按右侧手柄，调整已置顶应用的排列顺序"
+                    getString(R.string.help_drag_order_title),
+                    getString(R.string.help_drag_order_desc_pinned)
                 ),
                 HelpFeatureItem(
                     R.drawable.ic_add,
-                    "恢复显示",
-                    "切换至「隐藏」分栏，点击加号即可恢复"
+                    getString(R.string.help_restore_title),
+                    getString(R.string.help_restore_desc)
                 )
             )
         } else {
             listOf(
                 HelpFeatureItem(
                     R.drawable.ic_help_gesture,
-                    "向左滑动收纳",
-                    "隐藏不需要的功能项，精简长按菜单"
+                    getString(R.string.help_swipe_hide_title),
+                    getString(R.string.help_swipe_hide_desc_text)
                 ),
                 HelpFeatureItem(
                     R.drawable.ic_help_drag,
-                    "拖动手柄排序",
-                    "长按右侧手柄，调整菜单项的排列顺序"
+                    getString(R.string.help_drag_sort_title),
+                    getString(R.string.help_drag_order_desc_menu)
                 ),
                 HelpFeatureItem(
                     R.drawable.ic_help_sync,
-                    "即时生效",
-                    "修改实时同步至系统，支持底部操作撤销"
+                    getString(R.string.help_immediate_title),
+                    getString(R.string.help_immediate_desc)
                 )
             )
         }
-        showFeatureHelpSheet("$screenTitle · 操作说明", items)
+        showFeatureHelpSheet(getString(R.string.help_sheet_title_format, screenTitle), items)
     }
 
     // ───────── 列表手势（拖拽排序 + 左滑收纳） ─────────
@@ -937,7 +937,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         c.scale(scale, scale, centerX, centerY)
         c.drawRoundRect(pillRect, radius, radius, bgPaint)
         val fm = textPaint.fontMetrics
-        c.drawText("收纳", centerX, centerY - (fm.ascent + fm.descent) / 2f, textPaint)
+        c.drawText(getString(R.string.action_hide), centerX, centerY - (fm.ascent + fm.descent) / 2f, textPaint)
         c.restoreToCount(saveCount)
     }
 
