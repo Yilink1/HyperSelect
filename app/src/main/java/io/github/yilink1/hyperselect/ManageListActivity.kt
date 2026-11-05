@@ -1004,8 +1004,19 @@ abstract class ManageListActivity : AppCompatActivity() {
     private fun playSwipeHintAnimation() {
         val sp = getSharedPreferences(PREFS, MODE_PRIVATE)
         if (sp.getBoolean(KEY_SWIPE_HINT_SHOWN, false)) return
-        val holder = recyclerView.findViewHolderForAdapterPosition(0) ?: return
 
+        // 寻找第一个真正的应用卡片（自动跳过分组标题 Header）
+        var targetPos = -1
+        for (i in 0 until adapter.itemCount) {
+            val row = adapter.getItem(i)
+            if (row is ManageRow.Pinned || row is ManageRow.Flowing || row is ManageRow.Showing) {
+                targetPos = i
+                break
+            }
+        }
+        if (targetPos < 0) return
+
+        val holder = recyclerView.findViewHolderForAdapterPosition(targetPos) ?: return
         val targetView = holder.itemView
         val maxPeekDx = -62f * resources.displayMetrics.density
 
