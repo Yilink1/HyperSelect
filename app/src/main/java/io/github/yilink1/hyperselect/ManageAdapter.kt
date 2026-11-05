@@ -16,7 +16,8 @@ data class TextActionItem(
     val componentName: String,
     val icon: Drawable,
     var isEnabled: Boolean,
-    val components: Set<String> = setOf(componentName)
+    val components: Set<String> = setOf(componentName),
+    val appName: String = ""
 )
 
 sealed class ManageRow {

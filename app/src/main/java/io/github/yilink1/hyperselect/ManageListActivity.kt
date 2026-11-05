@@ -223,6 +223,7 @@ abstract class ManageListActivity : AppCompatActivity() {
                 val packageName: String,
                 val primaryComponent: String,
                 val icon: android.graphics.drawable.Drawable,
+                val appName: String,
                 val components: LinkedHashSet<String> = LinkedHashSet()
             )
 
@@ -237,10 +238,13 @@ abstract class ManageListActivity : AppCompatActivity() {
                     ?: activityInfo.loadLabel(pm)?.toString()
                     ?: activityInfo.name
                 val icon = info.loadIcon(pm) ?: activityInfo.loadIcon(pm)
+                val appName = runCatching {
+                    activityInfo.applicationInfo?.loadLabel(pm)?.toString()
+                }.getOrNull()?.takeIf { it.isNotBlank() } ?: ""
 
                 val groupKey = "$pkg\u0000$label"
                 val group = rawMap.getOrPut(groupKey) {
-                    ScannedGroup(label, pkg, component, icon)
+                    ScannedGroup(label, pkg, component, icon, appName)
                 }
                 group.components.add(component)
             }
@@ -256,7 +260,8 @@ abstract class ManageListActivity : AppCompatActivity() {
                         componentName = group.primaryComponent,
                         icon = group.icon,
                         isEnabled = enabled,
-                        components = group.components
+                        components = group.components,
+                        appName = group.appName
                     )
                 )
             }
@@ -354,7 +359,10 @@ abstract class ManageListActivity : AppCompatActivity() {
     private fun matches(item: TextActionItem): Boolean {
         if (query.isEmpty()) return true
         return item.label.lowercase(Locale.getDefault()).contains(query) ||
-            item.packageName.lowercase(Locale.getDefault()).contains(query)
+            item.packageName.lowercase(Locale.getDefault()).contains(query) ||
+            (item.appName.isNotEmpty() && item.appName.lowercase(Locale.getDefault()).contains(query)) ||
+            item.componentName.lowercase(Locale.getDefault()).contains(query) ||
+            item.components.any { it.lowercase(Locale.getDefault()).contains(query) }
     }
 
     private fun buildRows(): List<ManageRow> {
