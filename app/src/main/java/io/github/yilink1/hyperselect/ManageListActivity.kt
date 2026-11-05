@@ -177,6 +177,8 @@ abstract class ManageListActivity : AppCompatActivity() {
 
         tvTabVisible.setOnClickListener { selectTab(TAB_VISIBLE) }
         tvTabHidden.setOnClickListener { selectTab(TAB_HIDDEN) }
+        styleTab(tvTabVisible, tab == TAB_VISIBLE)
+        styleTab(tvTabHidden, tab == TAB_HIDDEN)
         onBackPressedDispatcher.addCallback(this, searchBackCallback)
 
         etSearch.addTextChangedListener(object : TextWatcher {

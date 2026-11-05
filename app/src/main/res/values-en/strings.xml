@@ -158,4 +158,6 @@
     <string name="test_open_failed">Failed to launch Open With: %s</string>
     <string name="test_open_video">Test video file (video/mp4)</string>
     <string name="test_open_action_video">Test opening video file</string>
+    <string name="tab_visible">Visible</string>
+    <string name="tab_hidden">Hidden</string>
 </resources>

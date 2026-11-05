@@ -137,6 +137,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:text="@string/tab_visible"
             android:textSize="14sp" />
 
         <TextView
@@ -145,6 +146,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:text="@string/tab_hidden"
             android:textSize="14sp" />
     </LinearLayout>
 
