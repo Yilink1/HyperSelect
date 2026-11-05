@@ -46,7 +46,7 @@ class AboutActivity : AppCompatActivity() {
             }
             tvVersion.text = "v${pInfo.versionName} ($code)"
         } catch (_: Exception) {
-            tvVersion.text = "v1.0.0"
+            tvVersion.text = "v1.1.0"
         }
 
         findViewById<View>(R.id.btnAboutHelp).setOnClickListener {

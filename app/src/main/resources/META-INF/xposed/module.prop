@@ -1,7 +1,7 @@
 id=io.github.yilink1.hyperselect
 name=HyperSelect
-version=1.0.0
-versionCode=1
+version=1.1.0
+versionCode=2
 author=Yilink
 description=去除澎湃 AI 写作气泡，自由管理与净化文本选择、分享及打开方式
 minApiVersion=101
