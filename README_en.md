@@ -1,8 +1,8 @@
 # HyperSelect
 
-A Xiaomi HyperOS module to customize and clean up Text Selection, System Share, and Open With dialogs.
+**English** · [简体中文](README.md)
 
-[简体中文](README.md) | **English**
+A Xiaomi HyperOS module to customize and clean up Text Selection, System Share, and Open With dialogs.
 
 ---
 
