@@ -70,13 +70,7 @@ class OpenWithActionActivity : ManageListActivity() {
             Intent(Intent.ACTION_VIEW, Uri.parse("content://dummy/file.apk")),
             Intent(Intent.ACTION_VIEW, Uri.parse("content://dummy/file.pdf")),
             Intent(Intent.ACTION_VIEW, Uri.parse("content://dummy/file")),
-            Intent(Intent.ACTION_VIEW, Uri.parse("file:///dummy/file")),
-
-            // 纯 MIME / 通配探针
-            Intent(Intent.ACTION_VIEW).setType("*/*"),
-            Intent(Intent.ACTION_VIEW).setType("text/*"),
-            Intent(Intent.ACTION_VIEW).setType("application/*"),
-            Intent(Intent.ACTION_VIEW)
+            Intent(Intent.ACTION_VIEW, Uri.parse("file:///dummy/file"))
         )
         return probes.flatMap { intent ->
             runCatching { pm.queryIntentActivities(intent, PackageManager.MATCH_ALL) }.getOrDefault(emptyList())
@@ -95,7 +89,8 @@ class OpenWithActionActivity : ManageListActivity() {
         val options = arrayOf(
             getString(R.string.test_open_web),
             getString(R.string.test_open_text),
-            getString(R.string.test_open_link)
+            getString(R.string.test_open_link),
+            getString(R.string.test_open_video)
         )
         AlertDialog.Builder(this)
             .setTitle(R.string.test_open_dialog_title)
@@ -122,14 +117,25 @@ class OpenWithActionActivity : ManageListActivity() {
                                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             }
                         }
-                        else -> {
+                        2 -> {
                             Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com"))
+                        }
+                        else -> {
+                            val testFile = File(cacheDir, "hyper_test.mp4").apply {
+                                if (!exists()) createNewFile()
+                            }
+                            val fileUri = FileProvider.getUriForFile(this, "${packageName}.fileprovider", testFile)
+                            Intent(Intent.ACTION_VIEW).apply {
+                                setDataAndType(fileUri, "video/mp4")
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            }
                         }
                     }
                     val chooserTitle = when (which) {
                         0 -> getString(R.string.test_open_action_web)
                         1 -> getString(R.string.test_open_action_text)
-                        else -> getString(R.string.test_open_action_link)
+                        2 -> getString(R.string.test_open_action_link)
+                        else -> getString(R.string.test_open_action_video)
                     }
                     val chooser = Intent.createChooser(testIntent, chooserTitle)
                     startActivity(chooser)

@@ -156,4 +156,6 @@
     <string name="test_open_action_text">测试打开文本文件</string>
     <string name="test_open_action_link">测试打开在线链接</string>
     <string name="test_open_failed">调起打开方式失败: %s</string>
+    <string name="test_open_video">测试视频文件 (video/mp4)</string>
+    <string name="test_open_action_video">测试打开视频文件</string>
 </resources>

@@ -218,22 +218,47 @@ abstract class ManageListActivity : AppCompatActivity() {
             val blacklist = blacklistOf(config)
             val order = orderOf(config)
 
-            val seen = HashSet<String>()
-            val all = ArrayList<TextActionItem>()
+            class ScannedGroup(
+                val label: String,
+                val packageName: String,
+                val primaryComponent: String,
+                val icon: android.graphics.drawable.Drawable,
+                val components: LinkedHashSet<String> = LinkedHashSet()
+            )
+
+            val rawMap = LinkedHashMap<String, ScannedGroup>()
             for (info in infos) {
                 val activityInfo = info.activityInfo ?: continue
                 val pkg = activityInfo.packageName
                 if (pkg == packageName) continue
 
                 val component = android.content.ComponentName(pkg, activityInfo.name).flattenToShortString()
-                if (!seen.add(component)) continue
-
                 val label = info.loadLabel(pm)?.toString()?.takeIf { it.isNotBlank() }
                     ?: activityInfo.loadLabel(pm)?.toString()
                     ?: activityInfo.name
                 val icon = info.loadIcon(pm) ?: activityInfo.loadIcon(pm)
-                val enabled = !blacklist.contains(component) && !blacklist.contains(pkg)
-                all.add(TextActionItem(label, pkg, component, icon, enabled))
+
+                val groupKey = "$pkg\u0000$label"
+                val group = rawMap.getOrPut(groupKey) {
+                    ScannedGroup(label, pkg, component, icon)
+                }
+                group.components.add(component)
+            }
+
+            val all = ArrayList<TextActionItem>()
+            for ((_, group) in rawMap) {
+                val isHidden = group.components.any { blacklist.contains(it) } || blacklist.contains(group.packageName)
+                val enabled = !isHidden
+                all.add(
+                    TextActionItem(
+                        label = group.label,
+                        packageName = group.packageName,
+                        componentName = group.primaryComponent,
+                        icon = group.icon,
+                        isEnabled = enabled,
+                        components = group.components
+                    )
+                )
             }
 
             val shown = ArrayList<TextActionItem>()
@@ -253,14 +278,20 @@ abstract class ManageListActivity : AppCompatActivity() {
                 val pinnedList = ArrayList<TextActionItem>()
                 val flowingList = ArrayList<TextActionItem>()
                 for (item in shown) {
-                    if (orderIndex.containsKey(item.componentName) || orderIndex.containsKey(item.packageName)) {
+                    val isPinned = orderIndex.containsKey(item.componentName) ||
+                        item.components.any { orderIndex.containsKey(it) } ||
+                        orderIndex.containsKey(item.packageName)
+                    if (isPinned) {
                         pinnedList.add(item)
                     } else {
                         flowingList.add(item)
                     }
                 }
                 pinnedList.sortWith(compareBy { item ->
-                    orderIndex[item.componentName] ?: orderIndex[item.packageName] ?: Int.MAX_VALUE
+                    orderIndex[item.componentName]
+                        ?: item.components.mapNotNull { orderIndex[it] }.minOrNull()
+                        ?: orderIndex[item.packageName]
+                        ?: Int.MAX_VALUE
                 })
                 flowingList.sortBy { it.label }
                 shown.clear()
@@ -270,7 +301,10 @@ abstract class ManageListActivity : AppCompatActivity() {
             } else {
                 if (order.isNotEmpty()) {
                     shown.sortWith(compareBy { item ->
-                        orderIndex[item.componentName] ?: orderIndex[item.packageName] ?: Int.MAX_VALUE
+                        orderIndex[item.componentName]
+                            ?: item.components.mapNotNull { orderIndex[it] }.minOrNull()
+                            ?: orderIndex[item.packageName]
+                            ?: Int.MAX_VALUE
                     })
                 } else if (sortByLabelWhenNoOrder) {
                     shown.sortBy { it.label }
@@ -309,7 +343,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         }
 
         for (item in hidden) {
-            newBlacklist.add(item.componentName)
+            newBlacklist.addAll(item.components)
         }
         val config = applyExtra(withRules(RuleStore.load(this), newBlacklist, newOrder))
         RuleStore.save(this, config)
