@@ -1,6 +1,6 @@
 # HyperSelect
 
-**English** · [简体中文](README.md)
+English | [简体中文](README.md)
 
 A Xiaomi HyperOS module to customize and clean up Text Selection, System Share, and Open With dialogs.
 
@@ -8,11 +8,11 @@ A Xiaomi HyperOS module to customize and clean up Text Selection, System Share, 
 
 ## Features
 
-- **Remove AI Writing**: Completely eliminate the annoying AI writing bubble that always sits at the first spot when selecting text.
-- **Text Selection Menu**: Freely drag to reorder actions, and swipe left to hide items you never use.
-- **System Share Sheet**: Pin frequently used apps (like messaging or cloud drives) to the top, and swipe away cluttered share targets.
-- **Open With Dialog**: Clean up duplicate and redundant entries, keeping your preferred media players and document viewers pinned first.
-- **Instant Effect**: All changes take effect immediately via LSPosed hooks — no reboot or soft-reboot required.
+- **Remove AI Writing**: Block the intrusive AI writing bubble at the head of the text selection menu.
+- **Text Selection Menu**: Freely drag to reorder and swipe left to hide actions inside the module dashboard.
+- **System Share**: Pin and reorder frequently used apps, hiding unwanted share targets.
+- **Open With**: Pin and reorder preferred apps, stashing rarely used options.
+- **Instant Effect**: No reboot required — changes take effect immediately upon saving.
 
 ---
 
