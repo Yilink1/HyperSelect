@@ -448,6 +448,37 @@ class MainHook : XposedModule() {
 
     private fun hookGetPackageInfo(ipmBaseClass: Class<*>): Boolean {
         return runCatching {
+            var hookedAny = false
+
+            fun handlePackageInfo(
+                methodName: String,
+                pkgName: String?,
+                flags: Long,
+                proceed: () -> Any?
+            ): Any? {
+                val rules = cachedRules ?: RuleConfig()
+                if (rules.blockAiWriting && pkgName == "com.miui.notes") {
+                    val callingPid = Binder.getCallingPid()
+                    val callingUid = Binder.getCallingUid()
+                    val myPid = Process.myPid()
+                    val context = getSystemContext()
+
+                    if (callingPid != myPid && !isNotesAppCaller(callingUid, context)) {
+                        if (flags == 0L) {
+                            val original = proceed() as? PackageInfo
+                            val result = original?.let { HookPolicy.copyPackageInfo(it) } ?: return original
+                            log(Log.INFO, TAG, "[$methodName] Spoofing notes versionCode to 1L for pid=$callingPid, uid=$callingUid, flags=$flags")
+                            result.longVersionCode = 1L
+                            return result
+                        } else {
+                            log(Log.INFO, TAG, "[$methodName] Observed notes query with flags=$flags for pid=$callingPid, uid=$callingUid (not spoofed)")
+                        }
+                    }
+                }
+                return proceed()
+            }
+
+            // 1. Hook standard getPackageInfo(String, long/int, int)
             val getPackageInfoMethod = ipmBaseClass.declaredMethods.firstOrNull { m ->
                 m.name == "getPackageInfo" &&
                     m.parameterTypes.size == 3 &&
@@ -459,33 +490,36 @@ class MainHook : XposedModule() {
                 hook(getPackageInfoMethod).intercept { chain ->
                     val pkgName = chain.args[0] as? String
                     val flags = (chain.args[1] as? Number)?.toLong() ?: 0L
-
-                    // Fast path: Only intercept Notes package info when flags == 0 and blockAiWriting is enabled
-                    val rules = cachedRules ?: RuleConfig()
-                    if (rules.blockAiWriting && pkgName == "com.miui.notes" && flags == 0L) {
-                        val callingPid = Binder.getCallingPid()
-                        val callingUid = Binder.getCallingUid()
-                        val myPid = Process.myPid()
-                        val context = getSystemContext()
-                        // Don't spoof for system_server, and don't spoof for Notes itself
-                        if (callingPid != myPid && !isNotesAppCaller(callingUid, context)) {
-                            val original = chain.proceed() as? PackageInfo
-                            // Binder marshals after the hook returns. Clone first so even ROMs
-                            // returning cached PackageInfo objects keep their original version.
-                            val result = original?.let { HookPolicy.copyPackageInfo(it) }
-                                ?: return@intercept original
-                            if (DEBUG) log(Log.INFO, TAG, "Spoofing notes versionCode for pid=$callingPid, uid=$callingUid")
-                            result.longVersionCode = 1L
-                            return@intercept result
-                        }
-                    }
-                    chain.proceed()
+                    handlePackageInfo("getPackageInfo", pkgName, flags) { chain.proceed() }
                 }
-                true
+                hookedAny = true
             } else {
                 log(Log.WARN, TAG, "getPackageInfo(String, long/int, int) not found in IPackageManagerBase")
-                false
             }
+
+            // 2. Hook getPackageInfoVersioned(VersionedPackage, long/int, int) for Android 14/15/16
+            // Verified signature in OS 3 services.jar: (Landroid/content/pm/VersionedPackage;JI)Landroid/content/pm/PackageInfo;
+            val getPackageInfoVersionedMethod = ipmBaseClass.declaredMethods.firstOrNull { m ->
+                m.name == "getPackageInfoVersioned" &&
+                    m.parameterTypes.size == 3 &&
+                    (m.parameterTypes[1] == Long::class.javaPrimitiveType || m.parameterTypes[1] == Int::class.javaPrimitiveType) &&
+                    m.parameterTypes[2] == Int::class.javaPrimitiveType
+            }
+            if (getPackageInfoVersionedMethod != null) {
+                hook(getPackageInfoVersionedMethod).intercept { chain ->
+                    val versionedPkg = chain.args[0]
+                    val pkgName = versionedPkg?.let { vp ->
+                        runCatching {
+                            vp.javaClass.getMethod("getPackageName").invoke(vp) as? String
+                        }.getOrNull()
+                    }
+                    val flags = (chain.args[1] as? Number)?.toLong() ?: 0L
+                    handlePackageInfo("getPackageInfoVersioned", pkgName, flags) { chain.proceed() }
+                }
+                hookedAny = true
+            }
+
+            hookedAny
         }.onFailure {
             log(Log.WARN, TAG, "Failed to hook getPackageInfo:\n${Log.getStackTraceString(it)}")
         }.getOrDefault(false)
