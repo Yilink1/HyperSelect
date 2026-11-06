@@ -36,15 +36,16 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew assembleDebug assembleRelease --stacktrace
+      - name: Decode Release Keystore
+        if: ${{ secrets.SIGNING_KEY != '' }}
+        run: echo "${{ secrets.SIGNING_KEY }}" | base64 --decode > app/release.jks
 
-      - name: Upload Debug APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: HyperSelect-Debug
-          path: app/build/outputs/apk/debug/*.apk
-          retention-days: 7
+      - name: Build with Gradle
+        env:
+          ALIAS: ${{ secrets.ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --stacktrace
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
