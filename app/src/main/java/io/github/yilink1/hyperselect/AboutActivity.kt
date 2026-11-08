@@ -36,7 +36,7 @@ class AboutActivity : AppCompatActivity() {
         }
 
         val tvVersion: TextView = findViewById(R.id.tvAboutVersion)
-        try {
+        val defaultVersionText = try {
             val pInfo = packageManager.getPackageInfo(packageName, 0)
             @Suppress("DEPRECATION")
             val code = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
@@ -44,21 +44,26 @@ class AboutActivity : AppCompatActivity() {
             } else {
                 pInfo.versionCode.toLong()
             }
-            tvVersion.text = "v${pInfo.versionName} ($code)"
+            "v${pInfo.versionName} ($code)"
         } catch (_: Exception) {
-            tvVersion.text = "v1.1.1"
+            "v1.1.1"
         }
+        tvVersion.text = defaultVersionText
+
+        val colorSecondary = androidx.core.content.ContextCompat.getColor(this, R.color.hyper_text_secondary)
+        val colorAccent = androidx.core.content.ContextCompat.getColor(this, R.color.hyper_accent)
 
         var clickCount = 0
-        var lastClickTime = 0L
+        val resetHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        val resetRunnable = Runnable {
+            clickCount = 0
+            tvVersion.text = defaultVersionText
+            tvVersion.setTextColor(colorSecondary)
+        }
 
         tvVersion.isHapticFeedbackEnabled = true
         tvVersion.setOnClickListener { view ->
-            val now = android.os.SystemClock.uptimeMillis()
-            if (now - lastClickTime > 3500L) {
-                clickCount = 0
-            }
-            lastClickTime = now
+            resetHandler.removeCallbacks(resetRunnable)
             clickCount++
 
             val config = RuleStore.load(this)
@@ -68,30 +73,40 @@ class AboutActivity : AppCompatActivity() {
                 if (clickCount < 5) {
                     view.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
                     val remaining = 5 - clickCount
-                    showInstantToast(getString(R.string.debug_log_step_enable, remaining))
+                    tvVersion.text = getString(R.string.debug_log_step_enable, remaining)
+                    tvVersion.setTextColor(colorSecondary)
+                    resetHandler.postDelayed(resetRunnable, 2500L)
                 } else {
                     view.performHapticFeedback(android.view.HapticFeedbackConstants.CONFIRM)
                     val updated = config.copy(debugLogging = true)
                     RuleStore.save(this, updated)
                     contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
-                    showInstantToast(getString(R.string.debug_log_enabled))
+                    tvVersion.text = getString(R.string.debug_log_enabled)
+                    tvVersion.setTextColor(colorAccent)
                     clickCount = 0
+                    resetHandler.postDelayed(resetRunnable, 2500L)
                 }
             } else {
                 if (clickCount == 1) {
                     view.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
-                    showInstantToast(getString(R.string.debug_log_status_active))
+                    tvVersion.text = getString(R.string.debug_log_status_active)
+                    tvVersion.setTextColor(colorSecondary)
+                    resetHandler.postDelayed(resetRunnable, 2500L)
                 } else if (clickCount < 5) {
                     view.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
                     val remaining = 5 - clickCount
-                    showInstantToast(getString(R.string.debug_log_step_disable, remaining))
+                    tvVersion.text = getString(R.string.debug_log_step_disable, remaining)
+                    tvVersion.setTextColor(colorSecondary)
+                    resetHandler.postDelayed(resetRunnable, 2500L)
                 } else {
                     view.performHapticFeedback(android.view.HapticFeedbackConstants.CONFIRM)
                     val updated = config.copy(debugLogging = false)
                     RuleStore.save(this, updated)
                     contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
-                    showInstantToast(getString(R.string.debug_log_disabled))
+                    tvVersion.text = getString(R.string.debug_log_disabled)
+                    tvVersion.setTextColor(colorAccent)
                     clickCount = 0
+                    resetHandler.postDelayed(resetRunnable, 2500L)
                 }
             }
         }
@@ -109,12 +124,7 @@ class AboutActivity : AppCompatActivity() {
         }
     }
 
-    private var activeToast: android.widget.Toast? = null
 
-    private fun showInstantToast(message: String) {
-        activeToast?.cancel()
-        activeToast = android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).apply { show() }
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {

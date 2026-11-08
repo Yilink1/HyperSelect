@@ -134,9 +134,9 @@
     <string name="about_env_value">Xiaomi HyperOS</string>
     <string name="debug_log_enabled">已开启调试日志</string>
     <string name="debug_log_disabled">已关闭调试日志</string>
-    <string name="debug_log_step_enable">只需再点击 %d 步即可开启调试日志</string>
-    <string name="debug_log_step_disable">只需再点击 %d 步即可关闭调试日志</string>
-    <string name="debug_log_status_active">调试日志已开启（再点击 4 步关闭）</string>
+    <string name="debug_log_step_enable">再按 %d 次开启调试日志</string>
+    <string name="debug_log_step_disable">再按 %d 次关闭调试日志</string>
+    <string name="debug_log_status_active">调试日志已开启（再按 4 次关闭）</string>
     <string name="about_section_guide">使用指南</string>
     <string name="about_guide_desc">查看操作指南与手势说明</string>
     <string name="about_section_open_source">关于与开源</string>

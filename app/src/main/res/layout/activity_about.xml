@@ -61,7 +61,6 @@
                     android:layout_marginTop="3dp"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="8dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:text="v1.1.1 (Release)"
                     android:textColor="@color/hyper_text_secondary"
                     android:textSize="13sp" />

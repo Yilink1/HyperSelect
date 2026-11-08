@@ -134,9 +134,9 @@
     <string name="about_env_value">Xiaomi HyperOS</string>
     <string name="debug_log_enabled">Debug logging enabled</string>
     <string name="debug_log_disabled">Debug logging disabled</string>
-    <string name="debug_log_step_enable">Tap %d more steps to enable debug logging</string>
-    <string name="debug_log_step_disable">Tap %d more steps to disable debug logging</string>
-    <string name="debug_log_status_active">Debug logging is active (tap 4 more steps to disable)</string>
+    <string name="debug_log_step_enable">Tap %d more times to enable</string>
+    <string name="debug_log_step_disable">Tap %d more times to disable</string>
+    <string name="debug_log_status_active">Debug active (tap 4 more to disable)</string>
     <string name="about_section_guide">Guide</string>
     <string name="about_guide_desc">View gestures and usage instructions</string>
     <string name="about_section_open_source">About &amp; Open Source</string>
