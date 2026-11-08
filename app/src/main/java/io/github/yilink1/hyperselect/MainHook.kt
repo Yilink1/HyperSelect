@@ -467,11 +467,15 @@ class MainHook : XposedModule() {
                         if (flags == 0L) {
                             val original = proceed() as? PackageInfo
                             val result = original?.let { HookPolicy.copyPackageInfo(it) } ?: return original
-                            log(Log.INFO, TAG, "[$methodName] Spoofing notes versionCode to 1L for pid=$callingPid, uid=$callingUid, flags=$flags")
+                            if (rules.debugLogging) {
+                                log(Log.INFO, TAG, "[$methodName] Spoofing notes versionCode to 1L for pid=$callingPid, uid=$callingUid, flags=$flags")
+                            }
                             result.longVersionCode = 1L
                             return result
                         } else {
-                            log(Log.INFO, TAG, "[$methodName] Observed notes query with flags=$flags for pid=$callingPid, uid=$callingUid (not spoofed)")
+                            if (rules.debugLogging) {
+                                log(Log.INFO, TAG, "[$methodName] Observed notes query with flags=$flags for pid=$callingPid, uid=$callingUid (not spoofed)")
+                            }
                         }
                     }
                 }

@@ -46,7 +46,56 @@ class AboutActivity : AppCompatActivity() {
             }
             tvVersion.text = "v${pInfo.versionName} ($code)"
         } catch (_: Exception) {
-            tvVersion.text = "v1.1.0"
+            tvVersion.text = "v1.1.1"
+        }
+
+        var clickCount = 0
+        var lastClickTime = 0L
+
+        tvVersion.setOnClickListener {
+            val now = android.os.SystemClock.uptimeMillis()
+            if (now - lastClickTime > 2000L) {
+                clickCount = 0
+            }
+            lastClickTime = now
+            clickCount++
+
+            val config = RuleStore.load(this)
+            val isEnabled = config.debugLogging
+
+            if (!isEnabled) {
+                when (clickCount) {
+                    1, 2 -> { /* Silent for first 2 taps */ }
+                    3, 4 -> {
+                        val remaining = 5 - clickCount
+                        showInstantToast(getString(R.string.debug_log_countdown_enable, remaining))
+                    }
+                    5 -> {
+                        val updated = config.copy(debugLogging = true)
+                        RuleStore.save(this, updated)
+                        contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
+                        showInstantToast(getString(R.string.debug_log_enabled))
+                        clickCount = 0
+                    }
+                }
+            } else {
+                when (clickCount) {
+                    1 -> {
+                        showInstantToast(getString(R.string.debug_log_status_enabled))
+                    }
+                    2, 3, 4 -> {
+                        val remaining = 5 - clickCount
+                        showInstantToast(getString(R.string.debug_log_countdown_disable, remaining))
+                    }
+                    5 -> {
+                        val updated = config.copy(debugLogging = false)
+                        RuleStore.save(this, updated)
+                        contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
+                        showInstantToast(getString(R.string.debug_log_disabled))
+                        clickCount = 0
+                    }
+                }
+            }
         }
 
         findViewById<View>(R.id.btnAboutHelp).setOnClickListener {
@@ -60,6 +109,13 @@ class AboutActivity : AppCompatActivity() {
             } catch (_: Exception) {
             }
         }
+    }
+
+    private var activeToast: android.widget.Toast? = null
+
+    private fun showInstantToast(message: String) {
+        activeToast?.cancel()
+        activeToast = android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).apply { show() }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

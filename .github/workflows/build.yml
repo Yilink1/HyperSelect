@@ -6,6 +6,8 @@ on:
       - main
       - 'fix/**'
       - 'feat/**'
+    tags:
+      - 'v*'
     paths-ignore:
       - '**.md'
       - '.gitignore'
@@ -21,6 +23,8 @@ jobs:
   build:
     name: Build APK
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -52,9 +56,22 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew assembleRelease --stacktrace
 
+      - name: Prepare Release Artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          cp app/build/outputs/apk/release/*.apk "app/build/outputs/apk/release/HyperSelect-${TAG_NAME}.apk"
+
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: HyperSelect-Release
           path: app/build/outputs/apk/release/*.apk
           retention-days: 7
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/build/outputs/apk/release/HyperSelect-*.apk
+          generate_release_notes: true

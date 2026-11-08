@@ -132,6 +132,11 @@
     <string name="about_scope_value">系统框架与选择器</string>
     <string name="about_env_label">适配环境</string>
     <string name="about_env_value">Xiaomi HyperOS</string>
+    <string name="debug_log_enabled">已开启调试日志</string>
+    <string name="debug_log_disabled">已关闭调试日志</string>
+    <string name="debug_log_countdown_enable">只需再点 %d 次即可开启调试日志</string>
+    <string name="debug_log_countdown_disable">只需再点 %d 次即可关闭调试日志</string>
+    <string name="debug_log_status_enabled">当前调试日志处于开启状态（连点 5 次关闭）</string>
     <string name="about_section_guide">使用指南</string>
     <string name="about_guide_desc">查看操作指南与手势说明</string>
     <string name="about_section_open_source">关于与开源</string>

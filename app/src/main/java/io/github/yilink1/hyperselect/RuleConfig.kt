@@ -7,6 +7,7 @@ data class RuleConfig(
     val blacklist: Set<String> = emptySet(),
     val customOrder: List<String> = emptyList(),
     val blockAiWriting: Boolean = true,
+    val debugLogging: Boolean = false,
     val shareBlacklist: Set<String> = emptySet(),
     val shareCustomOrder: List<String> = emptyList(),
     val openWithBlacklist: Set<String> = emptySet(),
@@ -25,6 +26,7 @@ data class RuleConfig(
         root.put("order", orderArray)
 
         root.put("blockAiWriting", blockAiWriting)
+        root.put("debugLogging", debugLogging)
 
         // 2. 系统分享
         val shareArray = JSONArray()
@@ -55,6 +57,7 @@ data class RuleConfig(
             val blacklist = root.optJSONArray("blacklist") ?: JSONArray()
             val order = root.optJSONArray("order") ?: JSONArray()
             val blockAiWriting = root.optBoolean("blockAiWriting", true)
+            val debugLogging = root.optBoolean("debugLogging", false)
             val shareBlacklist = root.optJSONArray("shareBlacklist") ?: JSONArray()
             val shareOrder = root.optJSONArray("shareOrder") ?: JSONArray()
             val openWithBlacklist = root.optJSONArray("openWithBlacklist") ?: JSONArray()
@@ -69,6 +72,7 @@ data class RuleConfig(
                 blacklist = strings(blacklist).toSet(),
                 customOrder = strings(order),
                 blockAiWriting = blockAiWriting,
+                debugLogging = debugLogging,
                 shareBlacklist = strings(shareBlacklist).toSet(),
                 shareCustomOrder = strings(shareOrder),
                 openWithBlacklist = strings(openWithBlacklist).toSet(),
@@ -96,6 +100,7 @@ data class RuleConfig(
                 }
 
                 val blockAiWriting = root.optBoolean("blockAiWriting", true)
+                val debugLogging = root.optBoolean("debugLogging", false)
 
                 root.optJSONArray("shareBlacklist")?.let { arr ->
                     for (i in 0 until arr.length()) shareBlacklistSet.add(arr.getString(i))
@@ -117,6 +122,7 @@ data class RuleConfig(
                     blacklist = blacklistSet,
                     customOrder = orderList,
                     blockAiWriting = blockAiWriting,
+                    debugLogging = debugLogging,
                     shareBlacklist = shareBlacklistSet,
                     shareCustomOrder = shareOrderList,
                     openWithBlacklist = openWithBlacklistSet,
