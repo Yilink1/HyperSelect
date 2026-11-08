@@ -52,9 +52,10 @@ class AboutActivity : AppCompatActivity() {
         var clickCount = 0
         var lastClickTime = 0L
 
-        tvVersion.setOnClickListener {
+        tvVersion.isHapticFeedbackEnabled = true
+        tvVersion.setOnClickListener { view ->
             val now = android.os.SystemClock.uptimeMillis()
-            if (now - lastClickTime > 2000L) {
+            if (now - lastClickTime > 3500L) {
                 clickCount = 0
             }
             lastClickTime = now
@@ -64,36 +65,33 @@ class AboutActivity : AppCompatActivity() {
             val isEnabled = config.debugLogging
 
             if (!isEnabled) {
-                when (clickCount) {
-                    1, 2 -> { /* Silent for first 2 taps */ }
-                    3, 4 -> {
-                        val remaining = 5 - clickCount
-                        showInstantToast(getString(R.string.debug_log_countdown_enable, remaining))
-                    }
-                    5 -> {
-                        val updated = config.copy(debugLogging = true)
-                        RuleStore.save(this, updated)
-                        contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
-                        showInstantToast(getString(R.string.debug_log_enabled))
-                        clickCount = 0
-                    }
+                if (clickCount < 5) {
+                    view.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
+                    val remaining = 5 - clickCount
+                    showInstantToast(getString(R.string.debug_log_step_enable, remaining))
+                } else {
+                    view.performHapticFeedback(android.view.HapticFeedbackConstants.CONFIRM)
+                    val updated = config.copy(debugLogging = true)
+                    RuleStore.save(this, updated)
+                    contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
+                    showInstantToast(getString(R.string.debug_log_enabled))
+                    clickCount = 0
                 }
             } else {
-                when (clickCount) {
-                    1 -> {
-                        showInstantToast(getString(R.string.debug_log_status_enabled))
-                    }
-                    2, 3, 4 -> {
-                        val remaining = 5 - clickCount
-                        showInstantToast(getString(R.string.debug_log_countdown_disable, remaining))
-                    }
-                    5 -> {
-                        val updated = config.copy(debugLogging = false)
-                        RuleStore.save(this, updated)
-                        contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
-                        showInstantToast(getString(R.string.debug_log_disabled))
-                        clickCount = 0
-                    }
+                if (clickCount == 1) {
+                    view.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
+                    showInstantToast(getString(R.string.debug_log_status_active))
+                } else if (clickCount < 5) {
+                    view.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP)
+                    val remaining = 5 - clickCount
+                    showInstantToast(getString(R.string.debug_log_step_disable, remaining))
+                } else {
+                    view.performHapticFeedback(android.view.HapticFeedbackConstants.CONFIRM)
+                    val updated = config.copy(debugLogging = false)
+                    RuleStore.save(this, updated)
+                    contentResolver.notifyChange(ConfigProvider.CONTENT_URI, null)
+                    showInstantToast(getString(R.string.debug_log_disabled))
+                    clickCount = 0
                 }
             }
         }
