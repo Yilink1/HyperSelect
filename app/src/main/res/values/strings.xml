@@ -99,7 +99,7 @@
 
     <!-- Setting Switches -->
     <string name="switch_block_ai_writing_title">屏蔽 AI 写作气泡</string>
-    <string name="switch_block_ai_writing_desc">长按文本时不再弹出便签 AI 圆圈</string>
+    <string name="switch_block_ai_writing_desc">隐藏文本选择菜单里的 AI 写作气泡和问小爱</string>
 
     <!-- Intro / Onboarding Guide -->
     <string name="intro_page1_badge">屏蔽 AI 写作</string>

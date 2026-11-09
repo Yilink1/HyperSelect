@@ -1,14 +1,18 @@
 package io.github.yilink1.hyperselect
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.database.ContentObserver
 import android.net.Uri
 import android.os.Binder
 import android.os.Build
+import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Process
@@ -27,6 +31,8 @@ class MainHook : XposedModule() {
     companion object {
         private const val TAG = "HyperSelect"
         private const val DEBUG = false
+        private const val VOICE_ASSIST_PACKAGE = "com.miui.voiceassist"
+        private const val AI_EDITOR_WAKE_UP = "xiaoai.supportAIEditorWakeUp"
         const val EXTRA_RAW_QUERY = "io.github.yilink1.hyperselect.EXTRA_RAW_QUERY"
 
         @Volatile
@@ -102,6 +108,7 @@ class MainHook : XposedModule() {
         var resolveHooked = false
         var queryHooked = false
         var getPackageHooked = false
+        var getApplicationHooked = false
 
         // PHASE_THIRD_PARTY_APPS_CAN_START: application providers may now be started.
         runCatching {
@@ -132,6 +139,8 @@ class MainHook : XposedModule() {
 
             // 3. Hook getPackageInfo -> Globally block AiRecognition across all apps
             getPackageHooked = hookGetPackageInfo(ipmBaseClass)
+
+            getApplicationHooked = hookGetApplicationInfo(ipmBaseClass)
         }.onFailure {
             log(Log.ERROR, TAG, "Failed to hook system_server IPackageManagerBase on Android $sdkInt:\n${Log.getStackTraceString(it)}")
         }
@@ -140,7 +149,7 @@ class MainHook : XposedModule() {
         log(
             Log.INFO,
             TAG,
-            "HyperSelect initialized on Android $sdkInt | Hooks: [resolveIntent=$resolveHooked, queryIntent=$queryHooked, getPackageInfo=$getPackageHooked]"
+            "HyperSelect initialized on Android $sdkInt | Hooks: [resolveIntent=$resolveHooked, queryIntent=$queryHooked, getPackageInfo=$getPackageHooked, getApplicationInfo=$getApplicationHooked]"
         )
     }
 
@@ -176,7 +185,9 @@ class MainHook : XposedModule() {
             )
             val json = bundle?.getString(ConfigProvider.EXTRA_RULES_JSON)
             val config = RuleConfig.parseResponse(json) ?: return false
+            val previousBlockAiWriting = cachedRules?.blockAiWriting
             cachedRules = config
+            if (previousBlockAiWriting != config.blockAiWriting) invalidatePackageInfoCache()
             runCatching {
                 val ai = context.packageManager.getApplicationInfo("com.android.intentresolver", 0)
                 resolverAppId = ai.uid % 100000
@@ -189,6 +200,14 @@ class MainHook : XposedModule() {
         } finally {
             Binder.restoreCallingIdentity(token)
         }
+    }
+
+    // Runs in system_server. App processes cache ApplicationInfo, including its metadata.
+    @SuppressLint("BlockedPrivateApi")
+    private fun invalidatePackageInfoCache() {
+        runCatching {
+            PackageManager::class.java.getDeclaredMethod("invalidatePackageInfoCache").invoke(null)
+        }.onFailure { log(Log.WARN, TAG, "Failed to invalidate package info cache", it) }
     }
 
     private fun isModuleCaller(callingUid: Int, context: Context?): Boolean {
@@ -444,6 +463,43 @@ class MainHook : XposedModule() {
 
             sliceConstructor.newInstance(resultList)
         }.getOrDefault(rawSlice)
+    }
+
+    private fun hookGetApplicationInfo(ipmBaseClass: Class<*>): Boolean {
+        return runCatching {
+            val getApplicationInfoMethod = ipmBaseClass.declaredMethods.firstOrNull { m ->
+                val params = m.parameterTypes
+                m.name == "getApplicationInfo" && params.size == 3 &&
+                    params[0] == String::class.java &&
+                    (params[1] == Long::class.javaPrimitiveType || params[1] == Int::class.javaPrimitiveType) &&
+                    params[2] == Int::class.javaPrimitiveType &&
+                    m.returnType == ApplicationInfo::class.java
+            }
+            if (getApplicationInfoMethod == null) {
+                log(Log.WARN, TAG, "getApplicationInfo(String, long/int, int) not found in IPackageManagerBase")
+                return false
+            }
+
+            hook(getApplicationInfoMethod).intercept { chain ->
+                val result = chain.proceed()
+                if (chain.args[0] != VOICE_ASSIST_PACKAGE || cachedRules?.blockAiWriting != true ||
+                    Binder.getCallingPid() == Process.myPid()
+                ) return@intercept result
+
+                val original = result as? ApplicationInfo ?: return@intercept result
+                val metadata = original.metaData ?: return@intercept original
+                if (!metadata.getBoolean(AI_EDITOR_WAKE_UP)) return@intercept original
+
+                // MiuixEditor reads this flag before adding the item in the host app.
+                // Copy the result so the package manager's own metadata stays intact.
+                ApplicationInfo(original).apply {
+                    metaData = Bundle(metadata).apply { putBoolean(AI_EDITOR_WAKE_UP, false) }
+                }
+            }
+            true
+        }.onFailure {
+            log(Log.WARN, TAG, "Failed to hook getApplicationInfo:\n${Log.getStackTraceString(it)}")
+        }.getOrDefault(false)
     }
 
     private fun hookGetPackageInfo(ipmBaseClass: Class<*>): Boolean {
