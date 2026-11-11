@@ -107,6 +107,7 @@ class MainHook : XposedModule() {
         val sdkInt = Build.VERSION.SDK_INT
         var resolveHooked = false
         var queryHooked = false
+        var queryOptionsHooked = false
         var getPackageHooked = false
         var getApplicationHooked = false
 
@@ -136,6 +137,7 @@ class MainHook : XposedModule() {
 
             // 2. Hook queryIntentActivities -> Block search fallback & manage PROCESS_TEXT items
             queryHooked = hookQueryIntentActivities(ipmBaseClass, classLoader)
+            queryOptionsHooked = hookQueryIntentActivityOptions(ipmBaseClass, classLoader)
 
             // 3. Hook getPackageInfo -> Globally block AiRecognition across all apps
             getPackageHooked = hookGetPackageInfo(ipmBaseClass)
@@ -149,7 +151,7 @@ class MainHook : XposedModule() {
         log(
             Log.INFO,
             TAG,
-            "HyperSelect initialized on Android $sdkInt | Hooks: [resolveIntent=$resolveHooked, queryIntent=$queryHooked, getPackageInfo=$getPackageHooked, getApplicationInfo=$getApplicationHooked]"
+            "HyperSelect initialized on Android $sdkInt | Hooks: [resolveIntent=$resolveHooked, queryIntent=$queryHooked, queryOptions=$queryOptionsHooked, getPackageInfo=$getPackageHooked, getApplicationInfo=$getApplicationHooked]"
         )
     }
 
@@ -351,6 +353,58 @@ class MainHook : XposedModule() {
             }
         }.onFailure {
             log(Log.WARN, TAG, "Failed to hook queryIntentActivities:\n${Log.getStackTraceString(it)}")
+        }.getOrDefault(false)
+    }
+
+    private fun hookQueryIntentActivityOptions(ipmBaseClass: Class<*>, classLoader: ClassLoader): Boolean {
+        return runCatching {
+            val queryOptionsMethod = ipmBaseClass.declaredMethods.firstOrNull { m ->
+                val params = m.parameterTypes
+                m.name == "queryIntentActivityOptions" &&
+                    params.size == 7 &&
+                    params[3] == Intent::class.java &&
+                    (params[5] == Long::class.javaPrimitiveType || params[5] == Int::class.javaPrimitiveType) &&
+                    params[6] == Int::class.javaPrimitiveType
+            }
+            if (queryOptionsMethod != null) {
+                val sliceClass = Class.forName("android.content.pm.ParceledListSlice", false, classLoader)
+                val sliceConstructor = sliceClass.getConstructor(List::class.java)
+                val getListMethod = sliceClass.getMethod("getList")
+
+                hook(queryOptionsMethod).intercept { chain ->
+                    val intent = chain.args[3] as? Intent
+
+                    // 1. Block fallback search
+                    if (HookPolicy.isEditorSearch(intent)) {
+                        if (DEBUG) log(Log.INFO, TAG, "Blocked Query queryIntentActivityOptions: ${intent?.dataString}")
+                        return@intercept sliceConstructor.newInstance(emptyList<Any>())
+                    }
+
+                    // 2. Filter & sort PROCESS_TEXT items (e.g. Firefox Menu.addIntentOptions)
+                    if (intent != null && Intent.ACTION_PROCESS_TEXT == intent.action) {
+                        val callingUid = Binder.getCallingUid()
+                        val isBypass = intent.getBooleanExtra(EXTRA_RAW_QUERY, false) && isModuleCaller(callingUid, getSystemContext())
+
+                        if (isBypass) {
+                            return@intercept chain.proceed()
+                        }
+
+                        val rawResult = chain.proceed()
+                        if (rawResult != null) {
+                            return@intercept processTextActivities(rawResult, getListMethod, sliceConstructor)
+                        }
+                        return@intercept rawResult
+                    }
+
+                    chain.proceed()
+                }
+                true
+            } else {
+                log(Log.WARN, TAG, "queryIntentActivityOptions not found in IPackageManagerBase")
+                false
+            }
+        }.onFailure {
+            log(Log.WARN, TAG, "Failed to hook queryIntentActivityOptions:\n${Log.getStackTraceString(it)}")
         }.getOrDefault(false)
     }
 
