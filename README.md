@@ -34,7 +34,7 @@
 
 ## 运行环境
 
-- **系统**：Xiaomi HyperOS 2.0 / OS 3（理论兼容 1.0+）
+- **系统**：Xiaomi HyperOS、
 - **框架**：LSPosed（基于 LibXposed API 102）
 - **作用域**：系统框架、IntentResolver
 ---
