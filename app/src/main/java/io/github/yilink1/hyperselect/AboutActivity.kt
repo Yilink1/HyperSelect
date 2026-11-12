@@ -46,7 +46,7 @@ class AboutActivity : AppCompatActivity() {
             }
             "v${pInfo.versionName} ($code)"
         } catch (_: Exception) {
-            "v1.1.1"
+            "v1.1.2"
         }
         tvVersion.text = defaultVersionText
 
