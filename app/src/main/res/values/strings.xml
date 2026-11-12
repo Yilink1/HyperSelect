@@ -98,8 +98,8 @@
     <string name="help_card_immediate_desc">所有调整即时生效</string>
 
     <!-- Setting Switches -->
-    <string name="switch_block_ai_writing_title">屏蔽 AI 写作气泡</string>
-    <string name="switch_block_ai_writing_desc">隐藏文本选择菜单里的 AI 写作气泡和问小爱</string>
+    <string name="switch_block_ai_writing_title">屏蔽 AI 选项</string>
+    <string name="switch_block_ai_writing_desc">长按文本时隐藏 AI 写作与问小爱</string>
 
     <!-- Intro / Onboarding Guide -->
     <string name="intro_page1_badge">屏蔽 AI 写作</string>

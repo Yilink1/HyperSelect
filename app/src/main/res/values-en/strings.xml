@@ -98,8 +98,8 @@
     <string name="help_card_immediate_desc">All changes take effect immediately</string>
 
     <!-- Setting Switches -->
-    <string name="switch_block_ai_writing_title">Block AI Writing Bubble</string>
-    <string name="switch_block_ai_writing_desc">Hide the AI Writing bubble and Ask XiaoAi in the text selection menu</string>
+    <string name="switch_block_ai_writing_title">Block AI Options</string>
+    <string name="switch_block_ai_writing_desc">Hide AI Writing and Ask XiaoAi when holding text</string>
 
     <!-- Intro / Onboarding Guide -->
     <string name="intro_page1_badge">Block AI Writing</string>
