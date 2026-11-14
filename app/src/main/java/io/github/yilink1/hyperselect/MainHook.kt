@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -34,6 +35,9 @@ class MainHook : XposedModule() {
         private const val VOICE_ASSIST_PACKAGE = "com.miui.voiceassist"
         private const val AI_EDITOR_WAKE_UP = "xiaoai.supportAIEditorWakeUp"
         const val EXTRA_RAW_QUERY = "io.github.yilink1.hyperselect.EXTRA_RAW_QUERY"
+
+        // 记录的最长有效期，读取时超过则视为过期并丢弃
+        private const val REMOVED_TARGETS_TTL_MS = 10 * 60_000L
 
         @Volatile
         private var cachedRules: RuleConfig? = null
@@ -465,9 +469,12 @@ class MainHook : XposedModule() {
             val rules = cachedRules ?: RuleConfig()
             val action = intent.action
 
+            // ACTION_VIEW 不能在这里剔除黑名单：点「总是」时 intentresolver 会把它拿到的候选列表
+            // 作为 set 存进 PreferredActivity；之后系统用【未过滤】的候选做 sameSet 校验，
+            // 发现多出了被隐藏的应用，就会丢弃该「总是」。VIEW 的隐藏交给 intentresolver 进程内
+            // 的 sortTargetsList 在显示层完成。分享（SEND）没有「总是」，仍在此处过滤。
             val blacklist = when {
                 action == Intent.ACTION_SEND || action == Intent.ACTION_SEND_MULTIPLE -> rules.shareBlacklist
-                action == Intent.ACTION_VIEW -> rules.openWithBlacklist
                 else -> emptySet()
             }
 
@@ -642,6 +649,31 @@ class MainHook : XposedModule() {
     @Volatile
     private var latestIntentResolverAction: String? = null
 
+    // 点「总是」时，intentresolver 会把弹窗的候选存成 PreferredActivity 的 set，之后系统拿【未过滤】
+    // 的候选做 sameSet 校验。sortTargetsList 把隐藏的应用从列表里删了，存下去的 set 就缺了它们，
+    // 「总是」会被系统丢弃。这里记下 VIEW 弹窗里被我们删掉的组件，保存「总是」时补回 set。
+    private val removedViewTargets = LinkedHashSet<ComponentName>()
+    private var removedViewTouchedAt = 0L
+    private val removedViewLock = Any()
+
+    private fun recordRemovedViewTargets(removed: Collection<ComponentName>) {
+        if (removed.isEmpty()) return
+        synchronized(removedViewLock) {
+            val now = SystemClock.uptimeMillis()
+            if (now - removedViewTouchedAt > REMOVED_TARGETS_TTL_MS) removedViewTargets.clear()
+            removedViewTouchedAt = now
+            removedViewTargets.addAll(removed)
+        }
+    }
+
+    private fun takeRemovedViewTargets(): List<ComponentName> =
+        synchronized(removedViewLock) {
+            val fresh = SystemClock.uptimeMillis() - removedViewTouchedAt <= REMOVED_TARGETS_TTL_MS
+            val result = if (fresh) removedViewTargets.toList() else emptyList()
+            removedViewTargets.clear()
+            result
+        }
+
     private fun hookIntentResolver(classLoader: ClassLoader) {
         // 1. Hook ResolverListAdapter.processSortedList(List list, boolean b)
         runCatching {
@@ -777,6 +809,53 @@ class MainHook : XposedModule() {
         }.onFailure {
             log(Log.WARN, TAG, "Failed to hook ResolverListController:\n${Log.getStackTraceString(it)}")
         }
+
+        // 5. ApplicationPackageManager / PackageManager.addPreferredActivity：保存「总是」时，把被我们隐藏的候选补回 set
+        runCatching {
+            val apmClass = Class.forName("android.app.ApplicationPackageManager")
+            // 查找所有名为 addPreferredActivity 且包含 ComponentName[] 参数的方法
+            val addMethods = apmClass.declaredMethods.filter { m ->
+                m.name.contains("PreferredActivity") &&
+                    m.parameterTypes.any { it.isArray && it.componentType == ComponentName::class.java }
+            }
+
+            var hookedCount = 0
+            for (addMethod in addMethods) {
+                val setParamIndex = addMethod.parameterTypes.indexOfFirst { it.isArray && it.componentType == ComponentName::class.java }
+                if (setParamIndex >= 0) {
+                    runCatching {
+                        hook(addMethod).intercept { chain ->
+                            val merged = runCatching {
+                                @Suppress("UNCHECKED_CAST")
+                                val set = chain.args[setParamIndex] as? Array<ComponentName> ?: return@runCatching null
+                                val extra = takeRemovedViewTargets().filter { it !in set }
+                                Log.i(TAG, "${addMethod.name}: set=${set.size}, restoring=${extra.map { it.flattenToShortString() }}")
+                                if (extra.isEmpty()) null else arrayOf(*set, *extra.toTypedArray())
+                            }.getOrNull()
+
+                            if (merged != null) {
+                                val newArgs = chain.args.toMutableList()
+                                newArgs[setParamIndex] = merged
+                                chain.proceed(newArgs.toTypedArray())
+                            } else {
+                                chain.proceed()
+                            }
+                        }
+                        hookedCount++
+                    }.onFailure {
+                        log(Log.WARN, TAG, "Failed to hook ${addMethod.name}: ${it.message}")
+                    }
+                }
+            }
+
+            if (hookedCount > 0) {
+                log(Log.INFO, TAG, "Successfully hooked ApplicationPackageManager preferredActivity methods ($hookedCount methods: ${addMethods.map { it.name }})")
+            } else {
+                log(Log.WARN, TAG, "ApplicationPackageManager preferredActivity methods with ComponentName[] not found")
+            }
+        }.onFailure {
+            log(Log.WARN, TAG, "Failed to hook addPreferredActivity:\n${Log.getStackTraceString(it)}")
+        }
     }
 
     private fun sortTargetsList(
@@ -809,18 +888,26 @@ class MainHook : XposedModule() {
             else -> config.shareBlacklist
         }
 
+        val removedComponents = ArrayList<ComponentName>()
         if (blacklist.isNotEmpty()) {
             val beforeCount = targets.size
             targets.removeAll { item ->
                 val pair = extractTargetInfo(item)
                 val comp = pair?.first ?: ""
                 val pkg = pair?.second ?: ""
-                blacklist.contains(comp) || blacklist.contains(pkg)
+                val hit = blacklist.contains(comp) || blacklist.contains(pkg)
+                if (hit) {
+                    val cn = ComponentName.unflattenFromString(comp)
+                    if (cn != null) removedComponents.add(cn)
+                }
+                hit
             }
             if (targets.size != beforeCount) {
                 Log.i(TAG, "IntentResolver blacklist filtered [$sourceTag]: before=$beforeCount, after=${targets.size}")
             }
         }
+        // 记录打开方式（VIEW）弹窗中被隐藏的组件，用于在点「总是」时补回 set（用后即清）
+        if (actionHint == Intent.ACTION_VIEW) recordRemovedViewTargets(removedComponents)
 
         val customOrder = when {
             actionHint == Intent.ACTION_VIEW -> config.openWithCustomOrder
