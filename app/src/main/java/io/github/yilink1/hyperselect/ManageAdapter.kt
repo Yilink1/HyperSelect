@@ -34,6 +34,7 @@ sealed class ManageRow {
  * 配合顶部双导航分栏，清晰承载「置顶固定」、「常规流动」与「收纳隐藏」列表。
  */
 class ManageAdapter(
+    private val enablePinnedSection: Boolean = false,
     private val onRestore: (item: TextActionItem) -> Unit,
     private val onPin: (item: TextActionItem) -> Unit,
     private val onUnpin: (item: TextActionItem) -> Unit,
@@ -221,16 +222,20 @@ class ManageAdapter(
 
                 if (item.isEnabled) {
                     itemHolder.itemView.alpha = 1.0f
-                    itemHolder.btnSearchPin.visibility = View.VISIBLE
                     itemHolder.btnSearchHide.visibility = View.VISIBLE
                     itemHolder.btnSearchRestore.visibility = View.GONE
 
-                    if (row.isPinned) {
-                        itemHolder.btnSearchPin.setText(R.string.action_unpin)
-                        itemHolder.btnSearchPin.setOnClickListener { onUnpin(item) }
+                    if (enablePinnedSection) {
+                        itemHolder.btnSearchPin.visibility = View.VISIBLE
+                        if (row.isPinned) {
+                            itemHolder.btnSearchPin.setText(R.string.action_unpin)
+                            itemHolder.btnSearchPin.setOnClickListener { onUnpin(item) }
+                        } else {
+                            itemHolder.btnSearchPin.setText(R.string.action_pin)
+                            itemHolder.btnSearchPin.setOnClickListener { onPin(item) }
+                        }
                     } else {
-                        itemHolder.btnSearchPin.setText(R.string.action_pin)
-                        itemHolder.btnSearchPin.setOnClickListener { onPin(item) }
+                        itemHolder.btnSearchPin.visibility = View.GONE
                     }
 
                     itemHolder.btnSearchHide.setOnClickListener { onStash(item) }

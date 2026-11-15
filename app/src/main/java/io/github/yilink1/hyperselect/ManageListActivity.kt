@@ -107,13 +107,16 @@ abstract class ManageListActivity : AppCompatActivity() {
     private lateinit var undoBar: LinearLayout
     private lateinit var tvUndoMsg: TextView
 
-    private val adapter = ManageAdapter(
-        onRestore = { item -> restoreItem(item) },
-        onPin = { item -> pinItem(item) },
-        onUnpin = { item -> unpinItem(item) },
-        onStash = { item -> stashItem(item) },
-        onStartDrag = { holder -> itemTouchHelper.startDrag(holder) }
-    )
+    private val adapter by lazy {
+        ManageAdapter(
+            enablePinnedSection = enablePinnedSection,
+            onRestore = { item -> restoreItem(item) },
+            onPin = { item -> pinItem(item) },
+            onUnpin = { item -> unpinItem(item) },
+            onStash = { item -> stashItem(item) },
+            onStartDrag = { holder -> itemTouchHelper.startDrag(holder) }
+        )
+    }
 
     private lateinit var itemTouchHelper: ItemTouchHelper
     private val executor = Executors.newSingleThreadExecutor()
