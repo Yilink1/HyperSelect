@@ -34,6 +34,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -453,9 +454,115 @@ abstract class ManageListActivity : AppCompatActivity() {
         recyclerView.scrollToPosition(0)
     }
 
-    // ───────── 搜索 ─────────
+    // ───────── 视觉锚点：进入搜索时记录一次，退出时还原一次 ─────────
+    private class Anchor(val component: String, val screenTop: Int)
+
+    private var preSearchAnchors: List<Anchor> = emptyList()
+    private var isAtTopBeforeSearch = false
+    private var hasScrolledInSearch = false
+
+    private fun componentOf(row: ManageRow?): String? = when (row) {
+        is ManageRow.Pinned -> row.item.componentName
+        is ManageRow.Flowing -> row.item.componentName
+        is ManageRow.Showing -> row.item.componentName
+        is ManageRow.Hidden -> row.item.componentName
+        is ManageRow.Search -> row.item.componentName
+        else -> null
+    }
+
+    private fun captureAnchors(): List<Anchor> {
+        val lm = recyclerView.layoutManager as LinearLayoutManager
+        val first = lm.findFirstVisibleItemPosition()
+        val last = lm.findLastVisibleItemPosition()
+        if (first == RecyclerView.NO_POSITION || last == RecyclerView.NO_POSITION) return emptyList()
+        val loc = IntArray(2)
+
+        // 智能视觉焦点：如果顶上的第一个卡片只露出一小截（露出高度不足自身的一半），说明用户眼睛真正看的是下一个，跳过它
+        val anchorsList = ArrayList<Anchor>()
+        val rvTop = recyclerView.top + recyclerView.paddingTop
+
+        for (pos in first..last) {
+            val name = componentOf(adapter.getItem(pos)) ?: continue
+            val v = lm.findViewByPosition(pos) ?: continue
+            
+            // 如果是列表里第一个露头的 App 卡片，检查它的露出高度是否过半
+            if (anchorsList.isEmpty()) {
+                val visibleHeight = v.bottom - rvTop
+                val totalHeight = v.height
+                if (totalHeight > 0 && visibleHeight < totalHeight * 0.5f) {
+                    // 露出不足 50%，视为残影残余，不作为主角
+                    continue
+                }
+            }
+
+            v.getLocationOnScreen(loc)
+            anchorsList.add(Anchor(name, loc[1]))
+        }
+        return anchorsList
+    }
+
+    private fun isHeaderVisibleAtTop(): Boolean {
+        val lm = recyclerView.layoutManager as? LinearLayoutManager ?: return true
+        val first = lm.findFirstVisibleItemPosition()
+        if (first > 0) return false
+        val v0 = lm.findViewByPosition(0) ?: return true
+        // 只有当第 0 项（Header）的顶部真正贴在或接近 RecyclerView 的顶部（容差 14dp 内）
+        // 且露出大部分时，才认定为“真正停留在顶部”
+        val rvTop = recyclerView.paddingTop
+        return v0.top >= rvTop - dp(14) && v0.bottom > rvTop
+    }
+
+    /** 必须在 refreshRows() 之后调用 */
+    private fun restoreAnchors(anchors: List<Anchor>, isOpening: Boolean) {
+        val lm = recyclerView.layoutManager as LinearLayoutManager
+        recyclerView.animate().cancel()
+        recyclerView.translationY = 0f
+
+        // 如果原本就在顶部区域：进入搜索直接第 0 项贴紧顶栏；退出搜索坚决完整露出第 0 项 Header 说明，绝不被吸掉覆盖！
+        if (isAtTopBeforeSearch) {
+            lm.scrollToPositionWithOffset(0, 0)
+            return
+        }
+
+        // 滚在半中间时的平滑贴顶对齐
+        var pos = -1
+        var anchor: Anchor? = null
+        for (a in anchors) {
+            val p = (0 until adapter.itemCount).firstOrNull { componentOf(adapter.getItem(it)) == a.component }
+            if (p != null) { pos = p; anchor = a; break }
+        }
+        if (anchor == null) {
+            lm.scrollToPositionWithOffset(0, 0)
+            return
+        }
+
+        lm.scrollToPositionWithOffset(pos, 0)
+        val initialScreenY = anchor.screenTop
+
+        recyclerView.doOnPreDraw {
+            val loc = IntArray(2)
+            val currentV = lm.findViewByPosition(pos) ?: return@doOnPreDraw
+            currentV.getLocationOnScreen(loc)
+            val currentScreenY = loc[1]
+
+            val delta = initialScreenY - currentScreenY
+            if (delta != 0 && kotlin.math.abs(delta) < 500) {
+                recyclerView.translationY = delta.toFloat()
+                recyclerView.animate()
+                    .translationY(0f)
+                    .setDuration(150L)
+                    .setInterpolator(DecelerateInterpolator())
+                    .start()
+            }
+        }
+    }
+
     private fun openSearch() {
         if (searchOpen) return
+        recyclerView.stopScroll()
+        hasScrolledInSearch = false
+        isAtTopBeforeSearch = isHeaderVisibleAtTop()
+        preSearchAnchors = captureAnchors()      // 状态改变之前，只记这一次
         searchOpen = true
         searchBackCallback.isEnabled = true
         headerBar.visibility = View.GONE
@@ -464,6 +571,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         searchBox.animate().alpha(1f).setDuration(140L).start()
         query = ""
         refreshRows()
+        restoreAnchors(preSearchAnchors, true)
         etSearch.requestFocus()
         etSearch.post {
             getSystemService(InputMethodManager::class.java)?.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
@@ -472,6 +580,7 @@ abstract class ManageListActivity : AppCompatActivity() {
 
     private fun closeSearch() {
         if (!searchOpen) return
+        val currentAnchors = if (hasScrolledInSearch) captureAnchors() else preSearchAnchors
         searchOpen = false
         searchBackCallback.isEnabled = false
         etSearch.setText("")
@@ -479,6 +588,15 @@ abstract class ManageListActivity : AppCompatActivity() {
         searchBox.visibility = View.GONE
         headerBar.visibility = View.VISIBLE
         refreshRows()
+
+        if (hasScrolledInSearch) {
+            // 用户在搜索里划动过了：视觉焦点已经变了，按用户当前看着的卡片退回到普通列表，不生硬拖回原点
+            isAtTopBeforeSearch = false
+            restoreAnchors(currentAnchors, false)
+        } else {
+            // 用户原地进出：零误差完美复原
+            restoreAnchors(preSearchAnchors, false)
+        }
     }
 
     // ───────── 卡片动作（置顶 / 收纳 / 恢复） ─────────
@@ -754,6 +872,14 @@ abstract class ManageListActivity : AppCompatActivity() {
                 addDuration = 100L
             }
         }
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(rv: RecyclerView, newState: Int) {
+                if (searchOpen && newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    hasScrolledInSearch = true
+                }
+            }
+        })
 
         // 首次进入的左滑演示底色层
         recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
