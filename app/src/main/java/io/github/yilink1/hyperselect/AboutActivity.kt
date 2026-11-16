@@ -115,6 +115,14 @@ class AboutActivity : AppCompatActivity() {
             showHelpDialog()
         }
 
+        findViewById<View>(R.id.btnAboutTelegram).setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/HyperSelect_dev"))
+            try {
+                startActivity(intent)
+            } catch (_: Exception) {
+            }
+        }
+
         findViewById<View>(R.id.btnAboutGithub).setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/yilink1/HyperSelect"))
             try {

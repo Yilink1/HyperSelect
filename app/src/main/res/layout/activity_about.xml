@@ -66,7 +66,7 @@
                     android:textSize="13sp" />
             </LinearLayout>
 
-            <!-- Section 1: Module Info -->
+            <!-- Section 1: Module & Guide -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -137,46 +137,40 @@
                         android:textSize="14sp" />
                 </LinearLayout>
 
-            </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@color/hyper_divider" />
 
-            <!-- Section 2: Help Guide Action -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="18dp"
-                android:layout_marginBottom="6dp"
-                android:text="@string/about_section_guide"
-                android:textColor="@color/hyper_text_secondary"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:id="@+id/btnAboutHelp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_card_group"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="@drawable/bg_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="0dp"
+                <!-- Row 3: Guide -->
+                <LinearLayout
+                    android:id="@+id/btnAboutHelp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/about_guide_desc"
-                    android:textColor="@color/hyper_text_primary"
-                    android:textSize="15sp" />
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/bg_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="›"
-                    android:textColor="@color/hyper_text_secondary"
-                    android:textSize="20sp" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/about_guide_desc"
+                        android:textColor="@color/hyper_text_primary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="›"
+                        android:textColor="@color/hyper_text_secondary"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <!-- Section 3: Open Source -->
@@ -197,40 +191,6 @@
                 android:background="@drawable/bg_card_group"
                 android:orientation="vertical"
                 android:padding="16dp">
-
-                <!-- GitHub -->
-                <LinearLayout
-                    android:id="@+id/btnAboutGithub"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="@drawable/bg_item_ripple"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/about_github_repo"
-                        android:textColor="@color/hyper_text_primary"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="yilink1/HyperSelect ›"
-                        android:textColor="@color/hyper_accent"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@color/hyper_divider" />
 
                 <!-- Author -->
                 <LinearLayout
@@ -282,6 +242,74 @@
                         android:layout_height="wrap_content"
                         android:text="GPL-3.0"
                         android:textColor="@color/hyper_text_secondary"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@color/hyper_divider" />
+
+                <!-- GitHub -->
+                <LinearLayout
+                    android:id="@+id/btnAboutGithub"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/bg_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/about_github_repo"
+                        android:textColor="@color/hyper_text_primary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="yilink1/HyperSelect ›"
+                        android:textColor="@color/hyper_accent"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@color/hyper_divider" />
+
+                <!-- Telegram Channel -->
+                <LinearLayout
+                    android:id="@+id/btnAboutTelegram"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/bg_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/about_tg_channel"
+                        android:textColor="@color/hyper_text_primary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@HyperSelect_dev ›"
+                        android:textColor="@color/hyper_accent"
                         android:textSize="14sp" />
                 </LinearLayout>
 
