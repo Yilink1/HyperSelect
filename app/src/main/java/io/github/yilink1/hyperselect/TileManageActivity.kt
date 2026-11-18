@@ -19,10 +19,10 @@ class TileManageActivity : ManageListActivity() {
         val intent = Intent("android.service.quicksettings.action.QS_TILE")
         val services = pm.queryIntentServices(intent, PackageManager.MATCH_ALL)
 
-        // Android 14+ 对 sysui_qs_tiles 的普通读取做了限制，安全获取
+        // targetSdk 31+ 无法直接读取 sysui_qs_tiles，失败时使用 system_server 同步来的副本。
         val rawTiles = runCatching {
-            Settings.Secure.getString(contentResolver, "sysui_qs_tiles")
-        }.getOrNull() ?: ""
+            Settings.Secure.getString(contentResolver, ConfigProvider.SETTING_QS_TILES)
+        }.getOrNull()?.takeIf { it.isNotBlank() } ?: RuleStore.loadQsTiles(this)
 
         val activeTiles = rawTiles.split(",").map { it.trim() }.filter { it.isNotEmpty() }
 

@@ -17,6 +17,8 @@ class ConfigProvider : ContentProvider() {
         const val METHOD_GET_RULES = "getRules"
         const val METHOD_NOTIFY_CHANGED = "notifyChanged"
         const val EXTRA_RULES_JSON = "rules_json"
+        const val EXTRA_QS_TILES = "qs_tiles"
+        const val SETTING_QS_TILES = "sysui_qs_tiles"
     }
 
     override fun onCreate(): Boolean = true
@@ -28,6 +30,7 @@ class ConfigProvider : ContentProvider() {
                 // 仅记录来自 system_server 的读取，作为“模块本次开机已生效”的签收凭证
                 if (Binder.getCallingUid() == Process.SYSTEM_UID) {
                     RuleStore.saveSystemReadReceipt(ctx)
+                    extras?.getString(EXTRA_QS_TILES)?.let { RuleStore.saveQsTiles(ctx, it) }
                 }
                 val config = RuleStore.load(ctx)
                 Bundle().apply {

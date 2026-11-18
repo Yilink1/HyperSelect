@@ -18,6 +18,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Process
 import android.os.SystemClock
+import android.provider.Settings
 import android.util.Log
 import io.github.libxposed.api.XposedModule
 import io.github.libxposed.api.XposedModuleInterface.ModuleLoadedParam
@@ -181,13 +182,30 @@ class MainHook : XposedModule() {
                         override fun onChange(selfChange: Boolean) { scheduleRefresh() }
                     }
                 )
+                // 普通应用无法读取 sysui_qs_tiles，由 system_server 代读并随规则同步给模块。
+                runCatching {
+                    context.contentResolver.registerContentObserver(
+                        Settings.Secure.getUriFor(ConfigProvider.SETTING_QS_TILES), false,
+                        object : ContentObserver(workerHandler) {
+                            override fun onChange(selfChange: Boolean) { scheduleRefresh() }
+                        }
+                    )
+                }
                 observerRegistered = true
+            }
+            val extras = Bundle().apply {
+                putString(
+                    ConfigProvider.EXTRA_QS_TILES,
+                    runCatching {
+                        Settings.Secure.getString(context.contentResolver, ConfigProvider.SETTING_QS_TILES)
+                    }.getOrNull().orEmpty()
+                )
             }
             val bundle = context.contentResolver.call(
                 ConfigProvider.CONTENT_URI,
                 ConfigProvider.METHOD_GET_RULES,
                 null,
-                null
+                extras
             )
             val json = bundle?.getString(ConfigProvider.EXTRA_RULES_JSON)
             val config = RuleConfig.parseResponse(json) ?: return false

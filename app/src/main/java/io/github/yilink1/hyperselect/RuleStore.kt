@@ -9,6 +9,7 @@ object RuleStore {
     private const val PREF_NAME = "hyper_select_rules"
     private const val KEY_CONFIG = "rule_config_json"
     private const val KEY_LAST_SYSTEM_READ_BOOT = "last_system_read_boot"
+    private const val KEY_QS_TILES = "qs_tiles"
 
     // 开机时间估算的容忍误差（覆盖 NTP 校时漂移；跨重启必然超过该值）
     private const val BOOT_TIME_TOLERANCE_MS = 10_000L
@@ -39,6 +40,13 @@ object RuleStore {
             .putLong(KEY_LAST_SYSTEM_READ_BOOT, bootTime)
             .apply()
     }
+
+    /** system_server 代读的快捷设置磁贴顺序（Settings.Secure.sysui_qs_tiles）。 */
+    fun saveQsTiles(context: Context, tiles: String) {
+        getPrefs(context).edit().putString(KEY_QS_TILES, tiles).apply()
+    }
+
+    fun loadQsTiles(context: Context): String = getPrefs(context).getString(KEY_QS_TILES, null).orEmpty()
 
     /**
      * 模块自检：system_server 是否在【本次开机】后来读取过规则。
