@@ -35,6 +35,7 @@ sealed class ManageRow {
  */
 class ManageAdapter(
     private val enablePinnedSection: Boolean = false,
+    private val isTileMode: Boolean = false,
     private val onRestore: (item: TextActionItem) -> Unit,
     private val onPin: (item: TextActionItem) -> Unit,
     private val onUnpin: (item: TextActionItem) -> Unit,
@@ -124,6 +125,15 @@ class ManageAdapter(
         itemHolder.itemView.translationZ = 0f
         itemHolder.itemView.scaleX = 1f
         itemHolder.itemView.scaleY = 1f
+
+        if (isTileMode) {
+            itemHolder.ivAppIcon.setBackgroundResource(R.drawable.bg_tile_icon_circle)
+            val pad = (8 * itemHolder.itemView.resources.displayMetrics.density).toInt()
+            itemHolder.ivAppIcon.setPadding(pad, pad, pad, pad)
+        } else {
+            itemHolder.ivAppIcon.background = null
+            itemHolder.ivAppIcon.setPadding(0, 0, 0, 0)
+        }
 
         when (val row = rows[position]) {
             is ManageRow.Header -> {}

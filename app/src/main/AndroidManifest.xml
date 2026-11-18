@@ -66,6 +66,11 @@
             android:label="@string/title_open_with" />
 
         <activity
+            android:name=".TileManageActivity"
+            android:exported="false"
+            android:label="@string/title_tile_manage" />
+
+        <activity
             android:name=".AboutActivity"
             android:exported="false"
             android:label="@string/title_about" />

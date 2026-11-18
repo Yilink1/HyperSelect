@@ -27,4 +27,5 @@
     <color name="hyper_pill_blue_text">#6EA4FE</color>
     <color name="hyper_pill_grey_bg">#2C2C2E</color>
     <color name="hyper_pill_grey_text">#A0A4AE</color>
+    <color name="hyper_tile_icon_bg">#2C2C2E</color>
 </resources>

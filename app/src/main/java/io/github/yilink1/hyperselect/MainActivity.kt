@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvTextActionBadge: TextView
     private lateinit var tvShareActionBadge: TextView
     private lateinit var tvOpenWithActionBadge: TextView
+    private lateinit var tvTileActionBadge: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         tvTextActionBadge = findViewById(R.id.tvTextActionBadge)
         tvShareActionBadge = findViewById(R.id.tvShareActionBadge)
         tvOpenWithActionBadge = findViewById(R.id.tvOpenWithActionBadge)
+        tvTileActionBadge = findViewById(R.id.tvTileActionBadge)
 
         findViewById<View>(R.id.cardTextAction).setOnClickListener {
             startActivity(Intent(this, TextActionActivity::class.java))
@@ -40,6 +42,9 @@ class MainActivity : AppCompatActivity() {
         }
         findViewById<View>(R.id.cardOpenWithAction).setOnClickListener {
             startActivity(Intent(this, OpenWithActionActivity::class.java))
+        }
+        findViewById<View>(R.id.cardTileAction).setOnClickListener {
+            startActivity(Intent(this, TileManageActivity::class.java))
         }
         findViewById<View>(R.id.cardModuleStatus).setOnClickListener {
             startActivity(Intent(this, IntroActivity::class.java))
@@ -79,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         tvTextActionBadge.text = hiddenLabel(config.blacklist.size)
         tvShareActionBadge.text = hiddenLabel(config.shareBlacklist.size)
         tvOpenWithActionBadge.text = hiddenLabel(config.openWithBlacklist.size)
+        tvTileActionBadge.text = hiddenLabel(config.tileBlacklist.size)
     }
 
     private fun hiddenLabel(count: Int): String = if (count > 0) getString(R.string.format_hidden_count, count) else "—"

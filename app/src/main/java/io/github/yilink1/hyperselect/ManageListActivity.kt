@@ -83,6 +83,7 @@ abstract class ManageListActivity : AppCompatActivity() {
 
     /** 是否启用置顶固定区 + 随系统流动区分栏（系统分享与打开方式默认开启）。 */
     protected open val enablePinnedSection: Boolean = false
+    protected open val isTileMode: Boolean = false
 
     private val visible = ArrayList<TextActionItem>()
     private val hidden = ArrayList<TextActionItem>()
@@ -111,6 +112,7 @@ abstract class ManageListActivity : AppCompatActivity() {
     private val adapter by lazy {
         ManageAdapter(
             enablePinnedSection = enablePinnedSection,
+            isTileMode = isTileMode,
             onRestore = { item -> restoreItem(item) },
             onPin = { item -> pinItem(item) },
             onUnpin = { item -> unpinItem(item) },
@@ -235,17 +237,28 @@ abstract class ManageListActivity : AppCompatActivity() {
 
             val rawMap = LinkedHashMap<String, ScannedGroup>()
             for (info in infos) {
-                val activityInfo = info.activityInfo ?: continue
-                val pkg = activityInfo.packageName
+                val cInfo = info.activityInfo ?: info.serviceInfo ?: continue
+                val pkg = cInfo.packageName
                 if (pkg == packageName) continue
 
-                val component = android.content.ComponentName(pkg, activityInfo.name).flattenToShortString()
+                val component = android.content.ComponentName(pkg, cInfo.name).flattenToShortString()
                 val label = info.loadLabel(pm)?.toString()?.takeIf { it.isNotBlank() }
-                    ?: activityInfo.loadLabel(pm)?.toString()
-                    ?: activityInfo.name
-                val icon = info.loadIcon(pm) ?: activityInfo.loadIcon(pm)
+                    ?: cInfo.loadLabel(pm)?.toString()
+                    ?: cInfo.name
+                // 磁贴图标直接从目标应用资源加载，避免 HyperOS 主题给非启动器图标套白色方底。
+                val rawTileIcon = if (isTileMode) runCatching {
+                    val iconRes = info.iconResource.takeIf { it != 0 } ?: cInfo.iconResource
+                    if (iconRes == 0) null
+                    else pm.getResourcesForApplication(cInfo.applicationInfo).getDrawable(iconRes, null)
+                }.getOrNull() else null
+                val rawIcon = rawTileIcon
+                    ?: runCatching { info.loadIcon(pm) }.getOrNull()
+                    ?: runCatching { cInfo.loadIcon(pm) }.getOrNull()
+                    ?: runCatching { cInfo.applicationInfo?.loadIcon(pm) }.getOrNull()
+                    ?: androidx.core.content.ContextCompat.getDrawable(this, R.drawable.ic_tile_manage)!!
+                val icon = if (isTileMode) TileIconHelper.processTileIcon(this, rawIcon) else rawIcon
                 val appName = runCatching {
-                    activityInfo.applicationInfo?.loadLabel(pm)?.toString()
+                    cInfo.applicationInfo?.loadLabel(pm)?.toString()
                 }.getOrNull()?.takeIf { it.isNotBlank() } ?: ""
 
                 val groupKey = "$pkg\u0000$label"
