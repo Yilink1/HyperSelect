@@ -115,6 +115,8 @@ class MainHook : XposedModule() {
         var queryOptionsHooked = false
         var getPackageHooked = false
         var getApplicationHooked = false
+        var queryServicesHooked = false
+        var settingsProviderHooked = false
 
         // PHASE_THIRD_PARTY_APPS_CAN_START: application providers may now be started.
         runCatching {
@@ -148,6 +150,12 @@ class MainHook : XposedModule() {
             getPackageHooked = hookGetPackageInfo(ipmBaseClass)
 
             getApplicationHooked = hookGetApplicationInfo(ipmBaseClass)
+
+            // 4. Hook queryIntentServices -> Filter hidden QS Tiles for SystemUI
+            queryServicesHooked = hookQueryIntentServices(ipmBaseClass, classLoader)
+
+            // 5. Hook SettingsProvider -> Rootless bypass for sysui_qs_tiles
+            settingsProviderHooked = hookSettingsProvider(classLoader)
         }.onFailure {
             log(Log.ERROR, TAG, "Failed to hook system_server IPackageManagerBase on Android $sdkInt:\n${Log.getStackTraceString(it)}")
         }
@@ -156,7 +164,7 @@ class MainHook : XposedModule() {
         log(
             Log.INFO,
             TAG,
-            "HyperSelect initialized on Android $sdkInt | Hooks: [resolveIntent=$resolveHooked, queryIntent=$queryHooked, queryOptions=$queryOptionsHooked, getPackageInfo=$getPackageHooked, getApplicationInfo=$getApplicationHooked]"
+            "HyperSelect initialized on Android $sdkInt | Hooks: [resolveIntent=$resolveHooked, queryIntent=$queryHooked, queryOptions=$queryOptionsHooked, queryServices=$queryServicesHooked, settingsProvider=$settingsProviderHooked, getPackageInfo=$getPackageHooked, getApplicationInfo=$getApplicationHooked]"
         )
     }
 
@@ -580,6 +588,96 @@ class MainHook : XposedModule() {
             log(Log.WARN, TAG, "Failed to hook getApplicationInfo:\n${Log.getStackTraceString(it)}")
         }.getOrDefault(false)
     }
+
+
+    private fun hookQueryIntentServices(ipmBaseClass: Class<*>, classLoader: ClassLoader): Boolean {
+        return runCatching {
+            val queryServicesMethod = ipmBaseClass.declaredMethods.firstOrNull { m ->
+                val params = m.parameterTypes
+                m.name == "queryIntentServices" &&
+                    params.size == 4 &&
+                    params[0] == Intent::class.java &&
+                    params[1] == String::class.java &&
+                    (params[2] == Long::class.javaPrimitiveType || params[2] == Int::class.javaPrimitiveType) &&
+                    params[3] == Int::class.javaPrimitiveType
+            }
+            if (queryServicesMethod != null) {
+                val sliceClass = Class.forName("android.content.pm.ParceledListSlice", false, classLoader)
+                val sliceConstructor = sliceClass.getConstructor(List::class.java)
+                val getListMethod = sliceClass.getMethod("getList")
+
+                hook(queryServicesMethod).intercept { chain ->
+                    val intent = chain.args[0] as? Intent
+                    if (intent != null && intent.action == "android.service.quicksettings.action.QS_TILE") {
+                        val callingUid = Binder.getCallingUid()
+                        // HyperSelect app itself needs to see all tiles, so bypass filtering
+                        if (isModuleCaller(callingUid, getSystemContext())) {
+                            return@intercept chain.proceed()
+                        }
+                        val config = cachedRules
+                        if (config != null && config.tileBlacklist.isNotEmpty()) {
+                            val rawResult = chain.proceed()
+                            if (rawResult != null) {
+                                return@intercept processTileServices(rawResult, config.tileBlacklist, getListMethod, sliceConstructor)
+                            }
+                        }
+                    }
+                    chain.proceed()
+                }
+                true
+            } else {
+                log(Log.WARN, TAG, "queryIntentServices(Intent, String, long/int, int) not found in IPackageManagerBase")
+                false
+            }
+        }.onFailure {
+            log(Log.WARN, TAG, "Failed to hook queryIntentServices", it)
+        }.getOrDefault(false)
+    }
+
+    private fun processTileServices(
+        rawSlice: Any,
+        blacklist: Set<String>,
+        getListMethod: Method,
+        sliceConstructor: Constructor<*>
+    ): Any {
+        @Suppress("UNCHECKED_CAST")
+        val rawList = getListMethod.invoke(rawSlice) as? List<ResolveInfo> ?: return rawSlice
+        val filtered = rawList.filter { rInfo ->
+            val sInfo = rInfo.serviceInfo ?: return@filter true
+            val pkg = sInfo.packageName
+            val comp = ComponentName(pkg, sInfo.name).flattenToShortString()
+            !blacklist.contains(comp) && !blacklist.contains(pkg)
+        }
+        return sliceConstructor.newInstance(filtered)
+    }
+
+    private fun hookSettingsProvider(classLoader: ClassLoader): Boolean {
+        return runCatching {
+            val spClass = Class.forName("com.android.providers.settings.SettingsProvider", false, classLoader)
+            spClass.declaredMethods.filter { it.name == "call" }.forEach { method ->
+                hook(method).intercept { chain ->
+                    val methodArg = chain.args.getOrNull(0) as? String
+                    val nameArg = chain.args.getOrNull(1) as? String
+                    if ((methodArg == "PUT_secure" || methodArg == "GET_secure") && nameArg == ConfigProvider.SETTING_QS_TILES) {
+                        val callingUid = Binder.getCallingUid()
+                        if (isModuleCaller(callingUid, getSystemContext())) {
+                            val token = Binder.clearCallingIdentity()
+                            try {
+                                return@intercept chain.proceed()
+                            } finally {
+                                Binder.restoreCallingIdentity(token)
+                            }
+                        }
+                    }
+                    chain.proceed()
+                }
+            }
+            true
+        }.onFailure {
+            log(Log.WARN, TAG, "Failed to hook SettingsProvider", it)
+        }.getOrDefault(false)
+    }
+
 
     private fun hookGetPackageInfo(ipmBaseClass: Class<*>): Boolean {
         return runCatching {

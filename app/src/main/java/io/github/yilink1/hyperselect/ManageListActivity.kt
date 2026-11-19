@@ -84,6 +84,10 @@ abstract class ManageListActivity : AppCompatActivity() {
     /** 是否启用置顶固定区 + 随系统流动区分栏（系统分享与打开方式默认开启）。 */
     protected open val enablePinnedSection: Boolean = false
     protected open val isTileMode: Boolean = false
+    protected open fun isTileActive(pkg: String, cls: String, component: String): Boolean = false
+    protected open fun onToggleTileQs(item: TextActionItem) {}
+    protected open fun onItemClick(item: TextActionItem) {}
+
 
     private val visible = ArrayList<TextActionItem>()
     private val hidden = ArrayList<TextActionItem>()
@@ -109,7 +113,7 @@ abstract class ManageListActivity : AppCompatActivity() {
     private lateinit var undoBar: LinearLayout
     private lateinit var tvUndoMsg: TextView
 
-    private val adapter by lazy {
+    protected val adapter by lazy {
         ManageAdapter(
             enablePinnedSection = enablePinnedSection,
             isTileMode = isTileMode,
@@ -117,7 +121,9 @@ abstract class ManageListActivity : AppCompatActivity() {
             onPin = { item -> pinItem(item) },
             onUnpin = { item -> unpinItem(item) },
             onStash = { item -> stashItem(item) },
-            onStartDrag = { holder -> itemTouchHelper.startDrag(holder) }
+            onStartDrag = { holder -> itemTouchHelper.startDrag(holder) },
+            onToggleTileQs = { item -> onToggleTileQs(item) },
+            onItemClick = { item -> onItemClick(item) }
         )
     }
 
@@ -232,7 +238,8 @@ abstract class ManageListActivity : AppCompatActivity() {
                 val primaryComponent: String,
                 val icon: android.graphics.drawable.Drawable,
                 val appName: String,
-                val components: LinkedHashSet<String> = LinkedHashSet()
+                val components: LinkedHashSet<String> = LinkedHashSet(),
+                var isTileAdded: Boolean = false
             )
 
             val rawMap = LinkedHashMap<String, ScannedGroup>()
@@ -266,6 +273,9 @@ abstract class ManageListActivity : AppCompatActivity() {
                     ScannedGroup(label, pkg, component, icon, appName)
                 }
                 group.components.add(component)
+                if (isTileActive(pkg, cInfo.name, component)) {
+                    group.isTileAdded = true
+                }
             }
 
             val all = ArrayList<TextActionItem>()
@@ -280,7 +290,8 @@ abstract class ManageListActivity : AppCompatActivity() {
                         icon = group.icon,
                         isEnabled = enabled,
                         components = group.components,
-                        appName = group.appName
+                        appName = group.appName,
+                        isTileAdded = group.isTileAdded
                     )
                 )
             }

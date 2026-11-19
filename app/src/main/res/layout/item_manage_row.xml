@@ -98,6 +98,19 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
+    <!-- 磁贴快速操作胶囊 -->
+    <TextView
+        android:id="@+id/btnTileAction"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:minWidth="52dp"
+        android:gravity="center"
+        android:paddingHorizontal="11dp"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <!-- 恢复按钮（收纳隐藏项目） -->
     <ImageView
         android:id="@+id/btnRestore"

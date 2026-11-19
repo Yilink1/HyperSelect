@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 data class TextActionItem(
@@ -17,7 +18,8 @@ data class TextActionItem(
     val icon: Drawable,
     var isEnabled: Boolean,
     val components: Set<String> = setOf(componentName),
-    val appName: String = ""
+    val appName: String = "",
+    var isTileAdded: Boolean = false
 )
 
 sealed class ManageRow {
@@ -40,7 +42,9 @@ class ManageAdapter(
     private val onPin: (item: TextActionItem) -> Unit,
     private val onUnpin: (item: TextActionItem) -> Unit,
     private val onStash: (item: TextActionItem) -> Unit,
-    private val onStartDrag: (holder: RecyclerView.ViewHolder) -> Unit
+    private val onStartDrag: (holder: RecyclerView.ViewHolder) -> Unit,
+    private val onToggleTileQs: ((item: TextActionItem) -> Unit)? = null,
+    private val onItemClick: ((item: TextActionItem) -> Unit)? = null
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -58,6 +62,29 @@ class ManageAdapter(
     fun submit(newRows: List<ManageRow>) {
         rows = newRows
         notifyDataSetChanged()
+    }
+
+
+    private fun bindTileAction(holder: ItemViewHolder, item: TextActionItem) {
+        if (!isTileMode) {
+            holder.btnTileAction.visibility = View.GONE
+            holder.btnTileAction.setOnClickListener(null)
+            return
+        }
+        holder.btnTileAction.visibility = View.VISIBLE
+        val ctx = holder.itemView.context
+        if (item.isTileAdded) {
+            holder.btnTileAction.setBackgroundResource(R.drawable.bg_btn_pill_neutral)
+            holder.btnTileAction.setTextColor(ContextCompat.getColor(ctx, R.color.hyper_pill_grey_text))
+            holder.btnTileAction.setText(R.string.tile_status_added)
+        } else {
+            holder.btnTileAction.setBackgroundResource(R.drawable.bg_btn_pill_primary)
+            holder.btnTileAction.setTextColor(ContextCompat.getColor(ctx, R.color.hyper_pill_blue_text))
+            holder.btnTileAction.setText(R.string.action_add_tile)
+        }
+        holder.btnTileAction.setOnClickListener {
+            onToggleTileQs?.invoke(item)
+        }
     }
 
     fun getItem(position: Int): ManageRow? = rows.getOrNull(position)
@@ -87,6 +114,7 @@ class ManageAdapter(
         val btnUnpin: TextView = view.findViewById(R.id.btnUnpin)
         val btnPin: TextView = view.findViewById(R.id.btnPin)
         val btnRestore: ImageView = view.findViewById(R.id.btnRestore)
+        val btnTileAction: TextView = view.findViewById(R.id.btnTileAction)
         val layoutSearchActions: View = view.findViewById(R.id.layoutSearchActions)
         val btnSearchPin: TextView = view.findViewById(R.id.btnSearchPin)
         val btnSearchHide: TextView = view.findViewById(R.id.btnSearchHide)
@@ -143,9 +171,9 @@ class ManageAdapter(
                 itemHolder.itemView.alpha = 1.0f
                 itemHolder.ivAppIcon.setImageDrawable(item.icon)
                 itemHolder.tvAppLabel.text = item.label
-                itemHolder.tvPackageName.text = item.packageName
+                itemHolder.tvPackageName.text = if (isTileMode && item.appName.isNotBlank()) item.appName else item.packageName
 
-                itemHolder.ivDragHandle.visibility = View.VISIBLE
+                itemHolder.ivDragHandle.visibility = if (isTileMode) View.GONE else View.VISIBLE
                 itemHolder.btnUnpin.visibility = View.VISIBLE
                 itemHolder.btnPin.visibility = View.GONE
                 itemHolder.btnRestore.visibility = View.GONE
@@ -166,7 +194,7 @@ class ManageAdapter(
                 itemHolder.itemView.alpha = 1.0f
                 itemHolder.ivAppIcon.setImageDrawable(item.icon)
                 itemHolder.tvAppLabel.text = item.label
-                itemHolder.tvPackageName.text = item.packageName
+                itemHolder.tvPackageName.text = if (isTileMode && item.appName.isNotBlank()) item.appName else item.packageName
 
                 itemHolder.ivDragHandle.visibility = View.GONE
                 itemHolder.btnUnpin.visibility = View.GONE
@@ -175,7 +203,12 @@ class ManageAdapter(
                 itemHolder.layoutSearchActions.visibility = View.GONE
 
                 itemHolder.btnPin.setOnClickListener { onPin(item) }
-                itemHolder.itemView.setOnClickListener(null)
+                bindTileAction(itemHolder, item)
+                if (isTileMode && onItemClick != null) {
+                    itemHolder.itemView.setOnClickListener { onItemClick.invoke(item) }
+                } else {
+                    itemHolder.itemView.setOnClickListener(null)
+                }
             }
 
             is ManageRow.Showing -> {
@@ -183,13 +216,17 @@ class ManageAdapter(
                 itemHolder.itemView.alpha = 1.0f
                 itemHolder.ivAppIcon.setImageDrawable(item.icon)
                 itemHolder.tvAppLabel.text = item.label
-                itemHolder.tvPackageName.text = item.packageName
+                itemHolder.tvPackageName.text = if (isTileMode && item.appName.isNotBlank()) item.appName else item.packageName
 
-                itemHolder.ivDragHandle.visibility = View.VISIBLE
+                itemHolder.ivDragHandle.visibility = if (isTileMode) View.GONE else View.VISIBLE
                 itemHolder.btnUnpin.visibility = View.GONE
                 itemHolder.btnPin.visibility = View.GONE
                 itemHolder.btnRestore.visibility = View.GONE
                 itemHolder.layoutSearchActions.visibility = View.GONE
+                bindTileAction(itemHolder, item)
+                if (isTileMode && onItemClick != null) {
+                    itemHolder.itemView.setOnClickListener { onItemClick.invoke(item) }
+                }
 
                 itemHolder.ivDragHandle.setOnTouchListener { _, event ->
                     if (event.actionMasked == MotionEvent.ACTION_DOWN) {
@@ -205,13 +242,14 @@ class ManageAdapter(
                 itemHolder.itemView.alpha = 0.75f
                 itemHolder.ivAppIcon.setImageDrawable(item.icon)
                 itemHolder.tvAppLabel.text = item.label
-                itemHolder.tvPackageName.text = item.packageName
+                itemHolder.tvPackageName.text = if (isTileMode && item.appName.isNotBlank()) item.appName else item.packageName
 
                 itemHolder.ivDragHandle.visibility = View.GONE
                 itemHolder.btnUnpin.visibility = View.GONE
                 itemHolder.btnPin.visibility = View.GONE
                 itemHolder.btnRestore.visibility = View.VISIBLE
                 itemHolder.layoutSearchActions.visibility = View.GONE
+                bindTileAction(itemHolder, item)
 
                 val restoreAction = View.OnClickListener { onRestore(item) }
                 itemHolder.btnRestore.setOnClickListener(restoreAction)
@@ -222,13 +260,22 @@ class ManageAdapter(
                 val item = row.item
                 itemHolder.ivAppIcon.setImageDrawable(item.icon)
                 itemHolder.tvAppLabel.text = item.label
-                itemHolder.tvPackageName.text = item.packageName
+                itemHolder.tvPackageName.text = if (isTileMode && item.appName.isNotBlank()) item.appName else item.packageName
 
                 itemHolder.ivDragHandle.visibility = View.GONE
                 itemHolder.btnUnpin.visibility = View.GONE
                 itemHolder.btnPin.visibility = View.GONE
                 itemHolder.btnRestore.visibility = View.GONE
-                itemHolder.layoutSearchActions.visibility = View.VISIBLE
+                if (isTileMode) {
+                    itemHolder.layoutSearchActions.visibility = View.GONE
+                    bindTileAction(itemHolder, item)
+                    if (onItemClick != null) {
+                        itemHolder.itemView.setOnClickListener { onItemClick.invoke(item) }
+                    }
+                } else {
+                    itemHolder.layoutSearchActions.visibility = View.VISIBLE
+                    bindTileAction(itemHolder, item)
+                }
 
                 if (item.isEnabled) {
                     itemHolder.itemView.alpha = 1.0f

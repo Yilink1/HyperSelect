@@ -30,7 +30,17 @@
     <string name="desc_open_with">文件与链接的解析弹窗</string>
     <string name="title_tile_manage">磁贴管理</string>
     <string name="desc_tile_manage">快捷开关搜索、状态查看与收纳</string>
+    <string name="format_tile_position">%1$s  · 已添加 · 第 %2$d 位</string>
     <string name="empty_no_apps_available_tile">暂无支持快捷开关的应用</string>
+    <string name="tile_status_added">已添加</string>
+    <string name="action_add_tile">+ 添加</string>
+    <string name="tile_added_success">已添加至控制中心末尾</string>
+    <string name="tile_removed_success">已从控制中心移除</string>
+    <string name="tile_update_failed">修改控制中心失败</string>
+    <string name="dialog_tile_click_title">快捷磁贴详情</string>
+    <string name="action_launch_app">打开所属应用</string>
+    <string name="action_remove_tile">从控制中心移除</string>
+    <string name="action_add_to_qs">添加至控制中心</string>
     <string name="status_module_active">模块已生效</string>
     <string name="status_module_inactive">模块未生效 · 请在 LSPosed 中勾选并重启</string>
     <string name="action_feature_demo">功能演示</string>
