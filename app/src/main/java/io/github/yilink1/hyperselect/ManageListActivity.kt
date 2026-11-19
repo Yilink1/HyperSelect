@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -87,6 +88,8 @@ abstract class ManageListActivity : AppCompatActivity() {
     protected open fun isTileActive(pkg: String, cls: String, component: String): Boolean = false
     protected open fun onToggleTileQs(item: TextActionItem) {}
     protected open fun onItemClick(item: TextActionItem) {}
+    protected open fun onItemStashed(item: TextActionItem) {}
+    protected val btnBackup: ImageView by lazy { findViewById(R.id.btnBackup) }
 
 
     private val visible = ArrayList<TextActionItem>()
@@ -684,6 +687,7 @@ abstract class ManageListActivity : AppCompatActivity() {
         hidden.removeAll { it.componentName == item.componentName }
         item.isEnabled = false
         hidden.add(0, item)
+        onItemStashed(item)
         saveRules()
         refreshRows()
         showUndo(getString(R.string.undo_hidden, item.label), before)

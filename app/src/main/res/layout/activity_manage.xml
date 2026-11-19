@@ -43,6 +43,17 @@
                 android:textStyle="bold" />
 
             <ImageView
+                android:id="@+id/btnBackup"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/title_tile_backup"
+                android:padding="10dp"
+                android:src="@drawable/ic_backup"
+                android:visibility="gone"
+                app:tint="@color/hyper_text_primary" />
+
+            <ImageView
                 android:id="@+id/btnSearch"
                 android:layout_width="44dp"
                 android:layout_height="44dp"

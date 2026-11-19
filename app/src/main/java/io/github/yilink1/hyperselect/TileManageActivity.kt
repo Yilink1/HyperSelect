@@ -149,6 +149,19 @@ class TileManageActivity : ManageListActivity() {
     override fun withRules(config: RuleConfig, blacklist: Set<String>, order: List<String>): RuleConfig =
         config.copy(tileBlacklist = blacklist)
 
+    override fun onItemStashed(item: TextActionItem) {
+        if (item.isTileAdded) {
+            val spec = "custom(${item.componentName})"
+            updateQsTiles(spec, add = false)
+            item.isTileAdded = false
+            activeTilesSet.remove(item.componentName)
+        }
+    }
+
     override fun onCreateExtra(container: android.view.ViewGroup) {
+        btnBackup.visibility = android.view.View.VISIBLE
+        btnBackup.setOnClickListener {
+            startActivity(Intent(this, TileBackupActivity::class.java))
+        }
     }
 }

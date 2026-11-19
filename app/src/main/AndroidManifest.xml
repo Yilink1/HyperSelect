@@ -73,6 +73,11 @@
             android:label="@string/title_tile_manage" />
 
         <activity
+            android:name=".TileBackupActivity"
+            android:exported="false"
+            android:label="@string/title_tile_backup" />
+
+        <activity
             android:name=".AboutActivity"
             android:exported="false"
             android:label="@string/title_about" />
