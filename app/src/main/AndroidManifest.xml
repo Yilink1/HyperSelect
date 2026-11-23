@@ -76,6 +76,9 @@
             android:name=".TileBackupActivity"
             android:exported="false"
             android:label="@string/title_tile_backup" />
+        <activity
+            android:name=".TileBackupDetailActivity"
+            android:exported="false" />
 
         <activity
             android:name=".AboutActivity"

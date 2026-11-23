@@ -1,96 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp">
 
-    <!-- 当前生效布局 Hero 卡片 -->
     <LinearLayout
+        android:id="@+id/cardCurrent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="12dp"
-        android:background="@drawable/bg_card_item"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/bg_group_single"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/header_current_layout"
-            android:textColor="@color/hyper_text_primary"
-            android:textSize="17sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvCurrentSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/hyper_text_secondary"
-            android:textSize="13sp"
-            tools:text="当前已启用 21 个磁贴" />
-
-        <!-- 当前磁贴胶囊预览 -->
-        <HorizontalScrollView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:scrollbars="none">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/layoutCurrentChips"
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/header_current_layout"
+                android:textColor="@color/hyper_text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCurrentSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
+                android:textColor="@color/hyper_text_secondary"
+                android:textSize="13sp"
+                tools:text="29 个磁贴" />
 
-        <TextView
-            android:id="@+id/btnSaveCurrent"
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="2dp"
+                android:src="@drawable/ic_chevron_right" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/panelMini"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_btn_pill_primary"
-            android:gravity="center"
-            android:text="@string/action_save_current_layout"
-            android:textColor="@color/hyper_pill_blue_text"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_qs_panel"
+            android:padding="14dp" />
     </LinearLayout>
 
-    <!-- 分组标题：已保存的快照 -->
-    <LinearLayout
+    <TextView
+        android:id="@+id/tvSectionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/header_saved_snapshots"
+        android:textColor="@color/hyper_text_secondary"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tvEmpty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="4dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tvSectionTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/header_saved_snapshots"
-            android:textColor="@color/hyper_text_secondary"
-            android:textSize="13sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvSnapshotCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/hyper_text_secondary"
-            android:textSize="12sp"
-            tools:text="3 个快照" />
-    </LinearLayout>
-
+        android:background="@drawable/bg_group_single"
+        android:gravity="center"
+        android:paddingVertical="28dp"
+        android:text="@string/empty_snapshots"
+        android:textColor="@color/hyper_text_secondary"
+        android:textSize="13sp"
+        android:visibility="gone" />
 </LinearLayout>

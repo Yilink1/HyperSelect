@@ -200,4 +200,19 @@
     <string name="test_open_action_video">测试打开视频文件</string>
     <string name="tab_visible">显示</string>
     <string name="tab_hidden">隐藏</string>
+    <string name="action_save_snapshot">保存当前布局</string>
+    <string name="action_restore_layout">恢复此布局</string>
+    <string name="tag_current">当前</string>
+    <string name="empty_snapshots">还没有快照，点击右上角 + 保存当前布局</string>
+    <string name="format_tile_count">%1$d 个磁贴</string>
+    <string name="row_diff_same">与当前一致</string>
+    <string name="row_diff_count">有 %1$d 处不同</string>
+    <string name="detail_compare_title">与当前布局相比</string>
+    <string name="detail_same">与当前布局完全一致</string>
+    <string name="detail_added">新增</string>
+    <string name="detail_removed">移除</string>
+    <string name="detail_moved">顺序调整</string>
+    <string name="detail_moved_value">%1$d 个磁贴位置不同</string>
+    <string name="detail_diff_hint">预览中蓝色为有变化的磁贴</string>
+    <string name="dialog_delete_snapshot">删除快照“%1$s”？</string>
 </resources>

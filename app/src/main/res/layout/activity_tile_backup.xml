@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/hyper_bg"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <!-- 顶栏：返回 / 标题 / 导入 / 更多 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="6dp"
-        android:paddingEnd="12dp">
+        android:paddingEnd="6dp">
 
         <ImageView
             android:id="@+id/btnBack"
@@ -33,22 +31,32 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="@string/title_tile_backup"
             android:textColor="@color/hyper_text_primary"
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/btnImport"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
+        <ImageView
+            android:id="@+id/btnAdd"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:paddingHorizontal="10dp"
-            android:text="@string/action_import"
-            android:textColor="@color/hyper_pill_blue_text"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:contentDescription="@string/action_save_snapshot"
+            android:padding="10dp"
+            android:src="@drawable/ic_add_plain"
+            app:tint="@color/hyper_text_primary" />
+
+        <ImageView
+            android:id="@+id/btnMore"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_more"
+            android:padding="10dp"
+            android:src="@drawable/ic_more_vert"
+            app:tint="@color/hyper_text_primary" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

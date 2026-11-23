@@ -1,15 +1,11 @@
 package io.github.yilink1.hyperselect
 
-import android.content.Context
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -17,13 +13,10 @@ import java.util.Locale
 
 class TileBackupAdapter(
     private var currentTiles: String,
-    private var currentLabels: List<String>,
     private var backups: MutableList<TileBackupItem>,
-    private val onSaveCurrent: () -> Unit,
-    private val onApply: (TileBackupItem) -> Unit,
-    private val onCopy: (TileBackupItem) -> Unit,
-    private val onRename: (TileBackupItem) -> Unit,
-    private val onDelete: (TileBackupItem) -> Unit
+    private val onOpenCurrent: () -> Unit,
+    private val onOpen: (TileBackupItem) -> Unit,
+    private val onLongPress: (TileBackupItem, View) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -31,119 +24,78 @@ class TileBackupAdapter(
         private const val TYPE_ITEM = 1
     }
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
 
-    fun updateCurrent(tiles: String, labels: List<String>) {
-        this.currentTiles = tiles
-        this.currentLabels = labels
-        notifyItemChanged(0)
-    }
-
-    fun updateBackups(newBackups: MutableList<TileBackupItem>) {
-        this.backups = newBackups
+    fun update(tiles: String, newBackups: MutableList<TileBackupItem>) {
+        currentTiles = tiles
+        backups = newBackups
         notifyDataSetChanged()
     }
 
-    override fun getItemViewType(position: Int): Int =
-        if (position == 0) TYPE_HEADER else TYPE_ITEM
+    override fun getItemViewType(position: Int) = if (position == 0) TYPE_HEADER else TYPE_ITEM
 
-    override fun getItemCount(): Int = backups.size + 1
+    override fun getItemCount() = backups.size + 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == TYPE_HEADER) {
-            val view = inflater.inflate(R.layout.header_tile_backup, parent, false)
-            HeaderViewHolder(view)
+            HeaderViewHolder(inflater.inflate(R.layout.header_tile_backup, parent, false))
         } else {
-            val view = inflater.inflate(R.layout.item_tile_backup, parent, false)
-            ItemViewHolder(view)
+            ItemViewHolder(inflater.inflate(R.layout.item_tile_backup, parent, false))
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val ctx = holder.itemView.context
         if (holder is HeaderViewHolder) {
-            val ctx = holder.itemView.context
-            val count = currentLabels.size
-            holder.tvCurrentSubtitle.text = ctx.getString(R.string.desc_current_tiles, count)
-            populateChips(holder.layoutCurrentChips, currentLabels)
-            holder.btnSaveCurrent.setOnClickListener { onSaveCurrent() }
-            holder.tvSnapshotCount.text = ctx.getString(R.string.format_snapshot_count, backups.size)
+            val entries = TileVisuals.entries(ctx, currentTiles)
+            holder.tvCurrentSubtitle.text = ctx.getString(R.string.format_tile_count, entries.size)
+            TileVisuals.fillPanel(holder.panelMini, entries, tileDp = 40, maxRows = 2)
+            holder.cardCurrent.setOnClickListener { onOpenCurrent() }
+            holder.tvEmpty.visibility = if (backups.isEmpty()) View.VISIBLE else View.GONE
         } else if (holder is ItemViewHolder) {
-            val item = backups[position - 1]
-            val ctx = holder.itemView.context
-            holder.tvSnapshotTitle.text = item.name
-            val dateStr = dateFormat.format(Date(item.timestamp))
-            holder.tvSnapshotSubtitle.text = ctx.getString(R.string.format_snapshot_subtitle, dateStr, item.count)
-            populateChips(holder.layoutChips, item.previewLabels)
+            val index = position - 1
+            val item = backups[index]
+            val count = TileVisuals.splitSpecs(item.tiles).size
+            val diff = TileVisuals.diff(ctx, item.tiles, currentTiles)
+            holder.tvTitle.text = item.name
+            holder.tvTag.visibility = if (diff.isSame) View.VISIBLE else View.GONE
+            val diffText = if (diff.isSame) ctx.getString(R.string.row_diff_same)
+            else ctx.getString(R.string.row_diff_count, diff.count)
+            holder.tvSubtitle.text = listOf(
+                dateFormat.format(Date(item.timestamp)),
+                ctx.getString(R.string.format_tile_count, count),
+                diffText
+            ).joinToString(" · ")
 
-            holder.btnApply.setOnClickListener { onApply(item) }
-            holder.btnOptions.setOnClickListener { v ->
-                val popup = PopupMenu(ctx, v)
-                popup.menu.add(0, 1, 0, R.string.action_copy)
-                popup.menu.add(0, 2, 1, R.string.action_rename)
-                popup.menu.add(0, 3, 2, R.string.action_delete)
-                popup.setOnMenuItemClickListener { menuItem ->
-                    when (menuItem.itemId) {
-                        1 -> { onCopy(item); true }
-                        2 -> { onRename(item); true }
-                        3 -> { onDelete(item); true }
-                        else -> false
-                    }
+            val first = index == 0
+            val last = index == backups.size - 1
+            holder.row.setBackgroundResource(
+                when {
+                    first && last -> R.drawable.bg_group_single
+                    first -> R.drawable.bg_group_top
+                    last -> R.drawable.bg_group_bottom
+                    else -> R.drawable.bg_group_mid
                 }
-                popup.show()
-            }
-        }
-    }
-
-    private fun populateChips(container: LinearLayout, labels: List<String>) {
-        container.removeAllViews()
-        val ctx = container.context
-        val maxChips = 15
-        val shownLabels = labels.take(maxChips)
-        val density = ctx.resources.displayMetrics.density
-
-        for (label in shownLabels) {
-            val tv = TextView(ctx).apply {
-                text = label
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
-                setTextColor(ContextCompat.getColor(ctx, R.color.hyper_pill_grey_text))
-                setBackgroundResource(R.drawable.bg_btn_pill_neutral)
-                val padH = (9 * density).toInt()
-                val padV = (3 * density).toInt()
-                setPadding(padH, padV, padH, padV)
-                val lp = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    marginEnd = (6 * density).toInt()
-                }
-                layoutParams = lp
-            }
-            container.addView(tv)
-        }
-        if (labels.size > maxChips) {
-            val more = TextView(ctx).apply {
-                text = "+${labels.size - maxChips}"
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
-                setTextColor(ContextCompat.getColor(ctx, R.color.hyper_text_secondary))
-                setPadding((4 * density).toInt(), 0, (6 * density).toInt(), 0)
-            }
-            container.addView(more)
+            )
+            holder.divider.visibility = if (first) View.GONE else View.VISIBLE
+            holder.row.setOnClickListener { onOpen(item) }
+            holder.row.setOnLongClickListener { onLongPress(item, it); true }
         }
     }
 
     class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val cardCurrent: LinearLayout = view.findViewById(R.id.cardCurrent)
         val tvCurrentSubtitle: TextView = view.findViewById(R.id.tvCurrentSubtitle)
-        val layoutCurrentChips: LinearLayout = view.findViewById(R.id.layoutCurrentChips)
-        val btnSaveCurrent: TextView = view.findViewById(R.id.btnSaveCurrent)
-        val tvSnapshotCount: TextView = view.findViewById(R.id.tvSnapshotCount)
+        val panelMini: FrameLayout = view.findViewById(R.id.panelMini)
+        val tvEmpty: TextView = view.findViewById(R.id.tvEmpty)
     }
 
     class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvSnapshotTitle: TextView = view.findViewById(R.id.tvSnapshotTitle)
-        val tvSnapshotSubtitle: TextView = view.findViewById(R.id.tvSnapshotSubtitle)
-        val layoutChips: LinearLayout = view.findViewById(R.id.layoutChips)
-        val btnApply: TextView = view.findViewById(R.id.btnApply)
-        val btnOptions: ImageView = view.findViewById(R.id.btnOptions)
+        val row: LinearLayout = view.findViewById(R.id.row)
+        val divider: View = view.findViewById(R.id.divider)
+        val tvTitle: TextView = view.findViewById(R.id.tvSnapshotTitle)
+        val tvTag: TextView = view.findViewById(R.id.tvTagCurrent)
+        val tvSubtitle: TextView = view.findViewById(R.id.tvSnapshotSubtitle)
     }
 }

@@ -28,4 +28,9 @@
     <color name="hyper_pill_grey_bg">#2C2C2E</color>
     <color name="hyper_pill_grey_text">#A0A4AE</color>
     <color name="hyper_tile_icon_bg">#2C2C2E</color>
+    <color name="qs_panel_bg">#1C1D20</color>
+    <color name="qs_tile_off">#3B3D42</color>
+    <color name="qs_tile_on">#2F7CF6</color>
+    <color name="qs_tile_label">#8E9198</color>
+    <color name="qs_tile_icon">#E9EAEC</color>
 </resources>

@@ -69,7 +69,7 @@ object TileBackupStore {
         "night" to "深色",
         "vowifi1" to "VoWiFi 1",
         "vowifi2" to "VoWiFi 2",
-        "reduce_brightness" to "防眩光",
+        "reduce_brightness" to "极暗",
         "screenrecorder" to "录屏",
         "aisubtitles" to "AI字幕",
         "freeformhang" to "小窗",
