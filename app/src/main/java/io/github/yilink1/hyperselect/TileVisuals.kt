@@ -24,8 +24,7 @@ data class TileDiff(
     val moved: Set<String>
 ) {
     val isSame get() = added.isEmpty() && removed.isEmpty() && moved.isEmpty()
-    val count get() = added.size + removed.size + moved.size
-    val changedSpecs: Set<String> get() = added.map { it.spec }.toSet() + moved
+    val count get() = added.size + removed.size + (if (moved.isNotEmpty()) 1 else 0)
 }
 
 object TileVisuals {
@@ -124,9 +123,9 @@ object TileVisuals {
         return TileDiff(added, removed, cs.filter { it !in stable }.toSet())
     }
 
-    /** 控制中心风格的圆形磁贴:灰底浅色图标,highlight 时为系统蓝 */
-    private fun tileView(context: Context, entry: TileEntry, size: Int, highlight: Boolean): View {
-        val bg = ContextCompat.getColor(context, if (highlight) R.color.qs_tile_on else R.color.qs_tile_off)
+    /** 控制中心风格的圆形磁贴:灰底浅色图标 */
+    private fun tileView(context: Context, entry: TileEntry, size: Int): View {
+        val bg = ContextCompat.getColor(context, R.color.qs_tile_off)
         val fg = ContextCompat.getColor(context, R.color.qs_tile_icon)
         val circle = FrameLayout(context).apply {
             background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(bg) }
@@ -160,7 +159,6 @@ object TileVisuals {
         container: FrameLayout,
         entries: List<TileEntry>,
         tileDp: Int,
-        highlight: Set<String> = emptySet(),
         maxRows: Int? = null,
         showLabel: Boolean = false
     ) {
@@ -187,7 +185,7 @@ object TileVisuals {
                             orientation = LinearLayout.VERTICAL
                             gravity = Gravity.CENTER_HORIZONTAL
                         }
-                        val circle = tileView(ctx, item, size, item.spec in highlight)
+                        val circle = tileView(ctx, item, size)
                         cell.addView(circle, LinearLayout.LayoutParams(size, size).apply {
                             gravity = Gravity.CENTER_HORIZONTAL
                         })
@@ -211,7 +209,7 @@ object TileVisuals {
                     } else {
                         val cell = FrameLayout(ctx)
                         cell.addView(
-                            tileView(ctx, item, size, item.spec in highlight),
+                            tileView(ctx, item, size),
                             FrameLayout.LayoutParams(size, size, Gravity.CENTER)
                         )
                         row.addView(cell, LinearLayout.LayoutParams(0, size, 1f))

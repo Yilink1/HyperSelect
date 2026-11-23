@@ -55,7 +55,7 @@ class TileBackupDetailActivity : AppCompatActivity() {
 
         TileVisuals.fillPanel(
             findViewById<FrameLayout>(R.id.panelPreview), entries,
-            tileDp = 48, highlight = diff?.changedSpecs ?: emptySet(), showLabel = true
+            tileDp = 48, showLabel = true
         )
 
         val title = findViewById<TextView>(R.id.tvDiffTitle)
@@ -76,18 +76,9 @@ class TileBackupDetailActivity : AppCompatActivity() {
         } else {
             if (diff.added.isNotEmpty()) rows += getString(R.string.detail_added) to diff.added.joinToString("、") { it.label }
             if (diff.removed.isNotEmpty()) rows += getString(R.string.detail_removed) to diff.removed.joinToString("、") { it.label }
-            if (diff.moved.isNotEmpty()) rows += getString(R.string.detail_moved) to getString(R.string.detail_moved_value, diff.moved.size)
+            if (diff.moved.isNotEmpty()) rows += getString(R.string.detail_moved) to getString(R.string.detail_moved_value)
         }
         rows.forEachIndexed { i, (k, v) -> group.addView(diffRow(k, v, i, rows.size)) }
-
-        if (!diff.isSame && diff.changedSpecs.isNotEmpty()) {
-            group.addView(TextView(this).apply {
-                setText(R.string.detail_diff_hint)
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-                setTextColor(ContextCompat.getColor(context, R.color.hyper_text_secondary))
-                setPadding(dp(4), dp(8), 0, 0)
-            })
-        }
 
         restore.visibility = if (diff.isSame) View.GONE else View.VISIBLE
         restore.setOnClickListener {

@@ -211,9 +211,8 @@
     <string name="detail_same">与当前布局完全一致</string>
     <string name="detail_added">新增</string>
     <string name="detail_removed">移除</string>
-    <string name="detail_moved">顺序调整</string>
-    <string name="detail_moved_value">%1$d 个磁贴位置不同</string>
-    <string name="detail_diff_hint">预览中蓝色为有变化的磁贴</string>
+    <string name="detail_moved">顺序</string>
+    <string name="detail_moved_value">与当前顺序不同</string>
     <string name="dialog_delete_snapshot">删除快照“%1$s”？</string>
     <string name="action_export">导出</string>
     <string name="toast_export_empty">暂无已保存的快照可导出</string>

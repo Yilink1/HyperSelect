@@ -197,9 +197,8 @@
     <string name="detail_same">Identical to current layout</string>
     <string name="detail_added">Added</string>
     <string name="detail_removed">Removed</string>
-    <string name="detail_moved">Reordered</string>
-    <string name="detail_moved_value">%1$d tiles in different positions</string>
-    <string name="detail_diff_hint">Blue tiles indicate changes</string>
+    <string name="detail_moved">Order</string>
+    <string name="detail_moved_value">Different from current order</string>
     <string name="dialog_delete_snapshot">Delete snapshot "%1$s"?</string>
     <string name="toast_export_empty">No saved snapshots to export</string>
     <string name="toast_export_success">Snapshots exported successfully</string>
