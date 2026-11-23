@@ -843,7 +843,25 @@ abstract class ManageListActivity : AppCompatActivity() {
     }
 
     private fun showHelp() {
-        val items = if (enablePinnedSection) {
+        val items = if (isTileMode) {
+            listOf(
+                HelpFeatureItem(
+                    R.drawable.ic_search,
+                    getString(R.string.help_tile_search_title),
+                    getString(R.string.help_tile_search_desc)
+                ),
+                HelpFeatureItem(
+                    R.drawable.ic_help_gesture,
+                    getString(R.string.help_swipe_hide_title),
+                    getString(R.string.help_tile_swipe_desc)
+                ),
+                HelpFeatureItem(
+                    R.drawable.ic_backup,
+                    getString(R.string.help_tile_backup_title),
+                    getString(R.string.help_tile_backup_desc)
+                )
+            )
+        } else if (enablePinnedSection) {
             listOf(
                 HelpFeatureItem(
                     R.drawable.ic_help_gesture,
@@ -885,7 +903,8 @@ abstract class ManageListActivity : AppCompatActivity() {
                 )
             )
         }
-        showFeatureHelpSheet(getString(R.string.help_sheet_title_format, screenTitle), items)
+        val footerHint = if (isTileMode) getString(R.string.help_tile_footer_hint) else null
+        showFeatureHelpSheet(getString(R.string.help_sheet_title_format, screenTitle), items, footerHint)
     }
 
     // ───────── 列表手势（拖拽排序 + 左滑收纳） ─────────
@@ -949,6 +968,9 @@ abstract class ManageListActivity : AppCompatActivity() {
                         is ManageRow.Flowing -> makeMovementFlags(0, ItemTouchHelper.LEFT)
                         else -> makeMovementFlags(0, 0)
                     }
+                } else if (isTileMode) {
+                    if (pos !in visible.indices) makeMovementFlags(0, 0)
+                    else makeMovementFlags(0, ItemTouchHelper.LEFT)
                 } else {
                     if (pos !in visible.indices) makeMovementFlags(0, 0)
                     else makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT)
@@ -960,6 +982,7 @@ abstract class ManageListActivity : AppCompatActivity() {
                 current: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
+                if (isTileMode) return false
                 val toPos = target.bindingAdapterPosition
                 val toRow = adapter.getItem(toPos)
                 return if (enablePinnedSection) {

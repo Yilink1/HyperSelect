@@ -32,10 +32,20 @@
         android:orientation="vertical" />
 
     <TextView
+        android:id="@+id/tvHelpFooterHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:textColor="@color/hyper_text_secondary"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <TextView
         android:id="@+id/btnHelpConfirm"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="18dp"
         android:layout_marginHorizontal="10dp"
         android:background="@drawable/bg_intro_btn"
         android:clickable="true"

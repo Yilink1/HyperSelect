@@ -90,6 +90,12 @@
     <string name="help_restore_desc">Switch to \"Hidden\" tab and tap + to restore</string>
     <string name="help_immediate_title">Instant effect</string>
     <string name="help_immediate_desc">Changes sync in real time; undo supported via bottom bar</string>
+    <string name="help_tile_search_title">Search &amp; Add</string>
+    <string name="help_tile_search_desc">Search for tiles and append them to Control Center</string>
+    <string name="help_tile_swipe_desc">Hide unwanted tiles to keep your Control Center tidy</string>
+    <string name="help_tile_backup_title">Backup &amp; Restore</string>
+    <string name="help_tile_backup_desc">Tap the icon to manage snapshots, import/export, and restore anytime</string>
+    <string name="help_tile_footer_hint">* Reorder tiles in the Control Center edit panel</string>
 
     <!-- Generic Help Dialog -->
     <string name="dialog_help_title">Instructions</string>

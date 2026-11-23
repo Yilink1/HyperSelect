@@ -226,6 +226,8 @@ class ManageAdapter(
                 bindTileAction(itemHolder, item)
                 if (isTileMode && onItemClick != null) {
                     itemHolder.itemView.setOnClickListener { onItemClick.invoke(item) }
+                } else {
+                    itemHolder.itemView.setOnClickListener(null)
                 }
 
                 itemHolder.ivDragHandle.setOnTouchListener { _, event ->
@@ -234,7 +236,6 @@ class ManageAdapter(
                     }
                     false
                 }
-                itemHolder.itemView.setOnClickListener(null)
             }
 
             is ManageRow.Hidden -> {

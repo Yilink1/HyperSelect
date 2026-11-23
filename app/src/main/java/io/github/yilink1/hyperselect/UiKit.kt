@@ -65,7 +65,7 @@ internal data class HelpFeatureItem(
 )
 
 /** 底部圆角说明面板（图文卡片式）。 */
-internal fun Activity.showFeatureHelpSheet(title: String, items: List<HelpFeatureItem>) {
+internal fun Activity.showFeatureHelpSheet(title: String, items: List<HelpFeatureItem>, footerHint: String? = null) {
     val dialogView = layoutInflater.inflate(R.layout.dialog_feature_help, null)
     val dialog = AlertDialog.Builder(this).setView(dialogView).create()
 
@@ -75,10 +75,23 @@ internal fun Activity.showFeatureHelpSheet(title: String, items: List<HelpFeatur
 
     items.forEach { item ->
         val row = layoutInflater.inflate(R.layout.item_dialog_help_row, container, false)
-        row.findViewById<ImageView>(R.id.ivHelpIcon).setImageResource(item.iconRes)
+        val accent = ContextCompat.getColor(this, R.color.hyper_accent)
+        row.findViewById<ImageView>(R.id.ivHelpIcon).apply {
+            setImageResource(item.iconRes)
+            setColorFilter(accent)
+        }
         row.findViewById<TextView>(R.id.tvHelpItemTitle).text = item.title
         row.findViewById<TextView>(R.id.tvHelpItemSub).text = item.subtitle
         container?.addView(row)
+    }
+
+    dialogView.findViewById<TextView>(R.id.tvHelpFooterHint)?.apply {
+        if (footerHint != null) {
+            text = footerHint
+            visibility = View.VISIBLE
+        } else {
+            visibility = View.GONE
+        }
     }
 
     dialogView.findViewById<View>(R.id.btnHelpConfirm).setOnClickListener { dialog.dismiss() }
