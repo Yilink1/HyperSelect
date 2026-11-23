@@ -3,7 +3,21 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+    <!-- 3 Outer Arcs -->
+    <path
+        android:strokeColor="@android:color/white"
+        android:strokeWidth="1.6"
+        android:strokeLineCap="round"
+        android:pathData="M15.63,4.21 A8.6,8.6 0 0,1 20.57,12.75 M16.93,19.04 A8.6,8.6 0 0,1 7.07,19.04 M3.43,12.75 A8.6,8.6 0 0,1 8.37,4.21" />
+    <!-- 3 Inner Arcs -->
+    <path
+        android:strokeColor="@android:color/white"
+        android:strokeWidth="1.6"
+        android:strokeLineCap="round"
+        android:pathData="M14.75,8.07 A4.8,4.8 0 0,1 16.78,11.58 M14.03,16.35 A4.8,4.8 0 0,1 9.97,16.35 M7.22,11.58 A4.8,4.8 0 0,1 9.25,8.07" />
+    <!-- 3 Hollow Hexagonal Nodes -->
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M12,8c-2.21,0 -4,1.79 -4,4s1.79,4 4,4 4,-1.79 4,-4 -1.79,-4 -4,-4zM5,15H3v4c0,1.1 0.9,2 2,2h4v-2H5v-4zM5,5h4V3H5C3.9,3 3,3.9 3,5v4h2V5zM19,3h-4v2h4v4h2V5c0,-1.1 -0.9,-2 -2,-2zM19,19h-4v2h4c1.1,0 2,-0.9 2,-2v-4h-2v4z" />
+        android:fillType="evenOdd"
+        android:pathData="M13.91,7.30 L12.00,8.40 L10.09,7.30 L10.09,5.10 L12.00,4.00 L13.91,5.10 Z M12.95,5.65 L12.00,5.10 L11.05,5.65 L11.05,6.75 L12.00,7.30 L12.95,6.75 Z M18.93,16.00 L17.02,17.10 L15.12,16.00 L15.12,13.80 L17.02,12.70 L18.93,13.80 Z M17.98,14.35 L17.02,13.80 L16.07,14.35 L16.07,15.45 L17.02,16.00 L17.98,15.45 Z M8.88,16.00 L6.98,17.10 L5.07,16.00 L5.07,13.80 L6.98,12.70 L8.88,13.80 Z M7.93,14.35 L6.98,13.80 L6.02,14.35 L6.02,15.45 L6.98,16.00 L7.93,15.45 Z" />
 </vector>

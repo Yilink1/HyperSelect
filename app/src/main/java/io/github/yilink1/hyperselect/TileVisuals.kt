@@ -135,7 +135,7 @@ object TileVisuals {
         if (icon != null) {
             val d = (icon.constantState?.newDrawable(context.resources) ?: icon).mutate()
             if (entry.monochrome) d.setTint(fg)
-            val pad = (size * if (entry.monochrome) 0.3f else 0.24f).toInt()
+            val pad = (size * if (entry.monochrome) 0.25f else 0.20f).toInt()
             circle.addView(ImageView(context).apply {
                 setImageDrawable(d)
                 setPadding(pad, pad, pad, pad)
