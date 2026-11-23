@@ -10,9 +10,7 @@ data class TileBackupItem(
     val id: String = UUID.randomUUID().toString(),
     var name: String,
     val timestamp: Long = System.currentTimeMillis(),
-    val tiles: String,
-    val count: Int,
-    val previewLabels: List<String>
+    val tiles: String
 ) {
     fun toJson(): JSONObject {
         val obj = JSONObject()
@@ -20,29 +18,16 @@ data class TileBackupItem(
         obj.put("name", name)
         obj.put("timestamp", timestamp)
         obj.put("tiles", tiles)
-        obj.put("count", count)
-        val arr = JSONArray()
-        previewLabels.forEach { arr.put(it) }
-        obj.put("previewLabels", arr)
         return obj
     }
 
     companion object {
         fun fromJson(obj: JSONObject): TileBackupItem {
-            val previewList = ArrayList<String>()
-            val arr = obj.optJSONArray("previewLabels")
-            if (arr != null) {
-                for (i in 0 until arr.length()) {
-                    previewList.add(arr.optString(i))
-                }
-            }
             return TileBackupItem(
                 id = obj.optString("id", UUID.randomUUID().toString()),
                 name = obj.optString("name", "未命名快照"),
                 timestamp = obj.optLong("timestamp", System.currentTimeMillis()),
-                tiles = obj.optString("tiles", ""),
-                count = obj.optInt("count", 0),
-                previewLabels = previewList
+                tiles = obj.optString("tiles", "")
             )
         }
     }
@@ -143,5 +128,67 @@ object TileBackupStore {
             }
         }
         return labels
+    }
+
+    const val BACKUP_TYPE_TILES = "hyperselect_tile_backups"
+    const val CURRENT_VERSION = 1
+
+    fun exportToJson(items: List<TileBackupItem>): String {
+        val root = JSONObject()
+        root.put("type", BACKUP_TYPE_TILES)
+        root.put("version", CURRENT_VERSION)
+        root.put("timestamp", System.currentTimeMillis())
+        val arr = JSONArray()
+        items.forEach { arr.put(it.toJson()) }
+        root.put("items", arr)
+        return root.toString(2)
+    }
+
+    fun importFromJson(jsonStr: String): List<TileBackupItem>? {
+        return runCatching {
+            val trimmed = jsonStr.trim()
+            val list = mutableListOf<TileBackupItem>()
+            if (trimmed.startsWith("{")) {
+                val root = JSONObject(trimmed)
+                val arr = root.optJSONArray("items")
+                if (arr != null) {
+                    for (i in 0 until arr.length()) {
+                        list.add(TileBackupItem.fromJson(arr.getJSONObject(i)))
+                    }
+                }
+            } else if (trimmed.startsWith("[")) {
+                val arr = JSONArray(trimmed)
+                for (i in 0 until arr.length()) {
+                    list.add(TileBackupItem.fromJson(arr.getJSONObject(i)))
+                }
+            }
+            if (list.isEmpty()) null else list
+        }.getOrNull()
+    }
+
+    fun mergeBackups(context: Context, imported: List<TileBackupItem>): Int {
+        val current = loadBackups(context)
+        val existingTiles = current.map { it.tiles.trim() }.toMutableSet()
+        val existingNames = current.map { it.name.trim() }.toMutableSet()
+        var addedCount = 0
+        for (item in imported) {
+            val trimmedTiles = item.tiles.trim()
+            if (trimmedTiles.isEmpty() || trimmedTiles in existingTiles) {
+                // 内容完全一致或为空,直接去重跳过
+                continue
+            }
+            var newName = item.name.ifBlank { "导入快照" }
+            if (newName in existingNames) {
+                newName = "$newName (导入)"
+            }
+            existingNames.add(newName)
+            existingTiles.add(trimmedTiles)
+            current.add(0, item.copy(id = UUID.randomUUID().toString(), name = newName))
+            addedCount++
+        }
+        if (addedCount > 0) {
+            saveBackups(context, current)
+        }
+        return addedCount
     }
 }

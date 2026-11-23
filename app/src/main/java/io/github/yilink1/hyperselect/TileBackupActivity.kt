@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +20,51 @@ class TileBackupActivity : AppCompatActivity() {
     private lateinit var adapter: TileBackupAdapter
     private var currentTiles: String = ""
 
+
+    private val exportFileLauncher = registerForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri != null) {
+            val backups = TileBackupStore.loadBackups(this)
+            val json = TileBackupStore.exportToJson(backups)
+            val success = runCatching {
+                contentResolver.openOutputStream(uri)?.use { os ->
+                    os.write(json.toByteArray(Charsets.UTF_8))
+                }
+                true
+            }.getOrDefault(false)
+            if (success) {
+                Toast.makeText(this, R.string.toast_export_success, Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, R.string.toast_export_failed, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private val importFileLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            val json = runCatching {
+                contentResolver.openInputStream(uri)?.use { inputStream ->
+                    inputStream.bufferedReader(Charsets.UTF_8).readText()
+                }
+            }.getOrNull()
+            val imported = json?.let { TileBackupStore.importFromJson(it) }
+            if (imported.isNullOrEmpty()) {
+                Toast.makeText(this, R.string.toast_import_invalid, Toast.LENGTH_SHORT).show()
+            } else {
+                val count = TileBackupStore.mergeBackups(this, imported)
+                if (count > 0) {
+                    refresh()
+                    Toast.makeText(this, getString(R.string.toast_import_success, count), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, R.string.toast_import_all_exists, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tile_backup)
@@ -27,7 +74,14 @@ class TileBackupActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.btnMore).setOnClickListener { v ->
             PopupMenu(this, v).apply {
                 menu.add(0, 1, 0, R.string.action_import)
-                setOnMenuItemClickListener { showImportDialog(); true }
+                menu.add(0, 2, 1, R.string.action_export)
+                setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        1 -> importFileLauncher.launch(arrayOf("application/json", "text/*", "*/*"))
+                        2 -> exportAllSnapshots()
+                    }
+                    true
+                }
             }.show()
         }
 
@@ -81,29 +135,25 @@ class TileBackupActivity : AppCompatActivity() {
         prefix + SimpleDateFormat("MM-dd HH:mm", Locale.getDefault()).format(Date())
 
     private fun showSaveDialog() {
-        val fallback = defaultName("布局快照 ")
+        val fallback = defaultName("快照 ")
         TileBackupActions.inputDialog(this, R.string.dialog_save_snapshot_title, fallback) { input ->
             saveSnapshot(input.ifEmpty { fallback }, currentTiles)
         }
     }
 
-    private fun showImportDialog() {
-        TileBackupActions.inputDialog(
-            this, R.string.dialog_import_snapshot_title, "",
-            hint = R.string.dialog_import_snapshot_hint, multiLine = true, positive = R.string.action_import
-        ) { input ->
-            if (input.isEmpty()) {
-                Toast.makeText(this, R.string.toast_import_empty, Toast.LENGTH_SHORT).show()
-            } else {
-                saveSnapshot(defaultName("导入快照 "), input)
-            }
+    private fun exportAllSnapshots() {
+        val backups = TileBackupStore.loadBackups(this)
+        if (backups.isEmpty()) {
+            Toast.makeText(this, R.string.toast_export_empty, Toast.LENGTH_SHORT).show()
+            return
         }
+        val dateStr = SimpleDateFormat("yyyyMMdd_HHmm", Locale.getDefault()).format(Date())
+        exportFileLauncher.launch("HyperSelect_Tiles_$dateStr.json")
     }
 
     private fun saveSnapshot(name: String, tiles: String) {
-        val labels = TileBackupStore.parsePreviewLabels(this, tiles)
         TileBackupStore.addBackup(this, TileBackupItem(
-            name = name, tiles = tiles, count = labels.size, previewLabels = labels
+            name = name, tiles = tiles
         ))
         refresh()
         Toast.makeText(this, R.string.toast_snapshot_saved, Toast.LENGTH_SHORT).show()
