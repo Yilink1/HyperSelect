@@ -29,7 +29,7 @@
     <string name="title_open_with">打开方式</string>
     <string name="desc_open_with">文件与链接的解析弹窗</string>
     <string name="title_tile_manage">磁贴管理</string>
-    <string name="desc_tile_manage">快捷开关搜索、状态查看与收纳</string>
+    <string name="desc_tile_manage">磁贴搜索与布局备份</string>
     <string name="format_tile_position">%1$s  · 已添加 · 第 %2$d 位</string>
     <string name="empty_no_apps_available_tile">暂无支持快捷开关的应用</string>
     <string name="tile_status_added">已添加</string>

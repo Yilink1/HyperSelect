@@ -3,7 +3,36 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+
+    <!-- 左上磁贴 -->
     <path
-        android:fillColor="@color/hyper_text_primary"
-        android:pathData="M4,4h6v6H4V4z M14,4h6v6h-6V4z M4,14h6v6H4V14z M14,14h6v6h-6V14z" />
+        android:pathData="M5.40,4.00 L8.40,4.00 A1.40,1.40 0 0,1 9.80,5.40 L9.80,8.40 A1.40,1.40 0 0,1 8.40,9.80 L5.40,9.80 A1.40,1.40 0 0,1 4.00,8.40 L4.00,5.40 A1.40,1.40 0 0,1 5.40,4.00 Z"
+        android:strokeWidth="2"
+        android:strokeColor="@color/hyper_text_primary"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- 右上磁贴 -->
+    <path
+        android:pathData="M15.60,4.00 L18.60,4.00 A1.40,1.40 0 0,1 20.00,5.40 L20.00,8.40 A1.40,1.40 0 0,1 18.60,9.80 L15.60,9.80 A1.40,1.40 0 0,1 14.20,8.40 L14.20,5.40 A1.40,1.40 0 0,1 15.60,4.00 Z"
+        android:strokeWidth="2"
+        android:strokeColor="@color/hyper_text_primary"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- 左下磁贴 -->
+    <path
+        android:pathData="M5.40,14.20 L8.40,14.20 A1.40,1.40 0 0,1 9.80,15.60 L9.80,18.60 A1.40,1.40 0 0,1 8.40,20.00 L5.40,20.00 A1.40,1.40 0 0,1 4.00,18.60 L4.00,15.60 A1.40,1.40 0 0,1 5.40,14.20 Z"
+        android:strokeWidth="2"
+        android:strokeColor="@color/hyper_text_primary"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- 右下加号（管理/编辑） -->
+    <path
+        android:pathData="M14.3,17.1 L19.9,17.1 M17.1,14.3 L17.1,19.9"
+        android:strokeWidth="2"
+        android:strokeColor="@color/hyper_text_primary"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
 </vector>
