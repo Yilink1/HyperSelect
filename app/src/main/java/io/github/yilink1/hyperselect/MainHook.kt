@@ -3,6 +3,7 @@ package io.github.yilink1.hyperselect
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
+import android.content.ContentProvider
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
@@ -65,6 +66,7 @@ class MainHook : XposedModule() {
     private val refreshLock = Any()
     private var refreshAt = Long.MAX_VALUE
     private var retryDelayMs = 1_000L
+    private var settingsProviderHooked = false
     private val refreshTask = Runnable {
         synchronized(refreshLock) { refreshAt = Long.MAX_VALUE }
         if (!servicesReady) {
@@ -116,7 +118,6 @@ class MainHook : XposedModule() {
         var getPackageHooked = false
         var getApplicationHooked = false
         var queryServicesHooked = false
-        var settingsProviderHooked = false
 
         // PHASE_THIRD_PARTY_APPS_CAN_START: application providers may now be started.
         runCatching {
@@ -153,9 +154,6 @@ class MainHook : XposedModule() {
 
             // 4. Hook queryIntentServices -> Filter hidden QS Tiles for SystemUI
             queryServicesHooked = hookQueryIntentServices(ipmBaseClass, classLoader)
-
-            // 5. Hook SettingsProvider -> Rootless bypass for sysui_qs_tiles
-            settingsProviderHooked = hookSettingsProvider(classLoader)
         }.onFailure {
             log(Log.ERROR, TAG, "Failed to hook system_server IPackageManagerBase on Android $sdkInt:\n${Log.getStackTraceString(it)}")
         }
@@ -164,7 +162,7 @@ class MainHook : XposedModule() {
         log(
             Log.INFO,
             TAG,
-            "HyperSelect initialized on Android $sdkInt | Hooks: [resolveIntent=$resolveHooked, queryIntent=$queryHooked, queryOptions=$queryOptionsHooked, queryServices=$queryServicesHooked, settingsProvider=$settingsProviderHooked, getPackageInfo=$getPackageHooked, getApplicationInfo=$getApplicationHooked]"
+            "HyperSelect initialized on Android $sdkInt | Hooks: [resolveIntent=$resolveHooked, queryIntent=$queryHooked, queryOptions=$queryOptionsHooked, queryServices=$queryServicesHooked, getPackageInfo=$getPackageHooked, getApplicationInfo=$getApplicationHooked]"
         )
     }
 
@@ -183,6 +181,9 @@ class MainHook : XposedModule() {
         val token = Binder.clearCallingIdentity()
         return try {
             val context = getSystemContext() ?: return false
+            if (!settingsProviderHooked) {
+                settingsProviderHooked = hookSettingsProvider(context)
+            }
             if (!observerRegistered) {
                 context.contentResolver.registerContentObserver(
                     ConfigProvider.CONTENT_URI, true,
@@ -651,27 +652,33 @@ class MainHook : XposedModule() {
         return sliceConstructor.newInstance(filtered)
     }
 
-    private fun hookSettingsProvider(classLoader: ClassLoader): Boolean {
+    private fun hookSettingsProvider(context: Context): Boolean {
         return runCatching {
-            val spClass = Class.forName("com.android.providers.settings.SettingsProvider", false, classLoader)
-            spClass.declaredMethods.filter { it.name == "call" }.forEach { method ->
-                hook(method).intercept { chain ->
-                    val methodArg = chain.args.getOrNull(0) as? String
-                    val nameArg = chain.args.getOrNull(1) as? String
-                    if ((methodArg == "PUT_secure" || methodArg == "GET_secure") && nameArg == ConfigProvider.SETTING_QS_TILES) {
-                        val callingUid = Binder.getCallingUid()
-                        if (isModuleCaller(callingUid, getSystemContext())) {
-                            val token = Binder.clearCallingIdentity()
-                            try {
-                                return@intercept chain.proceed()
-                            } finally {
-                                Binder.restoreCallingIdentity(token)
-                            }
-                        }
+            // SettingsProvider runs in system_server, but its class comes from its own APK.
+            val providerContext = context.createPackageContext(
+                "com.android.providers.settings", Context.CONTEXT_INCLUDE_CODE
+            )
+            val providerClass = providerContext.classLoader.loadClass("com.android.providers.settings.SettingsProvider")
+            val call = providerClass.getDeclaredMethod(
+                "call", String::class.java, String::class.java, Bundle::class.java
+            )
+            hook(call).intercept { chain ->
+                val method = chain.args[0]
+                val name = chain.args[1]
+                if ((method == "PUT_secure" || method == "GET_secure") &&
+                    name == ConfigProvider.SETTING_QS_TILES && isModuleCaller(Binder.getCallingUid(), context)
+                ) {
+                    val provider = chain.thisObject as ContentProvider
+                    val identity = provider.clearCallingIdentity()
+                    try {
+                        return@intercept chain.proceed()
+                    } finally {
+                        provider.restoreCallingIdentity(identity)
                     }
-                    chain.proceed()
                 }
+                chain.proceed()
             }
+            log(Log.INFO, TAG, "SettingsProvider hook installed for sysui_qs_tiles")
             true
         }.onFailure {
             log(Log.WARN, TAG, "Failed to hook SettingsProvider", it)
