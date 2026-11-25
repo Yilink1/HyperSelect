@@ -41,7 +41,7 @@ class TileBackupDetailActivity : AppCompatActivity() {
     }
 
     private fun bind() {
-        val current = TileBackupActions.readSystemTiles(this)
+        val current = TileBackupActions.readVerifiedCurrentTiles(this)
         val displayCurrent = TileBackupActions.readCurrentTiles(this)
         val snapshot = item
         val tiles = snapshot?.tiles ?: displayCurrent.orEmpty()

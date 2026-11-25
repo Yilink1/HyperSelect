@@ -31,7 +31,7 @@ class ConfigProvider : ContentProvider() {
                 if (Binder.getCallingUid() == Process.SYSTEM_UID) {
                     RuleStore.saveSystemReadReceipt(ctx)
                     extras?.getString(EXTRA_QS_TILES)?.takeIf { it.isNotBlank() }
-                        ?.let { RuleStore.saveQsTiles(ctx, it) }
+                        ?.let { RuleStore.saveSystemQsTiles(ctx, it) }
                 }
                 val config = RuleStore.load(ctx)
                 Bundle().apply {

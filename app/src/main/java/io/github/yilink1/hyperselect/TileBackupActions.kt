@@ -17,7 +17,11 @@ object TileBackupActions {
         Settings.Secure.getString(context.contentResolver, ConfigProvider.SETTING_QS_TILES)
     }.getOrNull()?.takeIf { it.isNotBlank() }
 
-    /** Cached copy is for display only. Mutating operations must use readSystemTiles. */
+    /** Prefer a direct read, then a cache confirmed by system_server during this boot. */
+    fun readVerifiedCurrentTiles(context: Context): String? =
+        readSystemTiles(context) ?: RuleStore.loadQsTilesSyncedThisBoot(context)
+
+    /** Older cached copies may be displayed, but must not be used for mutations. */
     fun readCurrentTiles(context: Context): String? =
         readSystemTiles(context) ?: RuleStore.loadQsTiles(context).takeIf { it.isNotBlank() }
 

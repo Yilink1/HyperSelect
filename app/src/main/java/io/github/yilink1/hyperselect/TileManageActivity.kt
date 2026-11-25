@@ -13,6 +13,8 @@ import java.util.Locale
 /** 磁贴管理：搜索、一键添加至控制中心与收纳快捷设置磁贴。 */
 class TileManageActivity : ManageListActivity() {
 
+    private enum class TileUpdateResult { SUCCESS, LAYOUT_UNAVAILABLE, WRITE_FAILED }
+
     override val screenTitle: String by lazy { getString(R.string.title_tile_manage) }
     override val emptyText: String by lazy { getString(R.string.empty_no_apps_available_tile) }
     override val sortByLabelWhenNoOrder = true
@@ -28,7 +30,7 @@ class TileManageActivity : ManageListActivity() {
 
         val rawTiles = runCatching {
             Settings.Secure.getString(contentResolver, ConfigProvider.SETTING_QS_TILES)
-        }.getOrNull()?.takeIf { it.isNotBlank() } ?: RuleStore.loadQsTiles(this)
+        }.getOrNull()?.takeIf { it.isNotBlank() } ?: RuleStore.loadQsTilesSyncedThisBoot(this).orEmpty()
 
         activeTilesSet.clear()
         val activeTiles = rawTiles.split(",").map { it.trim() }.filter { it.isNotEmpty() }
@@ -63,19 +65,22 @@ class TileManageActivity : ManageListActivity() {
     override fun onToggleTileQs(item: TextActionItem) {
         val willAdd = !item.isTileAdded
         val spec = "custom(${item.componentName})"
-        val success = updateQsTiles(spec, willAdd)
-        if (success) {
-            item.isTileAdded = willAdd
-            if (willAdd) {
-                activeTilesSet.add(item.componentName)
-            } else {
-                activeTilesSet.remove(item.componentName)
+        when (updateQsTiles(spec, willAdd)) {
+            TileUpdateResult.SUCCESS -> {
+                item.isTileAdded = willAdd
+                if (willAdd) {
+                    activeTilesSet.add(item.componentName)
+                } else {
+                    activeTilesSet.remove(item.componentName)
+                }
+                adapter.notifyDataSetChanged()
+                val msg = if (willAdd) R.string.tile_added_success else R.string.tile_removed_success
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
-            adapter.notifyDataSetChanged()
-            val msg = if (willAdd) R.string.tile_added_success else R.string.tile_removed_success
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, R.string.tile_update_failed, Toast.LENGTH_SHORT).show()
+            TileUpdateResult.LAYOUT_UNAVAILABLE ->
+                Toast.makeText(this, R.string.tile_layout_unavailable, Toast.LENGTH_SHORT).show()
+            TileUpdateResult.WRITE_FAILED ->
+                Toast.makeText(this, R.string.tile_update_failed, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -110,10 +115,12 @@ class TileManageActivity : ManageListActivity() {
             .show()
     }
 
-    private fun updateQsTiles(spec: String, add: Boolean): Boolean {
+    private fun updateQsTiles(spec: String, add: Boolean): TileUpdateResult {
         val raw = runCatching {
             Settings.Secure.getString(contentResolver, ConfigProvider.SETTING_QS_TILES)
-        }.getOrNull()?.takeIf { it.isNotBlank() } ?: return false
+        }.getOrNull()?.takeIf { it.isNotBlank() }
+            ?: RuleStore.loadQsTilesSyncedThisBoot(this)
+            ?: return TileUpdateResult.LAYOUT_UNAVAILABLE
 
         val tiles = raw.split(",").map { it.trim() }.filter { it.isNotEmpty() }.toMutableList()
         val targetInner = spec.removePrefix("custom(").removeSuffix(")")
@@ -122,14 +129,14 @@ class TileManageActivity : ManageListActivity() {
         }
 
         if (add) {
-            if (existingIndex >= 0) return true
+            if (existingIndex >= 0) return TileUpdateResult.SUCCESS
             if (tiles.lastOrNull() == "edit") {
                 tiles.add(tiles.size - 1, spec)
             } else {
                 tiles.add(spec)
             }
         } else {
-            if (existingIndex < 0) return true
+            if (existingIndex < 0) return TileUpdateResult.SUCCESS
             tiles.removeAt(existingIndex)
         }
 
@@ -137,9 +144,12 @@ class TileManageActivity : ManageListActivity() {
         val success = runCatching {
             Settings.Secure.putString(contentResolver, ConfigProvider.SETTING_QS_TILES, newTilesStr)
         }.getOrDefault(false)
-        if (success) RuleStore.saveQsTiles(this, newTilesStr)
+        if (success) {
+            RuleStore.saveQsTiles(this, newTilesStr)
+            return TileUpdateResult.SUCCESS
+        }
 
-        return success
+        return TileUpdateResult.WRITE_FAILED
     }
 
     override fun blacklistOf(config: RuleConfig): Set<String> = config.tileBlacklist

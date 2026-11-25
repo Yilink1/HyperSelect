@@ -87,7 +87,7 @@ class TileBackupActivity : AppCompatActivity() {
         }
 
         currentTiles = TileBackupActions.readCurrentTiles(this)
-        systemTilesAvailable = TileBackupActions.readSystemTiles(this) != null
+        systemTilesAvailable = TileBackupActions.readVerifiedCurrentTiles(this) != null
         adapter = TileBackupAdapter(
             currentTiles = currentTiles,
             systemTilesAvailable = systemTilesAvailable,
@@ -109,7 +109,7 @@ class TileBackupActivity : AppCompatActivity() {
 
     private fun refresh() {
         currentTiles = TileBackupActions.readCurrentTiles(this)
-        systemTilesAvailable = TileBackupActions.readSystemTiles(this) != null
+        systemTilesAvailable = TileBackupActions.readVerifiedCurrentTiles(this) != null
         adapter.update(currentTiles, systemTilesAvailable, TileBackupStore.loadBackups(this))
     }
 
@@ -139,7 +139,7 @@ class TileBackupActivity : AppCompatActivity() {
         prefix + SimpleDateFormat("MM-dd HH:mm", Locale.getDefault()).format(Date())
 
     private fun showSaveDialog() {
-        val tiles = TileBackupActions.readSystemTiles(this)
+        val tiles = TileBackupActions.readVerifiedCurrentTiles(this)
         if (tiles == null) {
             Toast.makeText(this, R.string.tile_layout_unavailable, Toast.LENGTH_SHORT).show()
             return
