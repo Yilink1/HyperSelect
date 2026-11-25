@@ -91,7 +91,7 @@
     <string name="help_immediate_title">Instant effect</string>
     <string name="help_immediate_desc">Changes sync in real time; undo supported via bottom bar</string>
     <string name="help_tile_search_title">Search &amp; Add</string>
-    <string name="help_tile_search_desc">Search for tiles and append them to Control Center</string>
+    <string name="help_tile_search_desc">Search for tiles and append them to Control Center (system tiles are not supported)</string>
     <string name="help_tile_swipe_desc">Hide unwanted tiles to keep your Control Center tidy</string>
     <string name="help_tile_backup_title">Backup &amp; Restore</string>
     <string name="help_tile_backup_desc">Tap the icon to manage snapshots, import/export, and restore anytime</string>
@@ -104,7 +104,7 @@
     <string name="help_card_immediate_desc">All changes take effect immediately</string>
 
     <!-- Setting Switches -->
-    <string name="switch_block_ai_writing_title">Block AI Options</string>
+    <string name="switch_block_ai_writing_title">Block AI Features</string>
     <string name="switch_block_ai_writing_desc">Hide AI Writing and Ask XiaoAi when holding text</string>
 
     <!-- Intro / Onboarding Guide -->

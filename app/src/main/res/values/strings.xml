@@ -125,7 +125,7 @@
     <string name="help_immediate_title">即时生效</string>
     <string name="help_immediate_desc">修改实时同步至系统，支持底部操作撤销</string>
     <string name="help_tile_search_title">搜索添加</string>
-    <string name="help_tile_search_desc">快速检索需要的磁贴，一键添加至控制中心末尾</string>
+    <string name="help_tile_search_desc">快速检索需要的磁贴，一键添加至控制中心末尾（不支持系统磁贴）</string>
     <string name="help_tile_swipe_desc">隐藏不需要的磁贴，精简控制中心可选列表</string>
     <string name="help_tile_backup_title">布局备份与还原</string>
     <string name="help_tile_backup_desc">点击图标管理快照，随时导入导出与一键还原</string>
@@ -138,7 +138,7 @@
     <string name="help_card_immediate_desc">所有调整即时生效</string>
 
     <!-- Setting Switches -->
-    <string name="switch_block_ai_writing_title">屏蔽 AI 选项</string>
+    <string name="switch_block_ai_writing_title">屏蔽 AI 功能</string>
     <string name="switch_block_ai_writing_desc">长按文本时隐藏 AI 写作与问小爱</string>
 
     <!-- Intro / Onboarding Guide -->
