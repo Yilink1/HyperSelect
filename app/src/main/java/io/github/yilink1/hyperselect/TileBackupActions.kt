@@ -13,15 +13,24 @@ import androidx.appcompat.app.AlertDialog
 /** 快照相关的通用操作,列表页和详情页共用 */
 object TileBackupActions {
 
-    fun readCurrentTiles(context: Context): String = runCatching {
+    fun readSystemTiles(context: Context): String? = runCatching {
         Settings.Secure.getString(context.contentResolver, ConfigProvider.SETTING_QS_TILES)
-    }.getOrNull()?.takeIf { it.isNotBlank() } ?: RuleStore.loadQsTiles(context)
+    }.getOrNull()?.takeIf { it.isNotBlank() }
+
+    /** Cached copy is for display only. Mutating operations must use readSystemTiles. */
+    fun readCurrentTiles(context: Context): String? =
+        readSystemTiles(context) ?: RuleStore.loadQsTiles(context).takeIf { it.isNotBlank() }
 
     fun apply(context: Context, item: TileBackupItem): Boolean {
-        RuleStore.saveQsTiles(context, item.tiles)
+        val hasTiles = item.tiles.split(',').any { it.isNotBlank() && it.trim() != "edit" }
+        if (!hasTiles) {
+            Toast.makeText(context, R.string.tile_snapshot_empty, Toast.LENGTH_SHORT).show()
+            return false
+        }
         val ok = runCatching {
             Settings.Secure.putString(context.contentResolver, ConfigProvider.SETTING_QS_TILES, item.tiles)
         }.getOrDefault(false)
+        if (ok) RuleStore.saveQsTiles(context, item.tiles)
         Toast.makeText(context, if (ok) R.string.toast_layout_applied else R.string.tile_update_failed,
             Toast.LENGTH_SHORT).show()
         return ok

@@ -41,17 +41,19 @@ class TileBackupDetailActivity : AppCompatActivity() {
     }
 
     private fun bind() {
-        val current = TileBackupActions.readCurrentTiles(this)
+        val current = TileBackupActions.readSystemTiles(this)
+        val displayCurrent = TileBackupActions.readCurrentTiles(this)
         val snapshot = item
-        val tiles = snapshot?.tiles ?: current
+        val tiles = snapshot?.tiles ?: displayCurrent.orEmpty()
         val entries = TileVisuals.entries(this, tiles)
-        val diff = snapshot?.let { TileVisuals.diff(this, it.tiles, current) }
+        val diff = snapshot?.takeIf { current != null }
+            ?.let { TileVisuals.diff(this, it.tiles, current.orEmpty()) }
 
         findViewById<TextView>(R.id.tvTitle).text = snapshot?.name ?: getString(R.string.header_current_layout)
         val count = getString(R.string.format_tile_count, entries.size)
         findViewById<TextView>(R.id.tvMeta).text = if (snapshot != null) {
             SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date(snapshot.timestamp)) + " · " + count
-        } else count
+        } else if (current == null) getString(R.string.tile_layout_cached) else count
 
         TileVisuals.fillPanel(
             findViewById<FrameLayout>(R.id.panelPreview), entries,

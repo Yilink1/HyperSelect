@@ -12,7 +12,8 @@ import java.util.Date
 import java.util.Locale
 
 class TileBackupAdapter(
-    private var currentTiles: String,
+    private var currentTiles: String?,
+    private var systemTilesAvailable: Boolean,
     private var backups: MutableList<TileBackupItem>,
     private val onOpenCurrent: () -> Unit,
     private val onOpen: (TileBackupItem) -> Unit,
@@ -26,8 +27,9 @@ class TileBackupAdapter(
 
     private val dateFormat = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
 
-    fun update(tiles: String, newBackups: MutableList<TileBackupItem>) {
+    fun update(tiles: String?, isSystemTilesAvailable: Boolean, newBackups: MutableList<TileBackupItem>) {
         currentTiles = tiles
+        systemTilesAvailable = isSystemTilesAvailable
         backups = newBackups
         notifyDataSetChanged()
     }
@@ -48,8 +50,12 @@ class TileBackupAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val ctx = holder.itemView.context
         if (holder is HeaderViewHolder) {
-            val entries = TileVisuals.entries(ctx, currentTiles)
-            holder.tvCurrentSubtitle.text = ctx.getString(R.string.format_tile_count, entries.size)
+            val entries = TileVisuals.entries(ctx, currentTiles.orEmpty())
+            holder.tvCurrentSubtitle.text = when {
+                !systemTilesAvailable && currentTiles != null -> ctx.getString(R.string.tile_layout_cached)
+                currentTiles == null -> ctx.getString(R.string.tile_layout_unavailable)
+                else -> ctx.getString(R.string.format_tile_count, entries.size)
+            }
             TileVisuals.fillPanel(holder.panelMini, entries, tileDp = 40, maxRows = 2)
             holder.cardCurrent.setOnClickListener { onOpenCurrent() }
             holder.tvEmpty.visibility = if (backups.isEmpty()) View.VISIBLE else View.GONE
@@ -57,11 +63,15 @@ class TileBackupAdapter(
             val index = position - 1
             val item = backups[index]
             val count = TileVisuals.splitSpecs(item.tiles).size
-            val diff = TileVisuals.diff(ctx, item.tiles, currentTiles)
+            val diff = currentTiles?.takeIf { systemTilesAvailable }
+                ?.let { TileVisuals.diff(ctx, item.tiles, it) }
             holder.tvTitle.text = item.name
-            holder.tvTag.visibility = if (diff.isSame) View.VISIBLE else View.GONE
-            val diffText = if (diff.isSame) ctx.getString(R.string.row_diff_same)
-            else ctx.getString(R.string.row_diff_count, diff.count)
+            holder.tvTag.visibility = if (diff?.isSame == true) View.VISIBLE else View.GONE
+            val diffText = when {
+                diff == null -> ctx.getString(R.string.tile_layout_unavailable)
+                diff.isSame -> ctx.getString(R.string.row_diff_same)
+                else -> ctx.getString(R.string.row_diff_count, diff.count)
+            }
             holder.tvSubtitle.text = listOf(
                 dateFormat.format(Date(item.timestamp)),
                 ctx.getString(R.string.format_tile_count, count),

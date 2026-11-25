@@ -113,7 +113,7 @@ class TileManageActivity : ManageListActivity() {
     private fun updateQsTiles(spec: String, add: Boolean): Boolean {
         val raw = runCatching {
             Settings.Secure.getString(contentResolver, ConfigProvider.SETTING_QS_TILES)
-        }.getOrNull()?.takeIf { it.isNotBlank() } ?: RuleStore.loadQsTiles(this)
+        }.getOrNull()?.takeIf { it.isNotBlank() } ?: return false
 
         val tiles = raw.split(",").map { it.trim() }.filter { it.isNotEmpty() }.toMutableList()
         val targetInner = spec.removePrefix("custom(").removeSuffix(")")
@@ -134,11 +134,10 @@ class TileManageActivity : ManageListActivity() {
         }
 
         val newTilesStr = tiles.joinToString(",")
-        RuleStore.saveQsTiles(this, newTilesStr)
-
         val success = runCatching {
             Settings.Secure.putString(contentResolver, ConfigProvider.SETTING_QS_TILES, newTilesStr)
         }.getOrDefault(false)
+        if (success) RuleStore.saveQsTiles(this, newTilesStr)
 
         return success
     }

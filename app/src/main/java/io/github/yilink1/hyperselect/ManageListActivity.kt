@@ -449,9 +449,10 @@ abstract class ManageListActivity : AppCompatActivity() {
         segment.visibility = if (searchOpen) View.GONE else View.VISIBLE
 
         val dragHintDone = getSharedPreferences(PREFS, MODE_PRIVATE).getBoolean(KEY_DRAG_HINT_DONE, false)
-        tvHint.visibility =
-            if (loaded && !searchOpen && tab == TAB_VISIBLE && !dragHintDone && visible.size > 1 && !enablePinnedSection) View.VISIBLE
-            else View.GONE
+        tvHint.visibility = if (
+            !isTileMode && loaded && !searchOpen && tab == TAB_VISIBLE &&
+            !dragHintDone && visible.size > 1 && !enablePinnedSection
+        ) View.VISIBLE else View.GONE
 
         if (loaded && rows.isEmpty()) {
             tvEmpty.text = when {

@@ -203,12 +203,11 @@ class MainHook : XposedModule() {
                 observerRegistered = true
             }
             val extras = Bundle().apply {
-                putString(
-                    ConfigProvider.EXTRA_QS_TILES,
-                    runCatching {
-                        Settings.Secure.getString(context.contentResolver, ConfigProvider.SETTING_QS_TILES)
-                    }.getOrNull().orEmpty()
-                )
+                runCatching {
+                    Settings.Secure.getString(context.contentResolver, ConfigProvider.SETTING_QS_TILES)
+                }.getOrNull()?.takeIf { it.isNotBlank() }?.let {
+                    putString(ConfigProvider.EXTRA_QS_TILES, it)
+                }
             }
             val bundle = context.contentResolver.call(
                 ConfigProvider.CONTENT_URI,
