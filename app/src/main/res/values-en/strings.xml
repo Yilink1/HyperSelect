@@ -175,7 +175,10 @@
     <!-- Tile Layout Backup -->
     <string name="title_tile_backup">Layout Backup</string>
     <string name="tile_layout_unavailable">Unable to read the system tile layout. Check module status and try again.</string>
-    <string name="tile_layout_cached">Showing the last cached layout. The current system layout could not be confirmed.</string>
+    <string name="tile_layout_cached">Cached preview</string>
+    <string name="tile_layout_status_unavailable">Unavailable</string>
+    <string name="tile_layout_missing">No tile layout is saved. Edit and save it in Control Center, or restore a snapshot.</string>
+    <string name="tile_restore_without_preview">The current layout cannot be previewed. Replace it with this snapshot?</string>
     <string name="tile_snapshot_empty">This snapshot contains no tiles to restore.</string>
     <string name="header_current_layout">Current Layout</string>
     <string name="desc_current_tiles">%1$d tiles currently enabled</string>

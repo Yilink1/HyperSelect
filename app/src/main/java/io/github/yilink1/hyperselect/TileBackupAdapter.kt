@@ -53,7 +53,7 @@ class TileBackupAdapter(
             val entries = TileVisuals.entries(ctx, currentTiles.orEmpty())
             holder.tvCurrentSubtitle.text = when {
                 !systemTilesAvailable && currentTiles != null -> ctx.getString(R.string.tile_layout_cached)
-                currentTiles == null -> ctx.getString(R.string.tile_layout_unavailable)
+                currentTiles == null -> ctx.getString(R.string.tile_layout_status_unavailable)
                 else -> ctx.getString(R.string.format_tile_count, entries.size)
             }
             TileVisuals.fillPanel(holder.panelMini, entries, tileDp = 40, maxRows = 2)
@@ -68,11 +68,11 @@ class TileBackupAdapter(
             holder.tvTitle.text = item.name
             holder.tvTag.visibility = if (diff?.isSame == true) View.VISIBLE else View.GONE
             val diffText = when {
-                diff == null -> ctx.getString(R.string.tile_layout_unavailable)
+                diff == null -> null
                 diff.isSame -> ctx.getString(R.string.row_diff_same)
                 else -> ctx.getString(R.string.row_diff_count, diff.count)
             }
-            holder.tvSubtitle.text = listOf(
+            holder.tvSubtitle.text = listOfNotNull(
                 dateFormat.format(Date(item.timestamp)),
                 ctx.getString(R.string.format_tile_count, count),
                 diffText

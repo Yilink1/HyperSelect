@@ -1,19 +1,14 @@
 package io.github.yilink1.hyperselect
 
-import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
-import android.os.Bundle
-import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import java.util.Locale
 
 /** 磁贴管理：搜索、一键添加至控制中心与收纳快捷设置磁贴。 */
 class TileManageActivity : ManageListActivity() {
-
-    private enum class TileUpdateResult { SUCCESS, LAYOUT_UNAVAILABLE, WRITE_FAILED }
 
     override val screenTitle: String by lazy { getString(R.string.title_tile_manage) }
     override val emptyText: String by lazy { getString(R.string.empty_no_apps_available_tile) }
@@ -28,9 +23,7 @@ class TileManageActivity : ManageListActivity() {
         val intent = Intent("android.service.quicksettings.action.QS_TILE")
         val services = pm.queryIntentServices(intent, PackageManager.MATCH_ALL)
 
-        val rawTiles = runCatching {
-            Settings.Secure.getString(contentResolver, ConfigProvider.SETTING_QS_TILES)
-        }.getOrNull()?.takeIf { it.isNotBlank() } ?: RuleStore.loadQsTilesSyncedThisBoot(this).orEmpty()
+        val rawTiles = TileBackupActions.readCurrentTiles(this).orEmpty()
 
         activeTilesSet.clear()
         val activeTiles = rawTiles.split(",").map { it.trim() }.filter { it.isNotEmpty() }
@@ -64,9 +57,9 @@ class TileManageActivity : ManageListActivity() {
 
     override fun onToggleTileQs(item: TextActionItem) {
         val willAdd = !item.isTileAdded
-        val spec = "custom(${item.componentName})"
-        when (updateQsTiles(spec, willAdd)) {
-            TileUpdateResult.SUCCESS -> {
+        val method = if (willAdd) TileSettings.ADD else TileSettings.REMOVE
+        when (TileSettings.update(this, method, item.componentName)) {
+            TileSettings.UpdateResult.SUCCESS -> {
                 item.isTileAdded = willAdd
                 if (willAdd) {
                     activeTilesSet.add(item.componentName)
@@ -77,9 +70,11 @@ class TileManageActivity : ManageListActivity() {
                 val msg = if (willAdd) R.string.tile_added_success else R.string.tile_removed_success
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
-            TileUpdateResult.LAYOUT_UNAVAILABLE ->
+            TileSettings.UpdateResult.LAYOUT_UNAVAILABLE ->
                 Toast.makeText(this, R.string.tile_layout_unavailable, Toast.LENGTH_SHORT).show()
-            TileUpdateResult.WRITE_FAILED ->
+            TileSettings.UpdateResult.MISSING_LAYOUT ->
+                Toast.makeText(this, R.string.tile_layout_missing, Toast.LENGTH_LONG).show()
+            TileSettings.UpdateResult.WRITE_FAILED ->
                 Toast.makeText(this, R.string.tile_update_failed, Toast.LENGTH_SHORT).show()
         }
     }
@@ -115,43 +110,6 @@ class TileManageActivity : ManageListActivity() {
             .show()
     }
 
-    private fun updateQsTiles(spec: String, add: Boolean): TileUpdateResult {
-        val raw = runCatching {
-            Settings.Secure.getString(contentResolver, ConfigProvider.SETTING_QS_TILES)
-        }.getOrNull()?.takeIf { it.isNotBlank() }
-            ?: RuleStore.loadQsTilesSyncedThisBoot(this)
-            ?: return TileUpdateResult.LAYOUT_UNAVAILABLE
-
-        val tiles = raw.split(",").map { it.trim() }.filter { it.isNotEmpty() }.toMutableList()
-        val targetInner = spec.removePrefix("custom(").removeSuffix(")")
-        val existingIndex = tiles.indexOfFirst {
-            it == spec || it.removePrefix("custom(").removeSuffix(")") == targetInner
-        }
-
-        if (add) {
-            if (existingIndex >= 0) return TileUpdateResult.SUCCESS
-            if (tiles.lastOrNull() == "edit") {
-                tiles.add(tiles.size - 1, spec)
-            } else {
-                tiles.add(spec)
-            }
-        } else {
-            if (existingIndex < 0) return TileUpdateResult.SUCCESS
-            tiles.removeAt(existingIndex)
-        }
-
-        val newTilesStr = tiles.joinToString(",")
-        val success = runCatching {
-            Settings.Secure.putString(contentResolver, ConfigProvider.SETTING_QS_TILES, newTilesStr)
-        }.getOrDefault(false)
-        if (success) {
-            RuleStore.saveQsTiles(this, newTilesStr)
-            return TileUpdateResult.SUCCESS
-        }
-
-        return TileUpdateResult.WRITE_FAILED
-    }
-
     override fun blacklistOf(config: RuleConfig): Set<String> = config.tileBlacklist
     override fun orderOf(config: RuleConfig): List<String> = emptyList()
 
@@ -160,10 +118,12 @@ class TileManageActivity : ManageListActivity() {
 
     override fun onItemStashed(item: TextActionItem) {
         if (item.isTileAdded) {
-            val spec = "custom(${item.componentName})"
-            updateQsTiles(spec, add = false)
-            item.isTileAdded = false
-            activeTilesSet.remove(item.componentName)
+            if (TileSettings.update(this, TileSettings.REMOVE, item.componentName) ==
+                TileSettings.UpdateResult.SUCCESS
+            ) {
+                item.isTileAdded = false
+                activeTilesSet.remove(item.componentName)
+            }
         }
     }
 

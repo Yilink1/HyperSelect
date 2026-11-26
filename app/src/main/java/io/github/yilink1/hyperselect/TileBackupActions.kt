@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.provider.Settings
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -13,31 +12,27 @@ import androidx.appcompat.app.AlertDialog
 /** 快照相关的通用操作,列表页和详情页共用 */
 object TileBackupActions {
 
-    fun readSystemTiles(context: Context): String? = runCatching {
-        Settings.Secure.getString(context.contentResolver, ConfigProvider.SETTING_QS_TILES)
-    }.getOrNull()?.takeIf { it.isNotBlank() }
-
-    /** Prefer a direct read, then a cache confirmed by system_server during this boot. */
     fun readVerifiedCurrentTiles(context: Context): String? =
-        readSystemTiles(context) ?: RuleStore.loadQsTilesSyncedThisBoot(context)
+        TileSettings.read(context)
 
     /** Older cached copies may be displayed, but must not be used for mutations. */
     fun readCurrentTiles(context: Context): String? =
-        readSystemTiles(context) ?: RuleStore.loadQsTiles(context).takeIf { it.isNotBlank() }
+        readVerifiedCurrentTiles(context) ?: RuleStore.loadQsTiles(context)
 
     fun apply(context: Context, item: TileBackupItem): Boolean {
-        val hasTiles = item.tiles.split(',').any { it.isNotBlank() && it.trim() != "edit" }
-        if (!hasTiles) {
+        if (!TileSettings.hasTiles(item.tiles)) {
             Toast.makeText(context, R.string.tile_snapshot_empty, Toast.LENGTH_SHORT).show()
             return false
         }
-        val ok = runCatching {
-            Settings.Secure.putString(context.contentResolver, ConfigProvider.SETTING_QS_TILES, item.tiles)
-        }.getOrDefault(false)
-        if (ok) RuleStore.saveQsTiles(context, item.tiles)
-        Toast.makeText(context, if (ok) R.string.toast_layout_applied else R.string.tile_update_failed,
-            Toast.LENGTH_SHORT).show()
-        return ok
+        val result = TileSettings.update(context, TileSettings.RESTORE, item.tiles)
+        val message = when (result) {
+            TileSettings.UpdateResult.SUCCESS -> R.string.toast_layout_applied
+            TileSettings.UpdateResult.LAYOUT_UNAVAILABLE -> R.string.tile_layout_unavailable
+            TileSettings.UpdateResult.MISSING_LAYOUT -> R.string.tile_layout_missing
+            TileSettings.UpdateResult.WRITE_FAILED -> R.string.tile_update_failed
+        }
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        return result == TileSettings.UpdateResult.SUCCESS
     }
 
     fun copy(context: Context, item: TileBackupItem) {

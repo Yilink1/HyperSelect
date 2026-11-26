@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -42,18 +43,20 @@ class TileBackupDetailActivity : AppCompatActivity() {
 
     private fun bind() {
         val current = TileBackupActions.readVerifiedCurrentTiles(this)
-        val displayCurrent = TileBackupActions.readCurrentTiles(this)
+        val displayCurrent = current ?: RuleStore.loadQsTiles(this)
         val snapshot = item
         val tiles = snapshot?.tiles ?: displayCurrent.orEmpty()
         val entries = TileVisuals.entries(this, tiles)
-        val diff = snapshot?.takeIf { current != null }
-            ?.let { TileVisuals.diff(this, it.tiles, current.orEmpty()) }
 
         findViewById<TextView>(R.id.tvTitle).text = snapshot?.name ?: getString(R.string.header_current_layout)
         val count = getString(R.string.format_tile_count, entries.size)
         findViewById<TextView>(R.id.tvMeta).text = if (snapshot != null) {
             SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date(snapshot.timestamp)) + " · " + count
-        } else if (current == null) getString(R.string.tile_layout_cached) else count
+        } else when {
+            current != null -> count
+            displayCurrent != null -> getString(R.string.tile_layout_cached)
+            else -> getString(R.string.tile_layout_status_unavailable)
+        }
 
         TileVisuals.fillPanel(
             findViewById<FrameLayout>(R.id.panelPreview), entries,
@@ -65,13 +68,25 @@ class TileBackupDetailActivity : AppCompatActivity() {
         val restore = findViewById<TextView>(R.id.btnRestore)
         group.removeAllViews()
 
-        if (diff == null) {
+        if (snapshot == null || current == null) {
             title.visibility = View.GONE
             group.visibility = View.GONE
-            restore.visibility = View.GONE
+            restore.visibility = if (snapshot != null && TileSettings.hasTiles(snapshot.tiles)) View.VISIBLE else View.GONE
+            restore.setOnClickListener {
+                if (snapshot != null) {
+                    AlertDialog.Builder(this)
+                        .setMessage(R.string.tile_restore_without_preview)
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(R.string.action_restore_layout) { _, _ ->
+                            if (TileBackupActions.apply(this, snapshot)) bind()
+                        }
+                        .show()
+                }
+            }
             return
         }
 
+        val diff = TileVisuals.diff(this, snapshot.tiles, current)
         val rows = mutableListOf<Pair<String, String>>()
         if (diff.isSame) {
             rows += getString(R.string.detail_same) to ""
@@ -82,7 +97,9 @@ class TileBackupDetailActivity : AppCompatActivity() {
         }
         rows.forEachIndexed { i, (k, v) -> group.addView(diffRow(k, v, i, rows.size)) }
 
-        restore.visibility = if (diff.isSame) View.GONE else View.VISIBLE
+        title.visibility = View.VISIBLE
+        group.visibility = View.VISIBLE
+        restore.visibility = if (diff.isSame || !TileSettings.hasTiles(snapshot.tiles)) View.GONE else View.VISIBLE
         restore.setOnClickListener {
             if (TileBackupActions.apply(this, snapshot)) bind()
         }

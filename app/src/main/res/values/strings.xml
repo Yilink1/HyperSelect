@@ -38,7 +38,10 @@
     <string name="tile_removed_success">已从控制中心移除</string>
     <string name="tile_update_failed">修改控制中心失败</string>
     <string name="tile_layout_unavailable">无法读取系统磁贴布局，请检查模块状态后重试</string>
-    <string name="tile_layout_cached">显示最近缓存布局，当前系统布局暂不可确认</string>
+    <string name="tile_layout_cached">缓存预览</string>
+    <string name="tile_layout_status_unavailable">暂不可读取</string>
+    <string name="tile_layout_missing">系统未保存磁贴布局。请先在控制中心编辑并保存，或恢复一份快照。</string>
+    <string name="tile_restore_without_preview">当前布局无法预览。确定用此快照替换控制中心布局吗？</string>
     <string name="tile_snapshot_empty">此快照没有可恢复的磁贴配置</string>
     <string name="dialog_tile_click_title">快捷磁贴详情</string>
     <string name="action_launch_app">打开所属应用</string>

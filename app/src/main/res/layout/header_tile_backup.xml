@@ -34,6 +34,9 @@
                 android:id="@+id/tvCurrentSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:maxWidth="112dp"
                 android:textColor="@color/hyper_text_secondary"
                 android:textSize="13sp"
                 tools:text="29 个磁贴" />

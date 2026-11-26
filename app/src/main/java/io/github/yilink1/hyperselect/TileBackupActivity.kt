@@ -18,8 +18,6 @@ import java.util.Locale
 class TileBackupActivity : AppCompatActivity() {
 
     private lateinit var adapter: TileBackupAdapter
-    private var currentTiles: String? = null
-    private var systemTilesAvailable = false
 
 
     private val exportFileLauncher = registerForActivityResult(
@@ -86,11 +84,9 @@ class TileBackupActivity : AppCompatActivity() {
             }.show()
         }
 
-        currentTiles = TileBackupActions.readCurrentTiles(this)
-        systemTilesAvailable = TileBackupActions.readVerifiedCurrentTiles(this) != null
         adapter = TileBackupAdapter(
-            currentTiles = currentTiles,
-            systemTilesAvailable = systemTilesAvailable,
+            currentTiles = null,
+            systemTilesAvailable = false,
             backups = TileBackupStore.loadBackups(this),
             onOpenCurrent = { openDetail(null) },
             onOpen = { openDetail(it.id) },
@@ -108,9 +104,8 @@ class TileBackupActivity : AppCompatActivity() {
     }
 
     private fun refresh() {
-        currentTiles = TileBackupActions.readCurrentTiles(this)
-        systemTilesAvailable = TileBackupActions.readVerifiedCurrentTiles(this) != null
-        adapter.update(currentTiles, systemTilesAvailable, TileBackupStore.loadBackups(this))
+        val current = TileBackupActions.readVerifiedCurrentTiles(this)
+        adapter.update(current ?: RuleStore.loadQsTiles(this), current != null, TileBackupStore.loadBackups(this))
     }
 
     private fun openDetail(id: String?) {
@@ -142,6 +137,10 @@ class TileBackupActivity : AppCompatActivity() {
         val tiles = TileBackupActions.readVerifiedCurrentTiles(this)
         if (tiles == null) {
             Toast.makeText(this, R.string.tile_layout_unavailable, Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (!TileSettings.hasTiles(tiles)) {
+            Toast.makeText(this, R.string.tile_snapshot_empty, Toast.LENGTH_SHORT).show()
             return
         }
         val fallback = defaultName("快照 ")

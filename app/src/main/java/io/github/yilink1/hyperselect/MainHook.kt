@@ -19,6 +19,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Process
 import android.os.SystemClock
+import android.os.UserHandle
 import android.provider.Settings
 import android.util.Log
 import io.github.libxposed.api.XposedModule
@@ -67,6 +68,7 @@ class MainHook : XposedModule() {
     private var refreshAt = Long.MAX_VALUE
     private var retryDelayMs = 1_000L
     private var settingsProviderHooked = false
+    private val tileSettingsLock = Any()
     private val refreshTask = Runnable {
         synchronized(refreshLock) { refreshAt = Long.MAX_VALUE }
         if (!servicesReady) {
@@ -203,9 +205,7 @@ class MainHook : XposedModule() {
                 observerRegistered = true
             }
             val extras = Bundle().apply {
-                runCatching {
-                    Settings.Secure.getString(context.contentResolver, ConfigProvider.SETTING_QS_TILES)
-                }.getOrNull()?.takeIf { it.isNotBlank() }?.let {
+                readQsTiles(context).getOrNull()?.let {
                     putString(ConfigProvider.EXTRA_QS_TILES, it)
                 }
             }
@@ -662,15 +662,19 @@ class MainHook : XposedModule() {
                 "call", String::class.java, String::class.java, Bundle::class.java
             )
             hook(call).intercept { chain ->
-                val method = chain.args[0]
-                val name = chain.args[1]
-                if ((method == "PUT_secure" || method == "GET_secure") &&
-                    name == ConfigProvider.SETTING_QS_TILES && isModuleCaller(Binder.getCallingUid(), context)
+                val method = chain.args[0] as? String
+                if (method == TileSettings.READ || method == TileSettings.ADD ||
+                    method == TileSettings.REMOVE || method == TileSettings.RESTORE
                 ) {
+                    val uid = Binder.getCallingUid()
+                    if (UserHandle.getUserHandleForUid(uid) != Process.myUserHandle() ||
+                        !isModuleCaller(uid, context)
+                    ) return@intercept Bundle()
+
                     val provider = chain.thisObject as ContentProvider
                     val identity = provider.clearCallingIdentity()
                     try {
-                        return@intercept chain.proceed()
+                        return@intercept handleTileRequest(context, method, chain.args[1] as? String)
                     } finally {
                         provider.restoreCallingIdentity(identity)
                     }
@@ -682,6 +686,90 @@ class MainHook : XposedModule() {
         }.onFailure {
             log(Log.WARN, TAG, "Failed to hook SettingsProvider", it)
         }.getOrDefault(false)
+    }
+
+    private fun readQsTiles(context: Context): Result<String?> = runCatching {
+        Settings.Secure.getString(context.contentResolver, ConfigProvider.SETTING_QS_TILES)
+    }.onFailure {
+        log(Log.WARN, TAG, "Failed to read sysui_qs_tiles: ${it.javaClass.simpleName}")
+    }
+
+    private fun handleTileRequest(context: Context, method: String, value: String?): Bundle =
+        synchronized(tileSettingsLock) {
+            val current = readQsTiles(context).getOrElse { return@synchronized Bundle() }
+            if (method == TileSettings.READ) {
+                if (current == null || !TileSettings.hasTiles(current)) {
+                    logMissingTileLayout(method, current)
+                    return@synchronized Bundle().apply { putBoolean(TileSettings.MISSING_LAYOUT, true) }
+                }
+                return@synchronized Bundle().apply { putString(TileSettings.TILES, current) }
+            }
+            val updated = when (method) {
+                TileSettings.RESTORE -> value?.takeIf(TileSettings::hasTiles)
+                else -> {
+                    if (current == null || !TileSettings.hasTiles(current)) {
+                        logMissingTileLayout(method, current)
+                        return@synchronized Bundle().apply { putBoolean(TileSettings.MISSING_LAYOUT, true) }
+                    }
+                    value?.let { updateTileList(current, it, method == TileSettings.ADD) }
+                }
+            }
+            if (updated == null) {
+                log(Log.WARN, TAG, "Quick settings $method rejected: invalid request or empty result")
+            }
+            val written = when (updated) {
+                null -> false
+                current -> true
+                else -> writeQsTiles(context, method, current, updated)
+            }
+            Bundle().apply { putBoolean(TileSettings.WRITTEN, written) }
+        }
+
+    private fun logMissingTileLayout(method: String, current: String?) {
+        val state = when {
+            current == null -> "unset"
+            current.isBlank() -> "empty"
+            else -> "no-usable-tiles"
+        }
+        log(Log.WARN, TAG, "Quick settings $method blocked: layout=$state")
+    }
+
+    private fun writeQsTiles(context: Context, method: String, current: String?, updated: String): Boolean {
+        val latest = readQsTiles(context)
+        if (latest.isFailure || latest.getOrNull() != current) {
+            log(Log.WARN, TAG, "Quick settings changed before $method")
+            return false
+        }
+        val written = runCatching {
+            Settings.Secure.putString(context.contentResolver, ConfigProvider.SETTING_QS_TILES, updated)
+        }.onFailure {
+            log(Log.WARN, TAG, "Failed to write sysui_qs_tiles: ${it.javaClass.simpleName}")
+        }.getOrDefault(false)
+        val verified = written && readQsTiles(context).getOrNull() == updated
+        log(
+            if (verified) Log.INFO else Log.WARN, TAG,
+            "Quick settings $method verified=$verified " +
+                "before=${current?.split(',')?.count { it.isNotBlank() } ?: "unset"} " +
+                "requested=${updated.split(',').count { it.isNotBlank() }}"
+        )
+        return verified
+    }
+
+    private fun updateTileList(current: String, component: String, add: Boolean): String? {
+        val target = ComponentName.unflattenFromString(component) ?: return null
+        val tiles = current.split(',').map { it.trim() }.filter { it.isNotEmpty() }.toMutableList()
+        val matches: (String) -> Boolean = { spec ->
+            spec.startsWith("custom(") && spec.endsWith(")") &&
+                ComponentName.unflattenFromString(spec.substring(7, spec.lastIndex)) == target
+        }
+        if (add) {
+            if (tiles.any(matches)) return current
+            val index = if (tiles.lastOrNull() == "edit") tiles.lastIndex else tiles.size
+            tiles.add(index, "custom(${target.flattenToShortString()})")
+        } else {
+            if (!tiles.removeAll(matches)) return current
+        }
+        return tiles.joinToString(",").takeIf(TileSettings::hasTiles)
     }
 
 
